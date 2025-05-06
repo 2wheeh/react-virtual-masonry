@@ -2,7 +2,7 @@
   "name": "demo",
   "type": "module",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.10.0",
