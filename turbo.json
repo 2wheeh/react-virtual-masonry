@@ -17,6 +17,10 @@
       "dependsOn": ["build"],
       "persistent": true,
       "cache": false
+    },
+    "release": {
+      "dependsOn": ["build"],
+      "outputs": ["dist/**"]
     }
   }
 }

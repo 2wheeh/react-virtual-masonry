@@ -21,7 +21,10 @@
   },
   "scripts": {
     "check-types": "tsc",
-    "build": "tsup"
+    "build": "tsup",
+    "release": "pnpm publish --access public",
+    "prepublish": "node scripts/prepare-package.js",
+    "postpublish": "node scripts/restore-package.js"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.13.8",
