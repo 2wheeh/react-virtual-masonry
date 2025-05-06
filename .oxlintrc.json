@@ -1,0 +1,12 @@
+{
+  "plugins": ["react", "unicorn", "typescript", "oxc", "react-hooks"],
+  "rules": {
+    "correctness": "error",
+    "suspicious": "error",
+    "style": "error",
+    "no-unused-vars": "error",
+
+    "exhaustive-deps": "warn",
+    "rules-of-hooks": "error"
+  }
+}
