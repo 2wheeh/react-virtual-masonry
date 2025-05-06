@@ -3,25 +3,27 @@ import { useWindowVirtualizer } from '@tanstack/react-virtual';
 
 import { useResponsiveValue, BreakpointValues } from '../hooks/useResponsiveValue';
 
+const DEFAULT_COLUMNS_COUNT = 4;
+const DEFAULT_OVERSCAN = 3;
+const DEFAULT_GUTTER = 20;
+
 type ColumnCountBreakPoints = BreakpointValues<number>;
 interface Props<Data> {
   data: Data[];
-  renderItem: (item: Data, index: number) => ReactNode;
+  renderItem: (props: { item: Data; index: number }) => ReactNode;
   columnsCountBreakPoints?: ColumnCountBreakPoints;
   gutter?: number; // px
+  estimateSize?: (index: number) => number;
+  overscan?: number;
 }
-
-const DEFAULT_COLUMNS_COUNT = 4;
 
 export function Masonry<Data = unknown>({
   data,
   renderItem,
-  columnsCountBreakPoints = {
-    350: 1,
-    750: 2,
-    900: 3,
-  },
-  gutter = 20,
+  columnsCountBreakPoints = {},
+  gutter = DEFAULT_GUTTER,
+  estimateSize,
+  overscan = DEFAULT_OVERSCAN,
 }: Props<Data>) {
   const { getResponsiveValue } = useResponsiveValue<number>();
 
@@ -38,8 +40,8 @@ export function Masonry<Data = unknown>({
 
   const virtualizer = useWindowVirtualizer({
     count: data.length,
-    estimateSize: () => 700,
-    overscan: 3,
+    estimateSize: estimateSize ?? (() => 0),
+    overscan,
     lanes: columnsCount,
     scrollMargin: containerRef.current?.offsetTop ?? 0,
     gap: gutter,
@@ -67,7 +69,7 @@ export function Masonry<Data = unknown>({
             transform: `translateY(${start - virtualizer.options.scrollMargin}px)`,
           }}
         >
-          {renderItem(data[index], index)}
+          {renderItem({ item: data[index], index })}
         </div>
       ))}
     </div>
