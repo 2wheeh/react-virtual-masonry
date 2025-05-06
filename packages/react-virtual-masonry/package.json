@@ -1,0 +1,39 @@
+{
+  "name": "react-virtual-masonry",
+  "type": "module",
+  "version": "0.0.1",
+  "author": "wnhlee <2wheeh@gmail.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@10.10.0",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/react-virtual": "^3.13.8",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=16 || >=17 || >= 18 || >= 19",
+    "react-dom": ">=16 || >=17 || >= 18 || >=19"
+  }
+}

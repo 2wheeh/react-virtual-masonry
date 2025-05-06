@@ -1,0 +1,8 @@
+.DS_Store
+.idea
+.output
+dist
+node_modules
+
+# Turborepo output
+.turbo

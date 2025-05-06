@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "author": "wnhlee <2wheeh@gmail.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@10.10.0",
+  "scripts": {
+    "bump": "taze -r -w && pnpm install",
+    "format": "prettier --write .",
+    "lint": "oxlint",
+    "prepare": "husky",
+    "dev": "turbo run dev --filter=demo"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "oxlint": "^0.16.9",
+    "lint-staged": "^15.5.1",
+    "taze": "^19.0.4",
+    "husky": "^9.1.7",
+    "turbo": "^2.5.2"
+  }
+}
