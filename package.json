@@ -6,11 +6,14 @@
   "license": "MIT",
   "packageManager": "pnpm@10.10.0",
   "scripts": {
+    "check-ci": "pnpm build && pnpm check-types",
     "bump": "taze -r -w && pnpm install",
     "format": "prettier --write .",
     "lint": "oxlint",
     "prepare": "husky",
-    "dev": "turbo run dev --filter=demo"
+    "dev": "turbo run dev --filter=demo",
+    "build": "turbo run build --filter=demo",
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
