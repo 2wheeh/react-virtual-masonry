@@ -6,3 +6,6 @@ node_modules
 
 # Turborepo output
 .turbo
+
+docs/.vitepress/cache
+docs/.vitepress/.temp

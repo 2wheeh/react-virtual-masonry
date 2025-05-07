@@ -14,7 +14,10 @@
     "dev": "turbo run dev --filter=demo",
     "build": "turbo run build --filter=demo",
     "check-types": "turbo run check-types",
-    "release": "turbo run release --filter=react-virtual-masonry"
+    "release": "turbo run release --filter=react-virtual-masonry",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
