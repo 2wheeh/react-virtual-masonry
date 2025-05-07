@@ -10,18 +10,14 @@ export const useResponsiveValue = <T>() => {
   const windowWidth = useWindowWidth();
 
   const getResponsiveValue = useCallback(
-    (breakPoints: BreakpointValues<T>, defaultValue: T) => {
-      const sortedBreakPoints = Object.keys(breakPoints)
+    (breakpointValues: BreakpointValues<T>, defaultValue: T) => {
+      const sortedBreakPoints = Object.keys(breakpointValues)
         .map(Number)
         .sort((a, b) => a - b);
 
-      let value = sortedBreakPoints.length > 0 ? breakPoints[sortedBreakPoints[0]] : defaultValue;
-
-      sortedBreakPoints.forEach((breakPoint) => {
-        if (breakPoint < windowWidth) {
-          value = breakPoints[breakPoint];
-        }
-      });
+      const value = sortedBreakPoints.reduce((acc, breakPoint) => {
+        return breakPoint < windowWidth ? breakpointValues[breakPoint] : acc;
+      }, defaultValue);
 
       return value;
     },

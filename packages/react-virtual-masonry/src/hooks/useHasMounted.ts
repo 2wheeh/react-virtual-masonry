@@ -1,10 +1,10 @@
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 export const useHasMounted = () => {
   const [hasMounted, setHasMounted] = useState(false);
 
-  // TODO: isomorphic useLayoutEffect
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setHasMounted(true);
   }, []);
 
