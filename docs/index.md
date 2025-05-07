@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: 'React Virtual Masonry'
-  text: 'Modern virtualized masonry for React'
+  text: 'Modern Masonry Layout with ease'
   tagline: Powered by @tanstack/virtual
   actions:
     - theme: brand
