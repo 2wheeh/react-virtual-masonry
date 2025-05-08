@@ -9,7 +9,9 @@ export default defineConfig({
     starlight({
       title: 'React Virtual Masonry',
       description: 'Modern Masonry Layout with ease, powered by @tanstack/virtual',
-      // TODO: open this in a new tab
+      components: {
+        SocialIcons: './src/components/SocialIcons.astro',
+      },
       social: [
         {
           icon: 'github',
