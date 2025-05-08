@@ -9,7 +9,14 @@ export default defineConfig({
     starlight({
       title: 'React Virtual Masonry',
       description: 'Modern Masonry Layout with ease, powered by @tanstack/virtual',
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+      // TODO: open this in a new tab
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/2wheeh/react-virtual-masonry',
+        },
+      ],
       sidebar: [
         {
           label: 'Guides',
@@ -27,6 +34,3 @@ export default defineConfig({
     }),
   ],
 });
-
-// description: 'Modern Masonry Layout with ease, powered by @tanstack/virtual',
-// socialLinks: [{ icon: 'github', link: 'https://github.com/2wheeh/react-virtual-masonry' }],
