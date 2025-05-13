@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+  <rect x="40" y="40" width="50" height="50" rx="4" fill="url(#greenGradient)" />
+  <rect x="40" y="100" width="50" height="70" rx="4" fill="url(#orangeGradient)" />
+  
+  <rect x="100" y="40" width="50" height="70" rx="4" fill="url(#orangeGradient)" />
+  <rect x="100" y="120" width="50" height="50" rx="4" fill="url(#greenGradient)" />
+  
+  <rect x="160" y="40" width="50" height="60" rx="4" fill="url(#greenGradient)" />
+  <rect x="160" y="110" width="50" height="60" rx="4" fill="url(#orangeGradient)" />
+  
+  <defs>
+    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#66FFCC" />
+      <stop offset="60%" stop-color="#4DDBAD" />
+      <stop offset="100%" stop-color="#2AAE85" />
+    </linearGradient>
+    
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB980" />
+      <stop offset="60%" stop-color="#FF9B4D" />
+      <stop offset="100%" stop-color="#FF7730" />
+    </linearGradient>
+  </defs>
+</svg>

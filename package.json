@@ -14,7 +14,10 @@
     "dev": "turbo run dev --filter=demo",
     "build": "turbo run build --filter=demo",
     "check-types": "turbo run check-types",
-    "release": "turbo run release --filter=react-virtual-masonry"
+    "release": "turbo run release --filter=react-virtual-masonry",
+    "docs:dev": "turbo run dev --filter=docs",
+    "docs:build": "turbo run build --filter=docs",
+    "docs:preview": "turbo run preview --filter=docs"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
