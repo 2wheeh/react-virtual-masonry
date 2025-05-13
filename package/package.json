@@ -31,18 +31,18 @@
     "postpublish": "node scripts/restore-package.js"
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.13.8",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "@tanstack/react-virtual": "^3.13.8"
   },
   "devDependencies": {
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "tsup": "^8.4.0",
     "typescript": "catalog:"
   },
   "peerDependencies": {
-    "react": ">=16 || >=17 || >= 18 || >= 19",
-    "react-dom": ">=16 || >=17 || >= 18 || >=19"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   }
 }
