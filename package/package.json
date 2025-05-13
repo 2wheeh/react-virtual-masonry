@@ -4,7 +4,7 @@
   "version": "0.0.3",
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.11.0",
   "files": [
     "dist"
   ],
@@ -36,10 +36,10 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "tsup": "^8.4.0"
+    "tsup": "^8.4.0",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "react": ">=16 || >=17 || >= 18 || >= 19",

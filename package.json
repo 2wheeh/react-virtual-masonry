@@ -4,7 +4,7 @@
   "version": "0.0.3",
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
     "check-ci": "pnpm build && pnpm check-types",
     "bump": "taze -r -w && pnpm install",
@@ -20,11 +20,11 @@
     "docs:preview": "turbo run preview --filter=docs"
   },
   "devDependencies": {
-    "prettier": "^3.5.3",
-    "oxlint": "^0.16.9",
-    "lint-staged": "^15.5.1",
-    "taze": "^19.0.4",
     "husky": "^9.1.7",
-    "turbo": "^2.5.2"
+    "lint-staged": "^15.5.2",
+    "oxlint": "^0.16.10",
+    "prettier": "^3.5.3",
+    "taze": "^19.1.0",
+    "turbo": "^2.5.3"
   }
 }
