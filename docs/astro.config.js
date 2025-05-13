@@ -33,6 +33,9 @@ export default defineConfig({
         },
       ],
       plugins: [starlightThemeRapide()],
+      editLink: {
+        baseUrl: 'https://github.com/2wheeh/react-virtual-masonry/edit/main/docs/',
+      },
     }),
   ],
 });
