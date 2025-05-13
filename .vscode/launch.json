@@ -6,7 +6,7 @@
       "name": "Development server",
       "request": "launch",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/apps/docs"
+      "cwd": "${workspaceFolder}/docs"
     }
   ]
 }
