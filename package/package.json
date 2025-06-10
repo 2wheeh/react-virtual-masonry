@@ -34,8 +34,7 @@
   },
   "scripts": {
     "check-types": "tsc",
-    "build": "tsup",
-    "release": "changeset publish && git push --follow-tags"
+    "build": "tsup"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.13.8"
