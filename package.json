@@ -20,6 +20,7 @@
     "docs:preview": "turbo run preview --filter=docs"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.4",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "oxlint": "^0.16.10",
