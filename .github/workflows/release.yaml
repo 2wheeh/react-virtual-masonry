@@ -30,27 +30,9 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: pnpm run version
           commit: 'chore(release): version packages'
           publish: pnpm run release
+          createGithubRelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Extract Release Notes
-        id: extract-notes
-        if: steps.changesets.outputs.published == 'true'
-        run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-
-          awk -v tag="$LATEST_TAG" '/^## / {if (p) exit; if ($2 == tag) p=1; next} p' CHANGELOG.md > release-notes.md
-
-      - name: Create GitHub Release
-        if: steps.changesets.outputs.published == 'true'
-        run: |
-          gh release create ${{ steps.extract-notes.outputs.tag }} \
-            --title "${{ steps.extract-notes.outputs.tag }} Release" \
-            --notes-file release-notes.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

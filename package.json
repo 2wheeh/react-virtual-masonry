@@ -7,7 +7,6 @@
   "packageManager": "pnpm@10.11.0",
   "scripts": {
     "check-ci": "pnpm build && pnpm check-types",
-    "version": "changeset version",
     "bump": "taze -r -w && pnpm install",
     "format": "prettier --write .",
     "lint": "oxlint",
