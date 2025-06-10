@@ -1,5 +1,12 @@
 # demo
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`d956c30`](https://github.com/2wheeh/react-virtual-masonry/commit/d956c303a044d47e5f6d747e34270bde726747ec)]:
+  - react-virtual-masonry@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes
