@@ -7,6 +7,7 @@
   "packageManager": "pnpm@10.11.0",
   "scripts": {
     "check-ci": "pnpm build && pnpm check-types",
+    "version": "changeset version",
     "bump": "taze -r -w && pnpm install",
     "format": "prettier --write .",
     "lint": "oxlint",
@@ -20,6 +21,8 @@
     "docs:preview": "turbo run preview --filter=docs"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.29.4",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "oxlint": "^0.16.10",
