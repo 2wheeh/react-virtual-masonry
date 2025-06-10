@@ -1,5 +1,11 @@
 # react-virtual-masonry
 
+## 0.1.5
+
+### Patch Changes
+
+- [#19](https://github.com/2wheeh/react-virtual-masonry/pull/19) [`7b06400`](https://github.com/2wheeh/react-virtual-masonry/commit/7b06400a6e6efecae42b274e1ef12dc737a811f2) Thanks [@2wheeh](https://github.com/2wheeh)! - fix script
+
 ## 0.1.4
 
 ### Patch Changes
