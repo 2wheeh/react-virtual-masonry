@@ -1,5 +1,11 @@
 # react-virtual-masonry
 
+## 0.1.4
+
+### Patch Changes
+
+- [#17](https://github.com/2wheeh/react-virtual-masonry/pull/17) [`5c3ca85`](https://github.com/2wheeh/react-virtual-masonry/commit/5c3ca85f9a09eee52065ed6a6201d03259bd4161) Thanks [@2wheeh](https://github.com/2wheeh)! - typo fix
+
 ## 0.1.3
 
 ### Patch Changes
