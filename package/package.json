@@ -1,7 +1,7 @@
 {
   "name": "react-virtual-masonry",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.11.0",
@@ -23,12 +23,19 @@
       "require": "./dist/index.cjs"
     }
   },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      }
+    }
+  },
   "scripts": {
     "check-types": "tsc",
     "build": "tsup",
-    "release": "pnpm publish --access public",
-    "prepublish": "node scripts/prepare-package.js",
-    "postpublish": "node scripts/restore-package.js"
+    "release": "pnpm publish --access public"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.13.8"
