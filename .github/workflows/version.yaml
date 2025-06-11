@@ -1,22 +1,23 @@
-name: Release
+name: Version
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  release:
+  version:
     runs-on: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: develop
+
       - uses: ./.github/actions/ci-setup
 
-      - name: Publish to NPM
+      - name: Create Version PR
         uses: changesets/action@v1
         with:
-          publish: 'pnpm run release'
+          commit: 'chore: version packages'
+          title: 'chore: version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
