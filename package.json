@@ -5,6 +5,10 @@
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.11.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2wheeh/react-virtual-masonry"
+  },
   "scripts": {
     "check-ci": "pnpm build && pnpm check-types",
     "bump": "taze -r -w && pnpm install",
