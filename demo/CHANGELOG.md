@@ -1,5 +1,13 @@
 # demo
 
+## 0.1.7
+
+### Patch Changes
+
+- [#33](https://github.com/2wheeh/react-virtual-masonry/pull/33) [`67f5c51`](https://github.com/2wheeh/react-virtual-masonry/commit/67f5c5150922373f96a2b4977afeb232c3952f24) Thanks [@2wheeh](https://github.com/2wheeh)! - chore: format (test)
+
+- [#31](https://github.com/2wheeh/react-virtual-masonry/pull/31) [`ce5ef5f`](https://github.com/2wheeh/react-virtual-masonry/commit/ce5ef5f3b271a5a58449cfd2dc188c31c26429e6) Thanks [@2wheeh](https://github.com/2wheeh)! - chore: format
+
 ## 0.1.6
 
 ### Patch Changes
