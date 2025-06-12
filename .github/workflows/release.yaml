@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    runs-on: [ubuntu-latest]
+    name: Release
     if: github.repository == '2wheeh/react-virtual-masonry'
     runs-on: ubuntu-latest
     timeout-minutes: 20
