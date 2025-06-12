@@ -24,6 +24,7 @@ function App() {
   return (
     <>
       <h1> Demo</h1>
+
       <Masonry
         data={DATA}
         renderItem={Cell}
