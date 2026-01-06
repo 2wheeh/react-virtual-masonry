@@ -1,5 +1,17 @@
 # react-virtual-masonry
 
+## 0.1.8
+
+### Patch Changes
+
+- [`777ccff`](https://github.com/2wheeh/react-virtual-masonry/commit/777ccffc9c38bf5f2401882e79a839dac89418e4) Thanks [@2wheeh](https://github.com/2wheeh)! - react-compiler
+
+- [`d0227ef`](https://github.com/2wheeh/react-virtual-masonry/commit/d0227ef7059b3260ae115e8cffc80ead6b3811b0) Thanks [@2wheeh](https://github.com/2wheeh)! - simplify useWindowWidth
+
+- [`e794308`](https://github.com/2wheeh/react-virtual-masonry/commit/e7943089a787808187a4401408fbe6fa7b586f0a) Thanks [@2wheeh](https://github.com/2wheeh)! - bump up dependencies
+
+- [`a65f788`](https://github.com/2wheeh/react-virtual-masonry/commit/a65f78853f88899b257ebe2492c62154144d7356) Thanks [@2wheeh](https://github.com/2wheeh)! - migrate to tsdown
+
 ## 0.1.6
 
 ### Patch Changes
