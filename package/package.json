@@ -4,7 +4,7 @@
   "version": "0.1.6",
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@10.11.0",
+  "packageManager": "pnpm@10.27.0",
   "files": [
     "dist"
   ],
@@ -37,7 +37,7 @@
     "build": "tsdown"
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.13.8"
+    "@tanstack/react-virtual": "^3.13.17"
   },
   "devDependencies": {
     "@types/react": "catalog:",

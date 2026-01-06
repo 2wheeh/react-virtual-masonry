@@ -4,7 +4,7 @@
   "version": "0.0.4",
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@10.11.0",
+  "packageManager": "pnpm@10.27.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/2wheeh/react-virtual-masonry"
@@ -24,13 +24,13 @@
     "docs:preview": "turbo run preview --filter=docs"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.5.1",
-    "@changesets/cli": "^2.29.4",
+    "@changesets/changelog-github": "^0.5.2",
+    "@changesets/cli": "^2.29.8",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "oxlint": "^0.16.10",
-    "prettier": "^3.5.3",
-    "taze": "^19.1.0",
-    "turbo": "^2.5.3"
+    "oxlint": "^0.16.12",
+    "prettier": "^3.7.4",
+    "taze": "^19.9.2",
+    "turbo": "^2.7.3"
   }
 }
