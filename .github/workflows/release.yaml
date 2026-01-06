@@ -7,6 +7,7 @@ on:
 
 jobs:
   release:
+    environment: production
     name: Release
     if: github.repository == '2wheeh/react-virtual-masonry'
     runs-on: ubuntu-latest
