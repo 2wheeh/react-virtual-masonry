@@ -13,6 +13,3 @@ catalog:
 onlyBuiltDependencies:
   - esbuild
   - sharp
-
-patchedDependencies:
-  '@changesets/cli': patches/@changesets__cli.patch
