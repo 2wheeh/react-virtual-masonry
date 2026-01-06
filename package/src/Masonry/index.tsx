@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useRef } from 'react';
+import { ReactNode, useRef } from 'react';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 
 import { useResponsiveValue, BreakpointValues } from '../hooks/useResponsiveValue';
@@ -27,10 +27,7 @@ export function Masonry<Data = unknown>({
 }: Props<Data>) {
   const { getResponsiveValue } = useResponsiveValue<number>();
 
-  const columnsCount = useMemo(
-    () => getResponsiveValue(columnsCountBreakPoints, DEFAULT_COLUMNS_COUNT),
-    [columnsCountBreakPoints, getResponsiveValue]
-  );
+  const columnsCount = getResponsiveValue(columnsCountBreakPoints, DEFAULT_COLUMNS_COUNT);
 
   const containerRef = useRef<HTMLDivElement>(null);
 

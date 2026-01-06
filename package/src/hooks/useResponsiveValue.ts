@@ -1,5 +1,3 @@
-import { useCallback } from 'react';
-
 import { useWindowWidth } from './useWindowWidth';
 
 export interface BreakpointValues<T> {
@@ -9,20 +7,17 @@ export interface BreakpointValues<T> {
 export const useResponsiveValue = <T>() => {
   const windowWidth = useWindowWidth();
 
-  const getResponsiveValue = useCallback(
-    (breakpointValues: BreakpointValues<T>, defaultValue: T) => {
-      const sortedBreakPoints = Object.keys(breakpointValues)
-        .map(Number)
-        .sort((a, b) => a - b);
+  const getResponsiveValue = (breakpointValues: BreakpointValues<T>, defaultValue: T) => {
+    const sortedBreakPoints = Object.keys(breakpointValues)
+      .map(Number)
+      .sort((a, b) => a - b);
 
-      const value = sortedBreakPoints.reduce((acc, breakPoint) => {
-        return breakPoint < windowWidth ? breakpointValues[breakPoint] : acc;
-      }, defaultValue);
+    const value = sortedBreakPoints.reduce((acc, breakPoint) => {
+      return breakPoint < windowWidth ? breakpointValues[breakPoint] : acc;
+    }, defaultValue);
 
-      return value;
-    },
-    [windowWidth]
-  );
+    return value;
+  };
 
   return {
     getResponsiveValue,
