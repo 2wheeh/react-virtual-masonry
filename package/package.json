@@ -1,7 +1,7 @@
 {
   "name": "react-virtual-masonry",
   "type": "module",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.27.0",
