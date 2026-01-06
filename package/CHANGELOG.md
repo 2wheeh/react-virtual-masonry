@@ -1,5 +1,11 @@
 # react-virtual-masonry
 
+## 0.1.11
+
+### Patch Changes
+
+- [`ff0203f`](https://github.com/2wheeh/react-virtual-masonry/commit/ff0203f5c6ded593dfadb924541e1085379e0da3) Thanks [@2wheeh](https://github.com/2wheeh)! - test
+
 ## 0.1.10
 
 ### Patch Changes
