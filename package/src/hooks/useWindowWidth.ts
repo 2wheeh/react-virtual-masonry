@@ -1,22 +1,13 @@
-import { useLayoutEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
-import { useHasMounted } from './useHasMounted';
+const subscribe = (callback: () => void) => {
+  window.addEventListener('resize', callback);
+  return () => window.removeEventListener('resize', callback);
+};
+
+const getSnapshot = () => window.innerWidth;
+const getServerSnapshot = () => 0;
 
 export const useWindowWidth = () => {
-  const hasMounted = useHasMounted();
-  const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
-
-  useLayoutEffect(() => {
-    const handleResize = () => {
-      if (!hasMounted) return;
-      setWidth(window.innerWidth);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [hasMounted]);
-
-  return width;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 };
