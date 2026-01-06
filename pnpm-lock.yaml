@@ -22,6 +22,11 @@ catalogs:
       specifier: ^5.9.3
       version: 5.9.3
 
+patchedDependencies:
+  '@changesets/cli':
+    hash: 0aaeb9698996e49ebd80eecf3f115b8691fcecaecbf3077ed8232dc5977fb746
+    path: patches/@changesets__cli.patch
+
 importers:
 
   .:
@@ -31,7 +36,7 @@ importers:
         version: 0.5.2
       '@changesets/cli':
         specifier: ^2.29.8
-        version: 2.29.8(@types/node@22.15.17)
+        version: 2.29.8(patch_hash=0aaeb9698996e49ebd80eecf3f115b8691fcecaecbf3077ed8232dc5977fb746)(@types/node@22.15.17)
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -3544,7 +3549,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@changesets/cli@2.29.8(@types/node@22.15.17)':
+  '@changesets/cli@2.29.8(patch_hash=0aaeb9698996e49ebd80eecf3f115b8691fcecaecbf3077ed8232dc5977fb746)(@types/node@22.15.17)':
     dependencies:
       '@changesets/apply-release-plan': 7.0.14
       '@changesets/assemble-release-plan': 6.0.9
