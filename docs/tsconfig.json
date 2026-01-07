@@ -1,10 +1,5 @@
 {
   "extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "paths": {
-      "react-virtual-masonry": ["./package/src"]
-    }
-  },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["dist"]
 }

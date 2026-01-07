@@ -1,27 +1,28 @@
-# React Virtual Masonry [Modern Masonry Layout with ease, powered by @tanstack/virtual]
+---
+title: React Virtual Masonry - Modern Masonry Layout
+layout: landing
+showLogo: false
+---
 
-## Installation
+import { HomePage } from 'vocs/components';
 
-:::code-group
+<HomePage.Root>
+  <HomePage.Logo />
+  <HomePage.Tagline>
+    Modern Masonry Layout with ease, powered by @tanstack/virtual.
+  </HomePage.Tagline>
+  <HomePage.InstallPackage name="react-virtual-masonry" type="add" />
+  <HomePage.Buttons>
+    <HomePage.Button href="/docs" variant="accent">
+      Get started
+    </HomePage.Button>
+    <HomePage.Button href="https://github.com/2wheeh/react-virtual-masonry">GitHub</HomePage.Button>
+  </HomePage.Buttons>
+</HomePage.Root>
 
-```bash [npm]
-npm i react-virtual-masonry
-```
-
-```bash [pnpm]
-pnpm i react-virtual-masonry
-```
-
-```bash [yarn]
-yarn i react-virtual-masonry
-```
-
-:::
-
-## Usage
+# Overview
 
 ```tsx twoslash
-import React from 'react';
 import { Masonry } from 'react-virtual-masonry';
 
 <Masonry
@@ -43,7 +44,6 @@ import { Masonry } from 'react-virtual-masonry';
 />;
 ```
 
-import React from 'react';
 import { Masonry } from 'react-virtual-masonry';
 
 <Masonry
