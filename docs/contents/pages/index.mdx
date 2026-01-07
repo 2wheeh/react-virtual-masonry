@@ -1,0 +1,65 @@
+# React Virtual Masonry [Modern Masonry Layout with ease, powered by @tanstack/virtual]
+
+## Installation
+
+:::code-group
+
+```bash [npm]
+npm i react-virtual-masonry
+```
+
+```bash [pnpm]
+pnpm i react-virtual-masonry
+```
+
+```bash [yarn]
+yarn i react-virtual-masonry
+```
+
+:::
+
+## Usage
+
+```tsx twoslash
+import React from 'react';
+import { Masonry } from 'react-virtual-masonry';
+
+<Masonry
+  data={[200, 600, 200, 400, 100, 100, 50, 200]}
+  renderItem={({ item, index }) => (
+    <div
+      style={{
+        height: item,
+        background: '#F47067',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {index}
+    </div>
+  )}
+/>;
+```
+
+import React from 'react';
+import { Masonry } from 'react-virtual-masonry';
+
+<Masonry
+  data={[200, 600, 200, 400, 100, 100, 50, 200]}
+  renderItem={({ item, index }) => (
+    <div
+      style={{
+        height: item,
+        background: '#F47067',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {index}
+    </div>
+  )}
+/>
