@@ -1,11 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
-    "paths": {
-      "react-virtual-masonry": ["./package/src"]
-    }
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo"
   },
   "include": ["src"]
 }

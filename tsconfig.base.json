@@ -24,6 +24,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "baseUrl": "."
+    "baseUrl": ".",
+
+    "paths": {
+      "react-virtual-masonry": ["./package/src"],
+      "react-virtual-masonry/package.json": ["./package/package.json"]
+    }
   }
 }
