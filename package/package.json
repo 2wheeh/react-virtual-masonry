@@ -37,7 +37,7 @@
     "build": "tsdown"
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.13.17",
+    "@tanstack/react-virtual": "3.13.12",
     "react-compiler-runtime": "^1.0.0"
   },
   "devDependencies": {
