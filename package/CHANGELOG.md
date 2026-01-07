@@ -1,5 +1,13 @@
 # react-virtual-masonry
 
+## 0.1.11
+
+### Patch Changes
+
+- [`ff0203f`](https://github.com/2wheeh/react-virtual-masonry/commit/ff0203f5c6ded593dfadb924541e1085379e0da3) Thanks [@2wheeh](https://github.com/2wheeh)! - test
+
+- [`5f6e9dd`](https://github.com/2wheeh/react-virtual-masonry/commit/5f6e9dda903e3be101613a2b99191b09699c192c) Thanks [@2wheeh](https://github.com/2wheeh)! - fix lane assignement
+
 ## 0.1.10
 
 ### Patch Changes
