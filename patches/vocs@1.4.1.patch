@@ -1,0 +1,392 @@
+diff --git a/_lib/config.d.ts b/_lib/config.d.ts
+index cb813dc457c270fc6f64aaeaa0ad9597186ea021..6a2318bceabc5e0949a58b975d206cc07dfa1e9d 100644
+--- a/_lib/config.d.ts
++++ b/_lib/config.d.ts
+@@ -3,7 +3,8 @@ import type { SearchOptions } from 'minisearch';
+ import type { ReactElement } from 'react';
+ import type { TwoslashOptions } from 'twoslash';
+ import type { PluggableList } from 'unified';
+-import type { UserConfig } from 'vite';
++import type { ConfigEnv, UserConfig } from 'vite';
++export type VocsConfigEnv = Pick<ConfigEnv, 'mode' | 'command' | 'isPreview'>;
+ import type { PageData } from './app/hooks/usePageData.js';
+ import type { borderRadiusVars, contentVars, fontFamilyVars, fontSizeVars, fontWeightVars, lineHeightVars, outlineVars, primitiveColorVars, semanticColorVars, sidebarVars, spaceVars, topNavVars, viewportVars, zIndexVars } from './app/styles/vars.css.js';
+ type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+@@ -181,8 +182,18 @@ export type Config<parsed extends boolean = false, colorScheme extends ColorSche
+     vite?: UserConfig;
+ }, parsed extends true ? RequiredProperties : never>;
+ export type ParsedConfig = Config<true>;
+-export declare function defineConfig<colorScheme extends ColorScheme = undefined>({ aiCta, blogDir, cacheDir, checkDeadlinks, head, ogImageUrl, rootDir, title, titleTemplate, ...config }: Config<false, colorScheme>): Promise<ParsedConfig>;
+-export declare const getDefaultConfig: () => Promise<ParsedConfig>;
++export type VocsConfig = Config<false>;
++export type VocsConfigFnObject = (env: VocsConfigEnv) => VocsConfig;
++export type VocsConfigFnPromise = (env: VocsConfigEnv) => Promise<VocsConfig>;
++export type VocsConfigFn = (env: VocsConfigEnv) => VocsConfig | Promise<VocsConfig>;
++export type VocsConfigExport<colorScheme extends ColorScheme = ColorScheme> = Config<false, colorScheme> | Promise<Config<false, colorScheme>> | VocsConfigFn;
++export declare function defineConfig(config: VocsConfigFnObject): VocsConfigFnObject;
++export declare function defineConfig(config: VocsConfigFnPromise): VocsConfigFnPromise;
++export declare function defineConfig<colorScheme extends ColorScheme = undefined>(config: Config<false, colorScheme>): Config<false, colorScheme>;
++export declare function defineConfig<colorScheme extends ColorScheme = undefined>(config: Promise<Config<false, colorScheme>>): Promise<Config<false, colorScheme>>;
++export declare function defineConfig(config: VocsConfigExport): VocsConfigExport;
++export declare function resolveConfig(configExport: VocsConfigExport, env?: VocsConfigEnv): Promise<ParsedConfig>;
++export declare const getDefaultConfig: (env?: VocsConfigEnv) => Promise<ParsedConfig>;
+ export declare function parseViteConfig(viteConfig: UserConfig | undefined, { basePath }: {
+     basePath?: string;
+ }): UserConfig;
+diff --git a/_lib/config.js b/_lib/config.js
+index 32021f4b16f27378d41d15be15819633e04077a4..7526f60cab092ef4cae46ab7de70cea8a1c9c1ec 100644
+--- a/_lib/config.js
++++ b/_lib/config.js
+@@ -1,4 +1,9 @@
+-export async function defineConfig({ aiCta = true, blogDir = './pages/blog', cacheDir, checkDeadlinks = true, head, ogImageUrl, rootDir = 'docs', title = 'Docs', titleTemplate = `%s – ${title}`, ...config }) {
++export function defineConfig(config) {
++    return config;
++}
++export async function resolveConfig(configExport, env = { command: 'serve', mode: 'development' }) {
++    const rawConfig = typeof configExport === 'function' ? await configExport(env) : await configExport;
++    const { aiCta = true, blogDir = './pages/blog', cacheDir, checkDeadlinks = true, head, ogImageUrl, rootDir = 'docs', title = 'Docs', titleTemplate = `%s – ${title}`, ...config } = rawConfig;
+     const basePath = parseBasePath(config.basePath);
+     return {
+         aiCta,
+@@ -14,22 +19,16 @@ export async function defineConfig({ aiCta = true, blogDir = './pages/blog', cac
+         basePath,
+         banner: await parseBanner(config.banner ?? ''),
+         font: parseFont(config.font ?? {}),
+-        iconUrl: parseImageUrl(config.iconUrl, {
+-            basePath,
+-        }),
+-        logoUrl: parseImageUrl(config.logoUrl, {
+-            basePath,
+-        }),
++        iconUrl: parseImageUrl(config.iconUrl, { basePath }),
++        logoUrl: parseImageUrl(config.logoUrl, { basePath }),
+         markdown: parseMarkdown(config.markdown ?? {}),
+         socials: parseSocials(config.socials ?? []),
+         topNav: parseTopNav(config.topNav ?? []),
+         theme: await parseTheme(config.theme ?? {}),
+-        vite: parseViteConfig(config.vite, {
+-            basePath,
+-        }),
++        vite: parseViteConfig(config.vite, { basePath }),
+     };
+ }
+-export const getDefaultConfig = async () => await defineConfig({});
++export const getDefaultConfig = async (env) => await resolveConfig({}, env);
+ //////////////////////////////////////////////////////
+ // Parsers
+ function parseBasePath(basePath_) {
+diff --git a/_lib/index.d.ts b/_lib/index.d.ts
+index cdf17642e6be1a1050053e623e10781b103ebe10..30d6715d91ba1cb548febe7b2b9ffe02f868256f 100644
+--- a/_lib/index.d.ts
++++ b/_lib/index.d.ts
+@@ -1,5 +1,5 @@
+-export type { ColorScheme, Config, EditLink, Font, IconUrl, LogoUrl, Sidebar, SidebarItem, SocialItem, Socials, SocialType, Theme, TopNav, TopNavItem, } from './config.js';
+-export { defineConfig } from './config.js';
++export type { ColorScheme, Config, EditLink, Font, IconUrl, LogoUrl, Sidebar, SidebarItem, SocialItem, Socials, SocialType, Theme, TopNav, TopNavItem, VocsConfig, VocsConfigEnv, VocsConfigExport, VocsConfigFn, VocsConfigFnObject, VocsConfigFnPromise, } from './config.js';
++export { defineConfig, resolveConfig } from './config.js';
+ export { build } from './vite/build.js';
+ export { createDevServer } from './vite/devServer.js';
+ export { preview } from './vite/preview.js';
+diff --git a/_lib/vite/build.js b/_lib/vite/build.js
+index 52141d234b3795087cc6b56c78ae4d0760565619..860aa72d881d5669b692f15bbd87978a761b2862 100644
+--- a/_lib/vite/build.js
++++ b/_lib/vite/build.js
+@@ -9,7 +9,7 @@ import { resolveOutDir } from './utils/resolveOutDir.js';
+ import { resolveVocsConfig } from './utils/resolveVocsConfig.js';
+ import { vercelBuildOutputDir, writeBuildOutputConfig } from './utils/vercel.js';
+ export async function build({ clean, logger, hooks, logLevel = 'silent', outDir, publicDir = 'public', searchIndex = true, } = {}) {
+-    const { config } = await resolveVocsConfig();
++    const { config } = await resolveVocsConfig({ command: 'build', mode: 'production' });
+     const { rootDir, cacheDir } = config;
+     const outDir_resolved = resolveOutDir(rootDir, outDir);
+     const publicDir_resolved = resolve(rootDir, publicDir);
+diff --git a/_lib/vite/preview.js b/_lib/vite/preview.js
+index f1c9a61e1e1d643fb0248abf26620cdd7cd49a36..571436cf5c9b892d0857335be8454a51046f4050 100644
+--- a/_lib/vite/preview.js
++++ b/_lib/vite/preview.js
+@@ -5,7 +5,7 @@ import { compress } from 'hono/compress';
+ import { resolveVocsConfig } from './utils/resolveVocsConfig.js';
+ import { serveStatic } from './utils/serveStatic.js';
+ export async function preview({ outDir = 'dist' } = {}) {
+-    const { config } = await resolveVocsConfig();
++    const { config } = await resolveVocsConfig({ mode: 'production', isPreview: true });
+     const { basePath, rootDir } = config;
+     const app = new Hono();
+     app.use('*', compress());
+diff --git a/_lib/vite/utils/resolveVocsConfig.js b/_lib/vite/utils/resolveVocsConfig.js
+index da19c48ccce0795c1d889fe690772be95161e7dc..856114860c0029f7a0d9a9d34d6af7696513a301 100644
+--- a/_lib/vite/utils/resolveVocsConfig.js
++++ b/_lib/vite/utils/resolveVocsConfig.js
+@@ -2,13 +2,14 @@ import { existsSync, readFileSync } from 'node:fs';
+ import { resolve } from 'node:path';
+ import toml from 'toml';
+ import { loadConfigFromFile } from 'vite';
+-import { defineConfig, getDefaultConfig } from '../../config.js';
++import { getDefaultConfig, resolveConfig } from '../../config.js';
+ const moduleExtensions = ['js', 'jsx', 'ts', 'tsx', 'mjs', 'mts'];
+ const staticExtensions = ['toml', 'json'];
+ const extensions = [...moduleExtensions, ...staticExtensions];
+ const defaultConfigPaths = ['.vocs/config', 'vocs.config', 'Vocs'];
+ export async function resolveVocsConfig(parameters = {}) {
+-    const { command = 'serve', mode = 'development' } = parameters;
++    const { command = 'serve', mode = 'development', isPreview = false } = parameters;
++    const env = { command, mode, isPreview };
+     const [configPath, ext] = (() => {
+         for (const ext of extensions) {
+             if (parameters.configPath)
+@@ -23,7 +24,7 @@ export async function resolveVocsConfig(parameters = {}) {
+         if (!ext)
+             return;
+         if (moduleExtensions.includes(ext))
+-            return await loadConfigFromFile({ command, mode }, configPath);
++            return await loadConfigFromFile(env, configPath);
+         if (staticExtensions.includes(ext)) {
+             const file = readFileSync(configPath, 'utf8');
+             const rawConfig = (() => {
+@@ -33,12 +34,11 @@ export async function resolveVocsConfig(parameters = {}) {
+                     return JSON.parse(file);
+                 return;
+             })();
+-            const config = await defineConfig(rawConfig);
+-            return config ? { config } : undefined;
++            return rawConfig ? { config: rawConfig } : undefined;
+         }
+         return;
+     })();
+-    const config = (result ? result.config : await getDefaultConfig());
++    const config = (result ? await resolveConfig(result.config, env) : await getDefaultConfig(env));
+     return {
+         config,
+         configPath,
+diff --git a/_lib/vite/vite.config.js b/_lib/vite/vite.config.js
+index 15ec571a51f9635adda2709ecfc295432b9e479b..237fa22e4a98acd88256f993332c19b6510e1763 100644
+--- a/_lib/vite/vite.config.js
++++ b/_lib/vite/vite.config.js
+@@ -16,8 +16,8 @@ import { virtualConsumerComponents } from './plugins/virtual-consumer-components
+ import { virtualRoutes } from './plugins/virtual-routes.js';
+ import { virtualStyles } from './plugins/virtual-styles.js';
+ import { resolveVocsConfig } from './utils/resolveVocsConfig.js';
+-export default defineConfig(async () => {
+-    const { config } = await resolveVocsConfig();
++export default defineConfig(async (env) => {
++    const { config } = await resolveVocsConfig(env);
+     const viteConfig = config.vite ?? {};
+     const hasReact = await hasReactPlugin(viteConfig.plugins ?? []);
+     return {
+diff --git a/config.ts b/config.ts
+index c6f50559f962f7ade082c5b1c8dbf9bfaec88880..db8151583338080aff182c472c32184a7f513d31 100644
+--- a/config.ts
++++ b/config.ts
+@@ -3,7 +3,10 @@ import type { SearchOptions } from 'minisearch'
+ import type { ReactElement } from 'react'
+ import type { TwoslashOptions } from 'twoslash'
+ import type { PluggableList } from 'unified'
+-import type { UserConfig } from 'vite'
++import type { ConfigEnv, UserConfig } from 'vite'
++
++export type VocsConfigEnv = Pick<ConfigEnv, 'mode' | 'command' | 'isPreview'>
++
+ import type { PageData } from './app/hooks/usePageData.js'
+ import type {
+   borderRadiusVars,
+@@ -203,19 +206,53 @@ export type Config<
+ >
+ 
+ export type ParsedConfig = Config<true>
++export type VocsConfig = Config<false>
++
++export type VocsConfigFnObject = (env: VocsConfigEnv) => VocsConfig
++export type VocsConfigFnPromise = (env: VocsConfigEnv) => Promise<VocsConfig>
++export type VocsConfigFn = (env: VocsConfigEnv) => VocsConfig | Promise<VocsConfig>
++
++export type VocsConfigExport<colorScheme extends ColorScheme = ColorScheme> =
++  | Config<false, colorScheme>
++  | Promise<Config<false, colorScheme>>
++  | VocsConfigFn
++
++// Callback overloads first (no generic, better env inference)
++export function defineConfig(config: VocsConfigFnObject): VocsConfigFnObject
++export function defineConfig(config: VocsConfigFnPromise): VocsConfigFnPromise
++// Object overloads (with generic for colorScheme type safety)
++export function defineConfig<colorScheme extends ColorScheme = undefined>(
++  config: Config<false, colorScheme>,
++): Config<false, colorScheme>
++export function defineConfig<colorScheme extends ColorScheme = undefined>(
++  config: Promise<Config<false, colorScheme>>,
++): Promise<Config<false, colorScheme>>
++// Catch-all
++export function defineConfig(config: VocsConfigExport): VocsConfigExport
++export function defineConfig(config: VocsConfigExport): VocsConfigExport {
++  return config
++}
++
++export async function resolveConfig(
++  configExport: VocsConfigExport,
++  env: VocsConfigEnv = { command: 'serve', mode: 'development' },
++): Promise<ParsedConfig> {
++  const rawConfig =
++    typeof configExport === 'function' ? await configExport(env) : await configExport
++
++  const {
++    aiCta = true,
++    blogDir = './pages/blog',
++    cacheDir,
++    checkDeadlinks = true,
++    head,
++    ogImageUrl,
++    rootDir = 'docs',
++    title = 'Docs',
++    titleTemplate = `%s – ${title}`,
++    ...config
++  } = rawConfig
+ 
+-export async function defineConfig<colorScheme extends ColorScheme = undefined>({
+-  aiCta = true,
+-  blogDir = './pages/blog',
+-  cacheDir,
+-  checkDeadlinks = true,
+-  head,
+-  ogImageUrl,
+-  rootDir = 'docs',
+-  title = 'Docs',
+-  titleTemplate = `%s – ${title}`,
+-  ...config
+-}: Config<false, colorScheme>): Promise<ParsedConfig> {
+   const basePath = parseBasePath(config.basePath)
+   return {
+     aiCta,
+@@ -231,23 +268,17 @@ export async function defineConfig<colorScheme extends ColorScheme = undefined>(
+     basePath,
+     banner: await parseBanner(config.banner ?? ''),
+     font: parseFont(config.font ?? {}),
+-    iconUrl: parseImageUrl(config.iconUrl, {
+-      basePath,
+-    }),
+-    logoUrl: parseImageUrl(config.logoUrl, {
+-      basePath,
+-    }),
++    iconUrl: parseImageUrl(config.iconUrl, { basePath }),
++    logoUrl: parseImageUrl(config.logoUrl, { basePath }),
+     markdown: parseMarkdown(config.markdown ?? {}),
+     socials: parseSocials(config.socials ?? []),
+     topNav: parseTopNav(config.topNav ?? []),
+     theme: await parseTheme(config.theme ?? ({} as Theme)),
+-    vite: parseViteConfig(config.vite, {
+-      basePath,
+-    }),
++    vite: parseViteConfig(config.vite, { basePath }),
+   }
+ }
+ 
+-export const getDefaultConfig = async () => await defineConfig({})
++export const getDefaultConfig = async (env?: VocsConfigEnv) => await resolveConfig({}, env)
+ 
+ //////////////////////////////////////////////////////
+ // Parsers
+diff --git a/vite/build.ts b/vite/build.ts
+index 0bc4a9e9e165d608072e96aa9dcbcce6d863b6e1..055da6c362c966b86a4aa6a1df5f335db37c8c66 100644
+--- a/vite/build.ts
++++ b/vite/build.ts
+@@ -36,7 +36,7 @@ export async function build({
+   publicDir = 'public',
+   searchIndex = true,
+ }: BuildParameters = {}) {
+-  const { config } = await resolveVocsConfig()
++  const { config } = await resolveVocsConfig({ command: 'build', mode: 'production' })
+   const { rootDir, cacheDir } = config
+ 
+   const outDir_resolved = resolveOutDir(rootDir, outDir)
+diff --git a/vite/preview.ts b/vite/preview.ts
+index d602295d8b664aaee5db1f89fffae53b3610b1e6..8eb31812edc7fc4bf2b5dfaa7ff9ff6111660cb6 100644
+--- a/vite/preview.ts
++++ b/vite/preview.ts
+@@ -11,7 +11,7 @@ type PreviewParameters = {
+ }
+ 
+ export async function preview({ outDir = 'dist' }: PreviewParameters = {}) {
+-  const { config } = await resolveVocsConfig()
++  const { config } = await resolveVocsConfig({ mode: 'production', isPreview: true })
+   const { basePath, rootDir } = config
+ 
+   const app = new Hono()
+diff --git a/vite/utils/resolveVocsConfig.ts b/vite/utils/resolveVocsConfig.ts
+index 43b123696e631120b95140fa673900b64bcccdfd..98b1273047ffed89b3a96ac0ed11e34d09355028 100644
+--- a/vite/utils/resolveVocsConfig.ts
++++ b/vite/utils/resolveVocsConfig.ts
+@@ -1,22 +1,26 @@
+ import { existsSync, readFileSync } from 'node:fs'
+ import { resolve } from 'node:path'
+ import toml from 'toml'
+-import { type ConfigEnv, loadConfigFromFile } from 'vite'
+-import { defineConfig, getDefaultConfig, type ParsedConfig } from '../../config.js'
++import { loadConfigFromFile } from 'vite'
++import {
++  getDefaultConfig,
++  type ParsedConfig,
++  resolveConfig,
++  type VocsConfigEnv,
++} from '../../config.js'
+ 
+ const moduleExtensions = ['js', 'jsx', 'ts', 'tsx', 'mjs', 'mts']
+ const staticExtensions = ['toml', 'json']
+ const extensions = [...moduleExtensions, ...staticExtensions]
+ const defaultConfigPaths = ['.vocs/config', 'vocs.config', 'Vocs']
+ 
+-type ResolveVocsConfigParameters = {
+-  command?: ConfigEnv['command']
++type ResolveVocsConfigParameters = Partial<VocsConfigEnv> & {
+   configPath?: string
+-  mode?: ConfigEnv['mode']
+ }
+ 
+ export async function resolveVocsConfig(parameters: ResolveVocsConfigParameters = {}) {
+-  const { command = 'serve', mode = 'development' } = parameters
++  const { command = 'serve', mode = 'development', isPreview = false } = parameters
++  const env: VocsConfigEnv = { command, mode, isPreview }
+ 
+   const [configPath, ext] = (() => {
+     for (const ext of extensions) {
+@@ -31,8 +35,7 @@ export async function resolveVocsConfig(parameters: ResolveVocsConfigParameters
+   const result = await (async () => {
+     if (!ext) return
+ 
+-    if (moduleExtensions.includes(ext))
+-      return await loadConfigFromFile({ command, mode }, configPath)
++    if (moduleExtensions.includes(ext)) return await loadConfigFromFile(env, configPath)
+ 
+     if (staticExtensions.includes(ext)) {
+       const file = readFileSync(configPath, 'utf8')
+@@ -42,14 +45,15 @@ export async function resolveVocsConfig(parameters: ResolveVocsConfigParameters
+         return
+       })()
+ 
+-      const config = await defineConfig(rawConfig)
+-      return config ? { config } : undefined
++      return rawConfig ? { config: rawConfig } : undefined
+     }
+ 
+     return
+   })()
+ 
+-  const config = (result ? result.config : await getDefaultConfig()) as ParsedConfig
++  const config = (
++    result ? await resolveConfig(result.config, env) : await getDefaultConfig(env)
++  ) as ParsedConfig
+ 
+   return {
+     config,
+diff --git a/vite/vite.config.ts b/vite/vite.config.ts
+index 46a3a42e51e7222c8c26d5255aa115c29c094ca6..e50f5f83a22d86364b4f9531807f9f662ded1068 100644
+--- a/vite/vite.config.ts
++++ b/vite/vite.config.ts
+@@ -18,8 +18,8 @@ import { virtualRoutes } from './plugins/virtual-routes.js'
+ import { virtualStyles } from './plugins/virtual-styles.js'
+ import { resolveVocsConfig } from './utils/resolveVocsConfig.js'
+ 
+-export default defineConfig(async () => {
+-  const { config } = await resolveVocsConfig()
++export default defineConfig(async (env) => {
++  const { config } = await resolveVocsConfig(env)
+   const viteConfig = config.vite ?? {}
+   const hasReact = await hasReactPlugin(viteConfig.plugins ?? [])
+ 

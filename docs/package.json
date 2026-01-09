@@ -12,8 +12,8 @@
   "dependencies": {
     "react": "catalog:",
     "react-dom": "catalog:",
-    "vocs": "^1.4.0",
-    "react-virtual-masonry": "workspace:*"
+    "react-virtual-masonry": "workspace:*",
+    "vocs": "^1.4.1"
   },
   "devDependencies": {
     "@types/react": "catalog:",

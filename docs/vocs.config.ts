@@ -2,7 +2,7 @@ import { defineConfig } from 'vocs';
 
 import pkg from 'react-virtual-masonry/package.json' with { type: 'json' };
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   description: 'Modern Masonry Layout with ease, powered by @tanstack/virtual',
   title: 'React Virtual Masonry',
   rootDir: 'contents',
@@ -35,4 +35,11 @@ export default defineConfig({
       ],
     },
   ],
-});
+  vite: {
+    resolve: {
+      ...(mode === 'development' && {
+        conditions: ['source', 'module', 'browser', 'default'],
+      }),
+    },
+  },
+}));
