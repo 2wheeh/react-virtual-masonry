@@ -28,7 +28,7 @@
     "@changesets/cli": "^2.29.8",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "oxlint": "^0.16.12",
+    "oxlint": "^1.39.0",
     "prettier": "^3.7.4",
     "taze": "^19.9.2",
     "turbo": "^2.7.3"
