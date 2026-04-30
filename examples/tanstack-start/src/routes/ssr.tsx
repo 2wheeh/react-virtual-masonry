@@ -12,16 +12,12 @@ const TILES = createTiles(200);
 function SsrPage() {
   return (
     <section data-testid="ssr">
-      <h1>SSR Masonry (current behavior)</h1>
+      <h1>SSR Masonry</h1>
       <p style={{ color: '#555' }}>
-        SSR is enabled by default in TanStack Start. With the current{' '}
-        <code>react-virtual-masonry</code> implementation, the server HTML for the masonry container
-        renders no items because <code>useWindowVirtualizer.getVirtualItems()</code> returns an
-        empty array without a measured viewport.
-      </p>
-      <p style={{ color: '#555' }}>
-        This route is the <strong>baseline</strong> for the RFC-0002 SSR PoC. After the SSR hatch
-        lands, the server HTML for this page should contain the first N positioned items.
+        SSR is enabled by default in TanStack Start. The server HTML for this masonry container
+        currently renders no items because <code>useWindowVirtualizer.getVirtualItems()</code>{' '}
+        returns an empty array without a measured viewport — the items appear after client-side
+        hydration.
       </p>
       <Masonry
         data={TILES}

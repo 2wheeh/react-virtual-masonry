@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * Captures the **current** SSR behavior of <Masonry>.
+ * Captures the SSR behavior of <Masonry> as currently shipped.
  *
- * After RFC-0002 lands, expectations here will need to flip — the empty-container
- * assertions should fail, signaling that real SSR layout is now produced.
+ * The server HTML emits the page chrome and an empty masonry container; the
+ * actual tile markup is produced after client-side hydration.
  */
 
-test.describe('SSR baseline (pre-RFC-0002)', () => {
+test.describe('Masonry SSR behavior', () => {
   test('home route disables SSR via ssr:false', async ({ request }) => {
     const response = await request.get('/');
     expect(response.status()).toBe(200);
@@ -26,21 +26,18 @@ test.describe('SSR baseline (pre-RFC-0002)', () => {
     await expect(page.getByTestId('tile').first()).toBeVisible();
   });
 
-  test('ssr route currently emits empty masonry container', async ({ request }) => {
+  test('ssr route emits the page chrome but no tile markup', async ({ request }) => {
     const response = await request.get('/ssr');
     expect(response.status()).toBe(200);
 
     const html = await response.text();
-    // Page wrapper + heading should be there.
-    expect(html).toContain('SSR Masonry (current behavior)');
-    // BASELINE assertion — flip after RFC-0002 implementation.
+    expect(html).toContain('SSR Masonry');
     const tileMatches = html.match(/data-testid="tile"/g) ?? [];
     expect(tileMatches.length).toBe(0);
   });
 
   test('client hydration produces tiles after mount', async ({ page }) => {
     await page.goto('/ssr');
-    // After hydration, real measurement happens and tiles appear.
     await expect(page.getByTestId('tile').first()).toBeVisible();
     const count = await page.getByTestId('tile').count();
     expect(count).toBeGreaterThan(0);

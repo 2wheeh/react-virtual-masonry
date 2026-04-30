@@ -43,7 +43,7 @@ function SsrDebugPage() {
       <h1>SSR debug snapshot</h1>
       <p style={{ color: '#555' }}>
         Inspect <code>useWindowVirtualizer</code> state at render time on both server and client.
-        Tests parse the JSON below to validate RFC-0002 assumptions.
+        Tests parse the JSON below to verify behavior across runtimes.
       </p>
       <pre
         data-testid="snapshot"

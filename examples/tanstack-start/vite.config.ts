@@ -3,13 +3,19 @@ import viteReact from '@vitejs/plugin-react';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 
 export default defineConfig({
-  plugins: [
-    tanstackStart({
-      target: 'node-server',
-    }),
-    viteReact(),
-  ],
+  server: {
+    port: 3001,
+  },
+  preview: {
+    port: 3001,
+  },
   resolve: {
     conditions: ['source', 'module', 'browser', 'default'],
   },
+  plugins: [
+    tanstackStart({
+      srcDirectory: 'src',
+    }),
+    viteReact(),
+  ],
 });

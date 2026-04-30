@@ -7,10 +7,9 @@
   "license": "MIT",
   "packageManager": "pnpm@10.27.0",
   "scripts": {
-    "routes:gen": "tsr generate",
-    "dev": "vite dev --port 3001",
-    "build": "tsr generate && vite build",
-    "preview": "vite preview --port 3001",
+    "dev": "vite dev",
+    "build": "vite build && tsc -p tsconfig.typecheck.json",
+    "preview": "vite preview",
     "start": "node .output/server/index.mjs",
     "check-types": "tsr generate && tsc -p tsconfig.typecheck.json"
   },
@@ -24,7 +23,6 @@
   },
   "devDependencies": {
     "@tanstack/router-cli": "^1.166.38",
-    "@tanstack/router-plugin": "^1.167.29",
     "@types/node": "^22.10.5",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
