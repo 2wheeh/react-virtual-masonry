@@ -44,6 +44,7 @@ export function Masonry<Data = unknown>({
     lanes: columnsCount,
     scrollMargin: containerRef.current?.offsetTop ?? 0,
     gap: gutter,
+    laneAssignmentMode: 'measured',
   });
 
   return (
