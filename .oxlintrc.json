@@ -1,5 +1,9 @@
 {
-  "plugins": ["react", "unicorn", "typescript", "oxc", "react-hooks"],
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "unicorn", "typescript", "oxc", "react-perf"],
+  "env": {
+    "browser": true
+  },
   "rules": {
     "correctness": "error",
     "suspicious": "error",
