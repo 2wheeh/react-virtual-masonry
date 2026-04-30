@@ -1,0 +1,35 @@
+{
+  "name": "tanstack-start-example",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "author": "wnhlee <2wheeh@gmail.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@10.27.0",
+  "scripts": {
+    "routes:gen": "tsr generate",
+    "dev": "vite dev --port 3001",
+    "build": "tsr generate && vite build",
+    "preview": "vite preview --port 3001",
+    "start": "node .output/server/index.mjs",
+    "check-types": "tsr generate && tsc -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.168.26",
+    "@tanstack/react-start": "^1.167.52",
+    "@tanstack/react-virtual": "^3.13.24",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-virtual-masonry": "workspace:*"
+  },
+  "devDependencies": {
+    "@tanstack/router-cli": "^1.166.38",
+    "@tanstack/router-plugin": "^1.167.29",
+    "@types/node": "^22.10.5",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "catalog:",
+    "vite": "^7.0.0"
+  }
+}
