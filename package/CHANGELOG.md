@@ -1,5 +1,17 @@
 # react-virtual-masonry
 
+## 0.2.0
+
+### Minor Changes
+
+- [#40](https://github.com/2wheeh/react-virtual-masonry/pull/40) [`8908859`](https://github.com/2wheeh/react-virtual-masonry/commit/890885921cd962e85725c3963a25887143deaca0) Thanks [@2wheeh](https://github.com/2wheeh)! - mv virtual to peer, fix lane caching (virtaul#1115)
+
+### Patch Changes
+
+- [`69a3790`](https://github.com/2wheeh/react-virtual-masonry/commit/69a37905e1866892ca9c7e838b646eda18f9e46b) Thanks [@2wheeh](https://github.com/2wheeh)! - exports package.json
+
+- [#40](https://github.com/2wheeh/react-virtual-masonry/pull/40) [`8908859`](https://github.com/2wheeh/react-virtual-masonry/commit/890885921cd962e85725c3963a25887143deaca0) Thanks [@2wheeh](https://github.com/2wheeh)! - disable react compiler for useWindowVirtualizer
+
 ## 0.1.11
 
 ### Patch Changes

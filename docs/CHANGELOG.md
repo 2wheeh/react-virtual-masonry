@@ -1,5 +1,12 @@
 # docs
 
+## 0.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`69a3790`](https://github.com/2wheeh/react-virtual-masonry/commit/69a37905e1866892ca9c7e838b646eda18f9e46b), [`8908859`](https://github.com/2wheeh/react-virtual-masonry/commit/890885921cd962e85725c3963a25887143deaca0), [`8908859`](https://github.com/2wheeh/react-virtual-masonry/commit/890885921cd962e85725c3963a25887143deaca0)]:
+  - react-virtual-masonry@0.2.0
+
 ## 0.1.11
 
 ### Patch Changes
