@@ -25,6 +25,8 @@ export function Masonry<Data = unknown>({
   estimateSize,
   overscan = DEFAULT_OVERSCAN,
 }: Props<Data>) {
+  'use no memo';
+
   const { getResponsiveValue } = useResponsiveValue<number>();
 
   const columnsCount = getResponsiveValue(columnsCountBreakPoints, DEFAULT_COLUMNS_COUNT);
