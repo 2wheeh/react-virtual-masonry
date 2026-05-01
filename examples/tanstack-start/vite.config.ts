@@ -12,6 +12,11 @@ export default defineConfig({
   resolve: {
     conditions: ['source', 'module', 'browser', 'default'],
   },
+  ssr: {
+    resolve: {
+      conditions: ['source', 'module', 'node', 'default'],
+    },
+  },
   plugins: [
     tanstackStart({
       srcDirectory: 'src',
