@@ -10,9 +10,9 @@
     "url": "https://github.com/2wheeh/react-virtual-masonry"
   },
   "scripts": {
-    "check-ci": "pnpm build && pnpm check-types && pnpm test",
     "bump": "taze -r -w && pnpm install",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "oxlint",
     "prepare": "husky",
     "dev": "turbo run dev --filter=demo",
@@ -25,7 +25,7 @@
     "docs:dev": "turbo run dev --filter=docs",
     "docs:build": "turbo run build --filter=docs",
     "docs:preview": "turbo run preview --filter=docs",
-    "example:start": "turbo run dev --filter=tanstack-start-example"
+    "example:dev": "turbo run dev --filter=tanstack-start-example"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",
