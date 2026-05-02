@@ -5,7 +5,7 @@ export default defineConfig({
     conditions: ['source', 'module', 'browser', 'default'],
   },
   test: {
-    environment: 'jsdom',
+    environment: 'happy-dom',
     globals: false,
     setupFiles: ['./src/__tests__/setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],

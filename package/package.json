@@ -53,7 +53,7 @@
     "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "babel-plugin-react-compiler": "^1.0.0",
-    "jsdom": "catalog:",
+    "happy-dom": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tsdown": "0.19.0-beta.3",
