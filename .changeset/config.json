@@ -3,9 +3,9 @@
   "changelog": ["@changesets/changelog-github", { "repo": "2wheeh/react-virtual-masonry" }],
   "commit": false,
   "fixed": [],
-  "linked": [["**"]],
+  "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["docs", "demo", "tanstack-start-example"]
 }
