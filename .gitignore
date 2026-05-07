@@ -6,3 +6,15 @@ node_modules
 
 # Turborepo output
 .turbo
+
+# TanStack Router generated routes
+**/routeTree.gen.ts
+
+# Playwright
+/playwright-report
+/test-results
+/blob-report
+/playwright/.cache
+
+# Vitest
+coverage

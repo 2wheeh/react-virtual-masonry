@@ -9,6 +9,10 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^check-types"]
     },
+    "test": {
+      "outputs": ["coverage/**"],
+      "dependsOn": []
+    },
     "dev": {
       "persistent": true,
       "cache": false

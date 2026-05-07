@@ -41,5 +41,12 @@ export default defineConfig(({ mode }) => ({
         conditions: ['source', 'module', 'browser', 'default'],
       }),
     },
+    ssr: {
+      resolve: {
+        ...(mode === 'development' && {
+          conditions: ['source', 'module', 'node', 'default'],
+        }),
+      },
+    },
   },
 }));
