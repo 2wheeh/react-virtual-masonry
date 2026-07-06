@@ -1,7 +1,8 @@
-import { CSSProperties, RefObject, useRef } from 'react';
+import { CSSProperties, RefObject, useEffect, useRef, useState } from 'react';
 import { useWindowVirtualizer, type VirtualItem, type Virtualizer } from '@tanstack/react-virtual';
 
 import { useCSSLaneCount } from './useCSSLaneCount';
+import { useOffsetTop } from './useOffsetTop';
 
 const DEFAULT_LANES = 4;
 const DEFAULT_OVERSCAN = 3;
@@ -71,7 +72,14 @@ export interface UseMasonryReturn {
   items: VirtualItem[];
   /** Current lane count — `--lanes` post-mount, fallback pre-mount. */
   lanes: number;
-  /** Underlying TanStack virtualizer (escape hatch for `scrollToIndex` etc.). */
+  /**
+   * Underlying TanStack virtualizer (escape hatch for `scrollToIndex` etc.).
+   * Its identity is stable while its internals mutate — in a React
+   * Compiler–optimized component, values derived from it during render
+   * (`getVirtualItems()`, `getTotalSize()`, …) get cached stale. Prefer the
+   * `items` / `lanes` / `gridProps` returns; if you must derive, opt that
+   * component out with `'use no memo'`.
+   */
   virtualizer: Virtualizer<Window, Element>;
 }
 
@@ -105,22 +113,30 @@ export function useMasonry<Data>({
     fallback: Math.max(1, ssr?.lanes ?? DEFAULT_LANES),
   });
 
+  const scrollMargin = useOffsetTop(gridRef, { fallback: ssr?.scrollMargin ?? 0 });
+
+  // Explicit mount signal instead of reading `gridRef.current` during render —
+  // ref reads in render are impure (react-hooks v7 `refs` rule) and unsafe
+  // under concurrent rendering.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const virtualizer = useWindowVirtualizer({
     count: data.length,
     estimateSize: estimateSize ?? (() => 0),
     overscan,
     lanes,
-    scrollMargin: gridRef.current?.offsetTop ?? ssr?.scrollMargin ?? 0,
+    scrollMargin,
     gap: gutter,
     laneAssignmentMode: 'measured',
   });
 
   // When no visible range yet (server, or client pre-effect), slice the cache
-  // for SSR rendering. Gated on the ref so a transient empty range post-mount
+  // for SSR rendering. Gated on `mounted` so a transient empty range post-mount
   // never falls back to the top-of-list slice.
   const visibleItems = virtualizer.getVirtualItems();
   const items =
-    visibleItems.length === 0 && ssr && !gridRef.current
+    visibleItems.length === 0 && ssr && !mounted
       ? virtualizer.measurementsCache.slice(0, ssr.itemCount)
       : visibleItems;
 

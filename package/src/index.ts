@@ -1,3 +1,5 @@
+'use client';
+
 export * from './Masonry';
 
 export { useMasonry } from './hooks/useMasonry';
