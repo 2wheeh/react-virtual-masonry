@@ -86,7 +86,7 @@ export function Masonry<Data = unknown>({
   // emit one positioned <div> per data item and defeat virtualization at SSR time.
   const visibleItems = virtualizer.getVirtualItems();
   const itemsToRender =
-    visibleItems.length === 0 && ssr
+    visibleItems.length === 0 && ssr && !containerRef.current
       ? virtualizer.measurementsCache.slice(0, ssr.itemCount)
       : visibleItems;
 
