@@ -25,8 +25,12 @@ import { HomePage } from 'vocs/components';
 ```tsx twoslash
 import { Masonry } from 'react-virtual-masonry';
 
+const HEIGHTS = [200, 600, 200, 400, 100, 100, 50, 200];
+
 <Masonry
-  data={[200, 600, 200, 400, 100, 100, 50, 200]}
+  data={HEIGHTS}
+  ssr={{ itemCount: HEIGHTS.length }}
+  estimateSize={(i) => HEIGHTS[i]}
   renderItem={({ item, index }) => (
     <div
       style={{
@@ -46,8 +50,12 @@ import { Masonry } from 'react-virtual-masonry';
 
 import { Masonry } from 'react-virtual-masonry';
 
+export const HEIGHTS = [200, 600, 200, 400, 100, 100, 50, 200];
+
 <Masonry
-  data={[200, 600, 200, 400, 100, 100, 50, 200]}
+  data={HEIGHTS}
+  ssr={{ itemCount: HEIGHTS.length }}
+  estimateSize={(i) => HEIGHTS[i]}
   renderItem={({ item, index }) => (
     <div
       style={{

@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { HeadContent, Link, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
+import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -25,40 +25,6 @@ function RootComponent() {
           padding: 0,
         }}
       >
-        <nav
-          style={{
-            display: 'flex',
-            gap: 16,
-            padding: 16,
-            borderBottom: '1px solid #eee',
-            position: 'sticky',
-            top: 0,
-            background: 'white',
-            zIndex: 10,
-          }}
-        >
-          <Link
-            to="/"
-            activeProps={{ style: { fontWeight: 700 } }}
-            style={{ textDecoration: 'none', color: '#222' }}
-          >
-            client-only
-          </Link>
-          <Link
-            to="/ssr"
-            activeProps={{ style: { fontWeight: 700 } }}
-            style={{ textDecoration: 'none', color: '#222' }}
-          >
-            ssr
-          </Link>
-          <Link
-            to="/ssr-debug"
-            activeProps={{ style: { fontWeight: 700 } }}
-            style={{ textDecoration: 'none', color: '#222' }}
-          >
-            ssr-debug
-          </Link>
-        </nav>
         <main style={{ padding: 16 }}>
           <Outlet />
         </main>
