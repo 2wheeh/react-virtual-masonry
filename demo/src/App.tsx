@@ -25,16 +25,13 @@ function App() {
     <>
       <h1> Demo</h1>
 
-      <Masonry
-        data={DATA}
-        renderItem={Cell}
-        estimateSize={() => 400}
-        columnsCountBreakPoints={{
-          350: 1,
-          750: 2,
-          900: 3,
-        }}
-      />
+      {/* Responsive lane count via CSS — library reads `--lanes` from the grid root. */}
+      <style>{`
+        [data-rvm-grid]                        { --lanes: 1; }
+        @media (min-width: 750px)  { [data-rvm-grid] { --lanes: 2; } }
+        @media (min-width: 900px)  { [data-rvm-grid] { --lanes: 3; } }
+      `}</style>
+      <Masonry data={DATA} renderItem={Cell} estimateSize={() => 400} />
     </>
   );
 }
