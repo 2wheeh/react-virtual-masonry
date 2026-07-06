@@ -63,9 +63,11 @@ export function Masonry<Data = unknown>({
   // SSR/hydration: windowWidth=0 → DEFAULT. Post-mount / client-remount: real breakpoint.
   const responsiveColumns = getResponsiveValue(columnsCountBreakPoints, DEFAULT_COLUMNS_COUNT);
   // Pre-ref: ssr override → else responsive (DEFAULT on server, real on client-remount).
-  const columnsCount = containerRef.current
-    ? responsiveColumns
-    : (ssr?.columnsCount ?? responsiveColumns);
+  // Clamped to >= 1 — lane math divides by n, so 0/negative would emit Infinity/NaN CSS.
+  const columnsCount = Math.max(
+    1,
+    containerRef.current ? responsiveColumns : (ssr?.columnsCount ?? responsiveColumns)
+  );
 
   const virtualizer = useWindowVirtualizer({
     count: data.length,
