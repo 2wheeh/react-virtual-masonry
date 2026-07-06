@@ -49,7 +49,7 @@ function RootComponent() {
             activeProps={{ style: { fontWeight: 700 } }}
             style={{ textDecoration: 'none', color: '#222' }}
           >
-            ssr (current behavior)
+            ssr
           </Link>
           <Link
             to="/ssr-debug"

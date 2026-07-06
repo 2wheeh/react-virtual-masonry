@@ -8,16 +8,19 @@ export const Route = createFileRoute('/ssr')({
 });
 
 const TILES = createTiles(200);
+const SSR_ITEM_COUNT = 30;
+const INITIAL_COLUMNS = 3;
 
 function SsrPage() {
   return (
     <section data-testid="ssr">
       <h1>SSR Masonry</h1>
       <p style={{ color: '#555' }}>
-        SSR is enabled by default in TanStack Start. The server HTML for this masonry container
-        currently renders no items because <code>useWindowVirtualizer.getVirtualItems()</code>{' '}
-        returns an empty array without a measured viewport — the items appear after client-side
-        hydration.
+        Opt-in SSR:{' '}
+        <code>ssr={`{{ itemCount: ${SSR_ITEM_COUNT}, columnsCount: ${INITIAL_COLUMNS} }}`}</code>{' '}
+        renders the first {SSR_ITEM_COUNT} tiles in the server HTML using the same lane-assignment
+        algorithm the client uses. Disable JS in your browser or view source to confirm the items
+        are present before hydration.
       </p>
       <Masonry
         data={TILES}
@@ -25,6 +28,7 @@ function SsrPage() {
         columnsCountBreakPoints={{ 0: 1, 640: 2, 1024: 3, 1440: 4 }}
         gutter={16}
         estimateSize={(i) => TILES[i]!.height}
+        ssr={{ itemCount: SSR_ITEM_COUNT, columnsCount: INITIAL_COLUMNS }}
       />
     </section>
   );
