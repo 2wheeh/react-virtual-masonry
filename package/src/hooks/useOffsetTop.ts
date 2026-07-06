@@ -1,17 +1,13 @@
 import { RefObject, useCallback, useSyncExternalStore } from 'react';
 
 interface UseOffsetTopOptions {
-  /**
-   * Value returned during SSR and before the element mounts. Should match the
-   * distance from document top assumed by the SSR HTML.
-   */
+  /** Value returned during SSR and before the element mounts. */
   fallback: number;
 }
 
 /**
- * Reads `offsetTop` from `elementRef` without touching `ref.current` during
- * render — the value lives in a `useSyncExternalStore` snapshot, re-read on
- * every render and on element resize via `ResizeObserver`.
+ * Reads `offsetTop` from `elementRef` as a `useSyncExternalStore` snapshot
+ * (re-read every render, refreshed on element resize) — no ref reads in render.
  *
  * - SSR / pre-mount: returns `fallback`.
  * - Post-mount: returns the layout-resolved `offsetTop`.
