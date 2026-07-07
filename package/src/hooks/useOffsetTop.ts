@@ -24,6 +24,10 @@ export const useOffsetTop = (
       if (!el || typeof ResizeObserver === 'undefined') return () => {};
       const observer = new ResizeObserver(onStoreChange);
       observer.observe(el);
+      // Ancestor layout shifts move `offsetTop` without resizing the element;
+      // content-above changes almost always resize the body, so watch it too.
+      const body = el.ownerDocument?.body;
+      if (body) observer.observe(body);
       return () => observer.disconnect();
     },
     [elementRef]
