@@ -1,5 +1,10 @@
-import { CSSProperties, RefObject, useEffect, useRef, useState } from 'react';
-import { useWindowVirtualizer, type VirtualItem, type Virtualizer } from '@tanstack/react-virtual';
+import { CSSProperties, RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useWindowVirtualizer,
+  type ScrollToOptions,
+  type VirtualItem,
+  type Virtualizer,
+} from '@tanstack/react-virtual';
 
 import { useCSSLaneCount } from './useCSSLaneCount';
 import { useOffsetTop } from './useOffsetTop';
@@ -74,10 +79,22 @@ export interface UseMasonryReturn {
   items: VirtualItem[];
   /** Current lane count — `--lanes` post-mount, fallback pre-mount. */
   lanes: number;
-  /** Underlying TanStack virtualizer (escape hatch for `scrollToIndex` etc.).
-   *  Stable identity + mutable internals — deriving render values from it in a
-   *  compiled component caches stale. Prefer `items`/`lanes`, or `'use no memo'`. */
+  /** Underlying TanStack virtualizer (escape hatch for imperative APIs beyond
+   *  `scrollToIndex`). Stable identity + mutable internals — deriving render
+   *  values from it in a compiled component caches stale. Prefer `items`/`lanes`,
+   *  or `'use no memo'`. */
   virtualizer: Virtualizer<Window, Element>;
+  /**
+   * Scrolls so `index` is positioned per `align` (default `'auto'`: nearest edge,
+   * no-op if already visible). Referentially stable — safe in effect deps.
+   *
+   * A thin forward to TanStack Virtual's
+   * {@link https://tanstack.com/virtual/latest/docs/api/virtualizer#scrolltoindex scrollToIndex}
+   * (`options` is its `ScrollToOptions`). Cold-jump accuracy is bounded by
+   * `estimateSize` — inherent to estimate-based virtualization, not specific to
+   * this library; see the docs for the error model.
+   */
+  scrollToIndex: (index: number, options?: ScrollToOptions) => void;
 }
 
 /**
@@ -147,6 +164,13 @@ export function useMasonry<Data>({
   // against actual container width at paint time.
   const laneWidthCalc = `calc(${100 / lanes}% - ${(gutter * (lanes - 1)) / lanes}px)`;
 
+  // `virtualizer` is a stable class instance (TanStack re-`setOptions`s it in
+  // place), so closing over it keeps this wrapper's identity stable too.
+  const scrollToIndex = useCallback(
+    (index: number, options?: ScrollToOptions) => virtualizer.scrollToIndex(index, options),
+    [virtualizer]
+  );
+
   return {
     gridProps: {
       ref: gridRef,
@@ -173,5 +197,6 @@ export function useMasonry<Data>({
     items,
     lanes,
     virtualizer,
+    scrollToIndex,
   };
 }
