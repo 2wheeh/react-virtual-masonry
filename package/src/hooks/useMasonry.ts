@@ -1,13 +1,16 @@
-import { CSSProperties, RefObject, useRef } from 'react';
+import { CSSProperties, RefObject, useEffect, useRef, useState } from 'react';
 import { useWindowVirtualizer, type VirtualItem, type Virtualizer } from '@tanstack/react-virtual';
 
 import { useCSSLaneCount } from './useCSSLaneCount';
+import { useOffsetTop } from './useOffsetTop';
 
 const DEFAULT_LANES = 4;
 const DEFAULT_OVERSCAN = 3;
 const DEFAULT_GUTTER = 20;
 
-/** SSR rendering configuration. Pass to opt into server-rendered positioned items. */
+/** SSR rendering configuration. Pass to opt into server-rendered positioned items.
+ *  Server-side layout cost scales with `data.length`, not `itemCount` — lane
+ *  assignment is order-dependent, so the whole list is laid out per request. */
 export interface SSRConfig {
   /** Number of items to render in server HTML. */
   itemCount: number;
@@ -71,7 +74,9 @@ export interface UseMasonryReturn {
   items: VirtualItem[];
   /** Current lane count — `--lanes` post-mount, fallback pre-mount. */
   lanes: number;
-  /** Underlying TanStack virtualizer (escape hatch for `scrollToIndex` etc.). */
+  /** Underlying TanStack virtualizer (escape hatch for `scrollToIndex` etc.).
+   *  Stable identity + mutable internals — deriving render values from it in a
+   *  compiled component caches stale. Prefer `items`/`lanes`, or `'use no memo'`. */
   virtualizer: Virtualizer<Window, Element>;
 }
 
@@ -99,28 +104,32 @@ export function useMasonry<Data>({
 
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Clamped to >= 1 — lane math divides by n, so a user-supplied 0/negative
-  // `ssr.lanes` would emit Infinity/NaN CSS.
+  // Clamp to >= 1 — lane math divides by n; 0/negative would emit Infinity/NaN CSS.
   const lanes = useCSSLaneCount(gridRef, {
     fallback: Math.max(1, ssr?.lanes ?? DEFAULT_LANES),
   });
+
+  const scrollMargin = useOffsetTop(gridRef, { fallback: ssr?.scrollMargin ?? 0 });
+
+  // Explicit mount signal — reading `gridRef.current` during render is impure.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const virtualizer = useWindowVirtualizer({
     count: data.length,
     estimateSize: estimateSize ?? (() => 0),
     overscan,
     lanes,
-    scrollMargin: gridRef.current?.offsetTop ?? ssr?.scrollMargin ?? 0,
+    scrollMargin,
     gap: gutter,
     laneAssignmentMode: 'measured',
   });
 
   // When no visible range yet (server, or client pre-effect), slice the cache
-  // for SSR rendering. Gated on the ref so a transient empty range post-mount
-  // never falls back to the top-of-list slice.
+  // for SSR rendering. The `mounted` gate keeps post-mount empty ranges empty.
   const visibleItems = virtualizer.getVirtualItems();
   const items =
-    visibleItems.length === 0 && ssr && !gridRef.current
+    visibleItems.length === 0 && ssr && !mounted
       ? virtualizer.measurementsCache.slice(0, ssr.itemCount)
       : visibleItems;
 

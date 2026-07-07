@@ -20,7 +20,9 @@ export default defineConfig({
         sourceType: 'module',
         plugins: ['jsx', 'typescript'],
       },
-      plugins: ['babel-plugin-react-compiler'],
+      // target '18' → react-compiler-runtime polyfill imports; react/compiler-runtime
+      // is React 19-only and peerDependencies allow ^18.
+      plugins: [['babel-plugin-react-compiler', { target: '18' }]],
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
     }),
   ],
