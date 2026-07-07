@@ -1,7 +1,7 @@
 # Demo [React Virtual Masonry in action]
 
-Resize the window to see the lane count respond — 1 lane below 750px, 2 lanes up to 900px, 3 lanes beyond. Only the items around the viewport are mounted; scroll and watch the DOM if you're curious.
+Drag the width slider to resize the preview _container_ — lane count is driven by `@container` queries reading the container's own size, not the browser viewport. Try the item count selector to see virtualization keep the DOM small even at 20,000 rows, and scroll the page to watch mounted item indexes shift.
 
-import { DemoMasonry } from '../../components/DemoMasonry';
+import { DemoPlayground } from '../../components/DemoPlayground';
 
-<DemoMasonry />
+<DemoPlayground />
