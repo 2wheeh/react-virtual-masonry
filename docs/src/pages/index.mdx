@@ -1,19 +1,30 @@
 ---
 title: React Virtual Masonry - Modern Masonry Layout
-layout: landing
+layout: minimal
 showLogo: false
+description: Modern Masonry Layout with ease, powered by @tanstack/virtual.
 ---
 
-import { HomePage } from 'vocs/components';
+import { HomePage } from 'vocs';
+import { InstallPackage } from '../components/InstallPackage';
+import { OverviewMasonry } from '../components/OverviewMasonry';
 
 <HomePage.Root>
   <HomePage.Logo />
   <HomePage.Tagline>
-    Modern Masonry Layout with ease, powered by @tanstack/virtual.
+    {
+      <>
+        Modern Masonry Layout with ease, powered by{' '}
+        <a href="https://tanstack.com/virtual" target="_blank" rel="noopener noreferrer">
+          @tanstack/virtual
+        </a>
+        .
+      </>
+    }
   </HomePage.Tagline>
-  <HomePage.InstallPackage name="react-virtual-masonry @tanstack/react-virtual" type="add" />
+  <InstallPackage name="react-virtual-masonry @tanstack/react-virtual" />
   <HomePage.Buttons>
-    <HomePage.Button href="/docs" variant="accent">
+    <HomePage.Button href="/docs/getting-started" variant="accent">
       Get started
     </HomePage.Button>
     <HomePage.Button href="https://github.com/2wheeh/react-virtual-masonry">GitHub</HomePage.Button>
@@ -48,26 +59,4 @@ const HEIGHTS = [200, 600, 200, 400, 100, 100, 50, 200];
 />;
 ```
 
-import { Masonry } from 'react-virtual-masonry';
-
-export const HEIGHTS = [200, 600, 200, 400, 100, 100, 50, 200];
-
-<Masonry
-  data={HEIGHTS}
-  ssr={{ itemCount: HEIGHTS.length }}
-  estimateSize={(i) => HEIGHTS[i]}
-  renderItem={({ item, index }) => (
-    <div
-      style={{
-        height: item,
-        background: '#F47067',
-        color: 'white',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      {index}
-    </div>
-  )}
-/>
+<OverviewMasonry />

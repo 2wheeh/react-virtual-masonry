@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["react", "unicorn", "typescript", "oxc", "react-perf"],
+  "ignorePatterns": ["**/pages.gen.ts"],
   "env": {
     "browser": true
   },

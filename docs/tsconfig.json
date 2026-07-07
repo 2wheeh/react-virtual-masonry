@@ -1,5 +1,5 @@
 {
   "extends": "../tsconfig.base.json",
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["dist"]
+  "include": ["src", "vocs.config.ts"],
+  "exclude": ["dist", "src/pages.gen.ts"]
 }
