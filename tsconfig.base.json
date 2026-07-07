@@ -24,8 +24,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "baseUrl": ".",
-
     "customConditions": ["source", "module", "browser", "default"]
   }
 }
