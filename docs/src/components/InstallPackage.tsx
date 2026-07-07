@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const PMS = ['npm', 'pnpm', 'yarn', 'bun'] as const;
 type PM = (typeof PMS)[number];
@@ -53,6 +53,9 @@ function CheckIcon() {
 export function InstallPackage({ name }: { name: string }) {
   const [selected, setSelected] = useState<PM>('npm');
   const [copied, setCopied] = useState(false);
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => () => clearTimeout(resetTimer.current), []);
 
   const handleCopy = async () => {
     try {
@@ -61,7 +64,8 @@ export function InstallPackage({ name }: { name: string }) {
       return;
     }
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    clearTimeout(resetTimer.current);
+    resetTimer.current = setTimeout(() => setCopied(false), 2000);
   };
 
   return (
