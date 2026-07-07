@@ -10,3 +10,6 @@ export type {
   MasonryGridProps,
   MasonryItemProps,
 } from './hooks/useMasonry';
+
+export { useEndReached } from './hooks/useEndReached';
+export type { UseEndReachedOptions } from './hooks/useEndReached';

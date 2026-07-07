@@ -4,7 +4,7 @@ import { render } from '@testing-library/react';
 
 import { Masonry, type MasonryHandle } from './index';
 
-const DATA = [100, 200, 300, 400, 500];
+const DATA = Array.from({ length: 8 }, () => 100);
 const renderItem = ({ index }: { item: number; index: number }) => <div>{index}</div>;
 
 describe('Masonry — imperative handle', () => {
@@ -24,5 +24,43 @@ describe('Masonry — imperative handle', () => {
     ref.current!.scrollToIndex(3, { align: 'center' });
 
     expect(spy).toHaveBeenCalledWith(3, { align: 'center' });
+  });
+});
+
+describe('Masonry — onEndReached', () => {
+  it('fires onEndReached when the grid renders to the end of data', () => {
+    const onEndReached = vi.fn();
+    render(
+      <Masonry
+        data={DATA}
+        estimateSize={(i) => DATA[i]}
+        renderItem={renderItem}
+        onEndReached={onEndReached}
+      />
+    );
+    // Small list: the final item is within the (default 0) threshold immediately.
+    expect(onEndReached).toHaveBeenCalled();
+  });
+
+  it('does not fire when endReachedDisabled', () => {
+    const onEndReached = vi.fn();
+    render(
+      <Masonry
+        data={DATA}
+        estimateSize={(i) => DATA[i]}
+        renderItem={renderItem}
+        onEndReached={onEndReached}
+        endReachedDisabled
+      />
+    );
+    expect(onEndReached).not.toHaveBeenCalled();
+  });
+
+  it('is inert when onEndReached is omitted', () => {
+    // Just renders without throwing — the internal useEndReached is disabled.
+    const { container } = render(
+      <Masonry data={DATA} estimateSize={(i) => DATA[i]} renderItem={renderItem} />
+    );
+    expect(container.querySelector('[data-rvm-grid]')).not.toBeNull();
   });
 });

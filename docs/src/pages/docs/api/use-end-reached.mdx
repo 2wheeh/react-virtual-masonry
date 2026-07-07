@@ -1,0 +1,85 @@
+# useEndReached [Infinite-loading trigger]
+
+A small, fetching-agnostic hook that fires a callback once the last rendered item nears the end of your loaded data. It never fetches anything itself — you wire the callback to whatever data layer you use ([TanStack Query](https://tanstack.com/query), SWR, Apollo, a raw loader). It pairs with [`useMasonry`](/docs/api/use-masonry) but works with any `{ index }[]` list.
+
+The [`<Masonry>`](/docs/api/masonry) component wires this hook internally — see its [Infinite loading](/docs/api/masonry#infinite-loading) section for the component API.
+
+## Composing directly
+
+```tsx twoslash
+import { useMasonry, useEndReached } from 'react-virtual-masonry';
+
+declare const data: number[];
+declare function loadMore(): void;
+declare const hasMore: boolean;
+declare const isLoading: boolean;
+// ---cut---
+const { items } = useMasonry({ data, estimateSize: (i) => data[i] });
+
+useEndReached(items, data.length, loadMore, {
+  threshold: 20,
+  disabled: !hasMore || isLoading,
+});
+```
+
+`onEndReached` is a plain no-arg callback, so you can pass your loader (`fetchNextPage`, `setSize`, `fetchMore`) directly — no wrapper needed.
+
+## With TanStack Query
+
+Flatten the pages into `data`, then hand `useEndReached` a callback that requests the next page. Gate re-firing with `disabled` while a page is in flight or there is no next page.
+
+```tsx
+const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+  /* … */
+});
+const items = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
+
+const { gridProps, getItemProps, items: virtualItems } = useMasonry({ data: items /* … */ });
+
+useEndReached(virtualItems, items.length, fetchNextPage, {
+  threshold: 20,
+  disabled: !hasNextPage || isFetchingNextPage,
+});
+```
+
+## Parameters
+
+### items
+
+- **Type:** `Pick<VirtualItem, 'index'>[]`
+
+The rendered items — pass `useMasonry().items`. The hook only reads `.index` of the last entry.
+
+### dataLength
+
+- **Type:** `number`
+
+The length of your full data array. The trigger compares the last rendered index against this.
+
+### onEndReached
+
+- **Type:** `() => void`
+
+Called when the last rendered index reaches the threshold. Fetching-agnostic — the hook never fetches; pass your loader (`fetchNextPage`, `setSize`, `fetchMore`) directly.
+
+### options.threshold
+
+- **Type:** `number`
+- **Default:** `0`
+
+How close the last rendered index may get to the end of `dataLength` before firing. `0` fires once the final item of `data` actually renders.
+
+:::note
+`items` includes overscan-rendered entries, so the last rendered index already runs ahead of the visible edge. For prefetch-ahead, set `threshold` to a value **≥ your `overscan`** — otherwise overscan alone can outrun loaded data before the guard fires.
+:::
+
+### options.disabled
+
+- **Type:** `boolean`
+- **Default:** `false`
+
+Hard-suppresses firing. Wire it to your in-flight / has-more state (`isFetchingNextPage`, `!hasNextPage`) — the hook does not track fetch state itself.
+
+## Notes
+
+The hook depends on the last rendered _index_ (a primitive), not the `items` array, because `useMasonry().items` has a fresh identity every render — depending on the array would re-run the effect every render. Batched range-loading and sparse (`isItemLoaded`) loading are intentionally out of scope; compose them yourself if a large overscan or slow network needs them.

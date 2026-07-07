@@ -92,6 +92,67 @@ Instance-specific selector for when multiple grids need different styling. Most 
 
 Merged after the library's grid styles. Do not override `height`, `width`, or `position` — the layout depends on them.
 
+### onEndReached
+
+- **Type:** `() => void`
+
+Callback fired when the last rendered item nears the end of `data`. Wraps [`useEndReached`](/docs/api/use-end-reached) — pass your data-layer callback (`fetchNextPage`, `setSize`, `fetchMore`) directly. `endReachedThreshold` and `endReachedDisabled` are optional and refine when it fires.
+
+### endReachedThreshold
+
+- **Type:** `number`
+- **Default:** `0`
+
+How many items from the end of `data` to fire `onEndReached`. Recommended to set ≥ `overscan` for prefetch-ahead (typically `3` or more). A value of `0` fires once the final item actually renders.
+
+### endReachedDisabled
+
+- **Type:** `boolean`
+- **Default:** `false`
+
+Hard-suppresses `onEndReached` firing — wire it to your in-flight or has-more state (`isFetchingNextPage`, `!hasNextPage`).
+
+## Infinite Loading
+
+The simplest way to implement infinite loading is to pass `onEndReached` directly to the component:
+
+```tsx twoslash
+import { Masonry } from 'react-virtual-masonry';
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+declare function getPage(
+  pageParam: number
+): Promise<{ items: { id: string; height: number }[]; nextId?: number }>;
+// ---cut---
+function App() {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['items'],
+    queryFn: ({ pageParam }) => getPage(pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (last) => last.nextId,
+  });
+
+  const items = data?.pages.flatMap((p) => p.items) ?? [];
+
+  return (
+    <Masonry
+      data={items}
+      estimateSize={(i) => items[i]?.height ?? 200}
+      renderItem={({ item }) => <img src={item.id} alt="" style={{ height: item.height }} />}
+      onEndReached={fetchNextPage}
+      endReachedThreshold={20}
+      endReachedDisabled={!hasNextPage || isFetchingNextPage}
+    />
+  );
+}
+```
+
+:::note
+`endReachedThreshold` should be ≥ your `overscan` value (default `3`) so prefetch happens before the visible window runs out of data.
+:::
+
+**Need custom markup** (a loading row, end-of-feed message, or different outer element)? Compose [`useEndReached`](/docs/api/use-end-reached) directly with [`useMasonry`](/docs/api/use-masonry) — see [Composing directly](/docs/api/use-end-reached#composing-directly).
+
 ## Imperative Handle
 
 You don't have to drop to [`useMasonry`](/docs/api/use-masonry) for imperative control. Pass a `ref` typed `MasonryHandle` to reach `scrollToIndex` (and the `virtualizer` escape hatch) from the component:
