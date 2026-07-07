@@ -92,6 +92,35 @@ Instance-specific selector for when multiple grids need different styling. Most 
 
 Merged after the library's grid styles. Do not override `height`, `width`, or `position` — the layout depends on them.
 
+## Imperative Handle
+
+You don't have to drop to [`useMasonry`](/docs/api/use-masonry) for imperative control. Pass a `ref` typed `MasonryHandle` to reach `scrollToIndex` (and the `virtualizer` escape hatch) from the component:
+
+```tsx twoslash
+import { useRef } from 'react';
+import { Masonry, type MasonryHandle } from 'react-virtual-masonry';
+
+const DATA = [200, 600, 200, 400, 100, 600, 200, 400];
+
+function App() {
+  const ref = useRef<MasonryHandle>(null);
+
+  return (
+    <>
+      <button onClick={() => ref.current?.scrollToIndex(5, { align: 'center' })}>Jump to 5</button>
+      <Masonry
+        ref={ref}
+        data={DATA}
+        estimateSize={(i) => DATA[i]}
+        renderItem={({ item, index }) => <div style={{ height: item }}>{index}</div>}
+      />
+    </>
+  );
+}
+```
+
+`MasonryHandle` exposes `scrollToIndex` (see [`useMasonry › scrollToIndex`](/docs/api/use-masonry#scrolltoindex) for its accuracy notes) and `virtualizer`. For a fully custom element structure, compose the hook directly instead.
+
 ## Styling Hooks
 
 The rendered markup exposes stable selectors:
