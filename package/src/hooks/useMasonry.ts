@@ -125,6 +125,16 @@ export function useMasonry<Data>({
     laneAssignmentMode: 'measured',
   });
 
+  // Workaround: gap changes don't invalidate virtual-core's measurement cache.
+  // https://github.com/TanStack/virtual/issues/1222
+  const prevGutter = useRef(gutter);
+  useEffect(() => {
+    if (prevGutter.current !== gutter) {
+      prevGutter.current = gutter;
+      virtualizer.measure();
+    }
+  }, [gutter, virtualizer]);
+
   // When no visible range yet (server, or client pre-effect), slice the cache
   // for SSR rendering. The `mounted` gate keeps post-mount empty ranges empty.
   const visibleItems = virtualizer.getVirtualItems();
