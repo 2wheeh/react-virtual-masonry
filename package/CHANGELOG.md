@@ -1,5 +1,19 @@
 # react-virtual-masonry
 
+## 0.3.0
+
+### Minor Changes
+
+- [#44](https://github.com/2wheeh/react-virtual-masonry/pull/44) [`ad4086c`](https://github.com/2wheeh/react-virtual-masonry/commit/ad4086ccba0742393f3d9e68e84dcbacb1a75e44) Thanks [@2wheeh](https://github.com/2wheeh)! - **Breaking:** replace the `columnsCountBreakPoints` prop with a CSS-driven lane count. The library now reads the `--lanes` custom property from the grid root (`[data-rvm-grid]`), so `@media` / `@container` rules own responsiveness. Also extract the headless `useMasonry` hook (`<Masonry>` is now a thin wrapper) and rename `ssr.columnsCount` to `ssr.lanes`.
+
+- [#42](https://github.com/2wheeh/react-virtual-masonry/pull/42) [`e7cbf96`](https://github.com/2wheeh/react-virtual-masonry/commit/e7cbf96bf025f2700d33746fa89c1f6ae28326fa) Thanks [@2wheeh](https://github.com/2wheeh)! - Add opt-in SSR rendering: pass `ssr={{ itemCount, scrollMargin, columnsCount }}` to render the first N items positioned in server HTML, using the same lane-assignment path the client uses.
+
+### Patch Changes
+
+- [#45](https://github.com/2wheeh/react-virtual-masonry/pull/45) [`04b8ba4`](https://github.com/2wheeh/react-virtual-masonry/commit/04b8ba463458214f584ff34963eb7722641d28c1) Thanks [@2wheeh](https://github.com/2wheeh)! - React ecosystem compliance: emit compiler-runtime imports that work on React 18 (`react-compiler-runtime` polyfill instead of React 19-only `react/compiler-runtime`), add a `'use client'` directive for React Server Components consumers, and stop reading refs during render in `useMasonry` (react-hooks v7 `refs` rule / concurrent-rendering safety).
+
+- [#46](https://github.com/2wheeh/react-virtual-masonry/pull/46) [`b46dd85`](https://github.com/2wheeh/react-virtual-masonry/commit/b46dd854e2076701545bcf95791dc608aa044ca1) Thanks [@2wheeh](https://github.com/2wheeh)! - Keep `scrollMargin` fresh when content above the grid changes height: `useOffsetTop` also observes the document body, so ancestor layout shifts that move `offsetTop` without resizing the grid no longer leave the virtualizer's scroll mapping stale.
+
 ## 0.2.0
 
 ### Minor Changes
