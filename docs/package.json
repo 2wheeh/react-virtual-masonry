@@ -5,7 +5,6 @@
   "version": "0.2.0",
   "scripts": {
     "dev": "vocs dev",
-    "twoslash": "vocs twoslash",
     "build": "vocs build",
     "preview": "vocs preview"
   },
@@ -13,10 +12,14 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-virtual-masonry": "workspace:*",
-    "vocs": "^1.4.1"
+    "vocs": "^2.3.3",
+    "waku": "^1.0.0-beta.6"
   },
   "devDependencies": {
     "@types/react": "catalog:",
-    "typescript": "catalog:"
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^6.0.0",
+    "typescript": "catalog:",
+    "vite": "^8.0.0"
   }
 }

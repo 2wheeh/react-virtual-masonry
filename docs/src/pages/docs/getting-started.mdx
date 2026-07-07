@@ -1,0 +1,107 @@
+# Getting Started [Install React Virtual Masonry and render your first grid]
+
+## Overview
+
+React Virtual Masonry is a masonry layout for React with built-in windowing (virtualization), powered by [`@tanstack/react-virtual`](https://tanstack.com/virtual). Only the items in and around the viewport are rendered, so grids with thousands of items stay fast.
+
+It ships in two flavors:
+
+- **`<Masonry />`** — a ready-made component that renders the grid for you.
+- **`useMasonry`** — a headless hook that returns prop bags you spread onto your own JSX.
+
+## Installation
+
+Install the package along with its peer dependency:
+
+:::code-group
+
+```bash [pnpm]
+pnpm add react-virtual-masonry @tanstack/react-virtual
+```
+
+```bash [npm]
+npm install react-virtual-masonry @tanstack/react-virtual
+```
+
+```bash [yarn]
+yarn add react-virtual-masonry @tanstack/react-virtual
+```
+
+```bash [bun]
+bun add react-virtual-masonry @tanstack/react-virtual
+```
+
+:::
+
+## Quick Start
+
+Pass your items as `data` and render each one with `renderItem`:
+
+```tsx twoslash
+import { Masonry } from 'react-virtual-masonry';
+
+const DATA = [200, 600, 200, 400, 100, 600, 200, 400, 100, 600];
+
+function App() {
+  return (
+    <Masonry
+      data={DATA}
+      estimateSize={() => 400}
+      renderItem={({ item, index }) => <div style={{ height: item }}>{index}</div>}
+    />
+  );
+}
+```
+
+`estimateSize` is optional in client-only mode — items are measured after mount. It is still recommended for large lists so off-screen items contribute to the total scroll size and lane balancing.
+
+## Responsive Lane Count
+
+The lane (column) count is driven by CSS. The library reads the `--lanes` custom property from the grid root, which it tags with `data-rvm-grid`:
+
+```css
+[data-rvm-grid] {
+  --lanes: 1;
+}
+@media (min-width: 750px) {
+  [data-rvm-grid] {
+    --lanes: 2;
+  }
+}
+@media (min-width: 900px) {
+  [data-rvm-grid] {
+    --lanes: 3;
+  }
+}
+```
+
+Because it is plain CSS, media queries, container queries, or any other CSS mechanism can change the lane count — no resize listeners in your code.
+
+:::note
+The grid root never declares `container-type` itself. To use `@container` queries, wrap the grid with your own `container-type: inline-size` element.
+:::
+
+## Server-Side Rendering
+
+Rendering happens client-side by default. To opt into server-rendered, pre-positioned items, pass the `ssr` option — `estimateSize` becomes required since the server has no DOM to measure:
+
+```tsx twoslash
+import { Masonry } from 'react-virtual-masonry';
+
+const HEIGHTS = [200, 600, 200, 400, 100, 100, 50, 200];
+
+<Masonry
+  data={HEIGHTS}
+  ssr={{ itemCount: HEIGHTS.length, lanes: 4 }}
+  estimateSize={(i) => HEIGHTS[i]}
+  renderItem={({ item, index }) => <div style={{ height: item }}>{index}</div>}
+/>;
+```
+
+See [`SSRConfig`](/docs/api/masonry#ssr) for the full set of SSR options.
+
+## Next Steps
+
+- Explore the [`<Masonry />`](/docs/api/masonry) props.
+- Need full control over the markup? Use the [`useMasonry`](/docs/api/use-masonry) hook directly.
+- See it in action on the [Demo](/demo) page.

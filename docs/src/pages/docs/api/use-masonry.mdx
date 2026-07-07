@@ -1,0 +1,128 @@
+# useMasonry [Headless masonry hook]
+
+The headless flavor of the library. It owns the virtualizer, lane-count tracking, and the SSR fallback chain, and returns prop bags you spread onto your own JSX — [`<Masonry />`](/docs/api/masonry) is just a thin wrapper around it.
+
+## Usage
+
+```tsx twoslash
+import { useMasonry } from 'react-virtual-masonry';
+
+const DATA = [200, 600, 200, 400, 100, 600, 200, 400, 100, 600];
+
+function App() {
+  const { gridProps, getItemProps, items } = useMasonry({
+    data: DATA,
+    estimateSize: () => 400,
+  });
+
+  return (
+    <section {...gridProps}>
+      {items.map((item) => (
+        <article key={item.key} {...getItemProps(item)}>
+          <div style={{ height: DATA[item.index] }}>{item.index}</div>
+        </article>
+      ))}
+    </section>
+  );
+}
+```
+
+## Options
+
+`UseMasonryOptions<Data>` is discriminated on `ssr`: opting into SSR makes `estimateSize` required so server output is well-formed.
+
+### data
+
+- **Type:** `Data[]`
+- **Required**
+
+Items to lay out. The hook only reads `data.length`; your render code indexes into it.
+
+### estimateSize
+
+- **Type:** `(index: number) => number`
+- **Required with `ssr`, optional otherwise**
+
+Estimated pixel height for the item at `index`. Recommended for large lists even in client-only mode, so off-screen sizes contribute to `getTotalSize()` and lane balance.
+
+### gutter
+
+- **Type:** `number`
+- **Default:** `20`
+
+Gap between items in pixels.
+
+### overscan
+
+- **Type:** `number`
+- **Default:** `3`
+
+Number of items rendered beyond the visible window.
+
+### ssr
+
+- **Type:** `SSRConfig`
+- **Default:** `undefined` (client-only rendering)
+
+SSR rendering configuration — see [`<Masonry /> › ssr`](/docs/api/masonry#ssr).
+
+## Returns
+
+`UseMasonryReturn`:
+
+### gridProps
+
+- **Type:** `MasonryGridProps`
+
+Spread onto the grid root element. Carries the `ref`, the sizing/positioning `style`, and the `data-rvm-grid` / `data-rvm-lanes` attributes.
+
+### getItemProps
+
+- **Type:** `(item: VirtualItem) => MasonryItemProps`
+
+Returns props for a single item — spread the result onto the item element and pass `key={item.key}` separately. Carries the measurement `ref`, `data-index`, `data-rvm-item`, and the absolute-positioning `style`.
+
+### items
+
+- **Type:** `VirtualItem[]`
+
+Items to render this frame. During SSR / pre-mount this is the first `ssr.itemCount` entries from the measurements cache; after mount it is the real visible window from the virtualizer.
+
+### lanes
+
+- **Type:** `number`
+
+Current lane count — resolved from the `--lanes` CSS custom property post-mount, or the fallback (`ssr.lanes`, default `4`) before that.
+
+### virtualizer
+
+- **Type:** `Virtualizer<Window, Element>`
+
+The underlying TanStack virtualizer — an escape hatch for imperative APIs like `scrollToIndex`.
+
+:::warning
+The virtualizer has a stable identity with mutable internals. Deriving render values from it inside a React-Compiler-compiled component caches stale results — prefer `items` / `lanes`, or opt out with `'use no memo'`.
+:::
+
+## Selector Contract
+
+The returned props emit stable selectors you can style against:
+
+- `[data-rvm-grid]` on the root, with `data-rvm-lanes="<n>"`
+- `[data-rvm-item]` on each rendered item
+
+The grid root never declares `container-type`. For `@container` responsiveness, wrap externally with your own `container-type: inline-size` element.
+
+## Types
+
+All public types are exported from the package root:
+
+```ts twoslash
+import type {
+  SSRConfig,
+  UseMasonryOptions,
+  UseMasonryReturn,
+  MasonryGridProps,
+  MasonryItemProps,
+} from 'react-virtual-masonry';
+```

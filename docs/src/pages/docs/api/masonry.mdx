@@ -1,0 +1,113 @@
+# \<Masonry /\> [Ready-made masonry grid component]
+
+The default `Masonry` component — a thin wrapper around [`useMasonry`](/docs/api/use-masonry) that renders the grid and item elements for you. For a custom JSX structure (different outer element, extra attributes), use the hook directly.
+
+## Usage
+
+```tsx twoslash
+import { Masonry } from 'react-virtual-masonry';
+
+const DATA = [200, 600, 200, 400, 100, 600, 200, 400, 100, 600];
+
+function App() {
+  return (
+    <Masonry
+      data={DATA}
+      estimateSize={() => 400}
+      renderItem={({ item, index }) => <div style={{ height: item }}>{index}</div>}
+    />
+  );
+}
+```
+
+## Props
+
+Accepts all [`UseMasonryOptions`](/docs/api/use-masonry#options) plus the following.
+
+### data
+
+- **Type:** `Data[]`
+- **Required**
+
+Items to lay out. Each entry is passed back to `renderItem` as `item`.
+
+### renderItem
+
+- **Type:** `(props: { item: Data; index: number }) => ReactNode`
+- **Required**
+
+Renders the content of a single item. The library wraps the result in an absolutely-positioned element it measures and places into a lane.
+
+### estimateSize
+
+- **Type:** `(index: number) => number`
+- **Required with `ssr`, optional otherwise**
+
+Estimated pixel height for the item at `index`. In client-only mode items are measured after mount, but providing an estimate is recommended for large lists so off-screen items contribute to the total scroll size and lane balance. With `ssr` it is the only height source for server HTML — without it every item collapses to `0`.
+
+### gutter
+
+- **Type:** `number`
+- **Default:** `20`
+
+Gap between items in pixels, applied both between lanes and between items within a lane.
+
+### overscan
+
+- **Type:** `number`
+- **Default:** `3`
+
+Number of items rendered beyond the visible window, passed through to the underlying virtualizer.
+
+### ssr
+
+- **Type:** `SSRConfig`
+- **Default:** `undefined` (client-only rendering)
+
+Opt into server-rendered, pre-positioned items:
+
+```ts twoslash
+import type { SSRConfig } from 'react-virtual-masonry';
+```
+
+| Field          | Type     | Default | Description                                 |
+| -------------- | -------- | ------- | ------------------------------------------- |
+| `itemCount`    | `number` | —       | Number of items to render in server HTML.   |
+| `scrollMargin` | `number` | `0`     | Distance from document top to the grid.     |
+| `lanes`        | `number` | `4`     | Lane count used during SSR and first paint. |
+
+:::warning
+Server-side layout cost scales with `data.length`, not `itemCount` — lane assignment is order-dependent, so the whole list is laid out per request.
+:::
+
+### className
+
+- **Type:** `string`
+
+Instance-specific selector for when multiple grids need different styling. Most usage can target `[data-rvm-grid]` and omit this.
+
+### style
+
+- **Type:** `CSSProperties`
+
+Merged after the library's grid styles. Do not override `height`, `width`, or `position` — the layout depends on them.
+
+## Styling Hooks
+
+The rendered markup exposes stable selectors:
+
+- `[data-rvm-grid]` — the grid root, with `data-rvm-lanes="<n>"` reflecting the current lane count.
+- `[data-rvm-item]` — each rendered item wrapper.
+
+The lane count is controlled with the `--lanes` CSS custom property resolved on the grid root:
+
+```css
+[data-rvm-grid] {
+  --lanes: 2;
+}
+@media (min-width: 900px) {
+  [data-rvm-grid] {
+    --lanes: 3;
+  }
+}
+```
