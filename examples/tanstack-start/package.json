@@ -14,6 +14,7 @@
     "check-types": "tsr generate && tsc -p tsconfig.typecheck.json"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.2",
     "@tanstack/react-router": "^1.168.26",
     "@tanstack/react-start": "^1.167.52",
     "@tanstack/react-virtual": "^3.13.24",

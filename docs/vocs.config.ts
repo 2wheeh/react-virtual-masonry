@@ -29,6 +29,7 @@ export default defineConfig({
       items: [
         { text: '<Masonry />', link: '/docs/api/masonry' },
         { text: 'useMasonry', link: '/docs/api/use-masonry' },
+        { text: 'useEndReached', link: '/docs/api/use-end-reached' },
       ],
     },
   ],

@@ -9,8 +9,11 @@ import {
 import type { ScrollToOptions, Virtualizer } from '@tanstack/react-virtual';
 
 import { useMasonry, type UseMasonryOptions } from '../hooks/useMasonry';
+import { useEndReached } from '../hooks/useEndReached';
 
 export type { SSRConfig } from '../hooks/useMasonry';
+
+const NOOP = () => {};
 
 /** Imperative handle exposed via `ref` on {@link Masonry} — the subset of
  *  {@link useMasonry}'s return worth calling from outside the grid. For anything
@@ -31,18 +34,31 @@ type Props<Data> = UseMasonryOptions<Data> & {
   /** Merged after the library's grid styles. Do not override `height` / `width`
    *  / `position`. */
   style?: CSSProperties;
+  /** Infinite loading: fires as the last rendered item nears the end of `data`.
+   *  Wraps {@link useEndReached} — pass `fetchNextPage` / `setSize` / a loader. */
+  onEndReached?: () => void;
+  /** Items-from-end distance at which `onEndReached` fires. @default 0 */
+  endReachedThreshold?: number;
+  /** Suppress `onEndReached`, e.g. while fetching or when no data remains. */
+  endReachedDisabled?: boolean;
 };
 
 function MasonryInner<Data>(props: Props<Data>, ref: Ref<MasonryHandle>) {
   // Don't destructure the union-tagged fields — destructuring widens `ssr` /
   // `estimateSize` to optional and breaks the discriminated union narrowing.
-  const { renderItem, className, style } = props;
+  const { renderItem, className, style, onEndReached, endReachedThreshold, endReachedDisabled } =
+    props;
   const { gridProps, getItemProps, items, scrollToIndex, virtualizer } = useMasonry(props);
 
   // Imperative access for component users — `scrollToIndex` (and the virtualizer
   // escape hatch) without dropping to the hook. Hook composers read these off the
   // return value instead.
   useImperativeHandle(ref, () => ({ scrollToIndex, virtualizer }), [scrollToIndex, virtualizer]);
+
+  useEndReached(items, props.data.length, onEndReached ?? NOOP, {
+    threshold: endReachedThreshold,
+    disabled: endReachedDisabled || !onEndReached,
+  });
 
   return (
     <div {...gridProps} className={className} style={{ ...gridProps.style, ...style }}>
@@ -59,8 +75,9 @@ function MasonryInner<Data>(props: Props<Data>, ref: Ref<MasonryHandle>) {
  * Default Masonry component — thin wrapper around {@link useMasonry}. For custom
  * JSX structure (different outer element, extra attributes), use the hook directly.
  *
- * Pass a `ref` typed {@link MasonryHandle} for imperative access (`scrollToIndex`,
- * the virtualizer escape hatch) without composing the hook yourself.
+ * Pass `onEndReached` for infinite loading, or a `ref` typed {@link MasonryHandle}
+ * for imperative access (`scrollToIndex`, the virtualizer escape hatch) — both
+ * without composing the hook yourself.
  *
  * Lane count source: the `--lanes` CSS custom property resolved on the grid root.
  * The library never declares `container-type` — wrap externally for `@container`.
