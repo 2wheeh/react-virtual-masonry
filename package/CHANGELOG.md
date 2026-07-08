@@ -1,5 +1,19 @@
 # react-virtual-masonry
 
+## 0.4.0
+
+### Minor Changes
+
+- [#53](https://github.com/2wheeh/react-virtual-masonry/pull/53) [`f106053`](https://github.com/2wheeh/react-virtual-masonry/commit/f10605375d4448ba7ec1f6d374a035f2c7d01a26) Thanks [@2wheeh](https://github.com/2wheeh)! - Add `scrollElementRef` to `useMasonry` for virtualizing inside a scroll container. Pass a ref to an `overflow:auto` element and the grid windows against that element instead of the page; omit it for window scrolling (unchanged default). Container mode is client-only — `scrollElementRef` and `ssr` are mutually exclusive at the type level. Content above the grid inside the container must have stable height (simplest: make the grid the container's first child).
+
+- [#52](https://github.com/2wheeh/react-virtual-masonry/pull/52) [`54bf8ba`](https://github.com/2wheeh/react-virtual-masonry/commit/54bf8ba5cff71a7701235c5870f6cb03dccaf091) Thanks [@2wheeh](https://github.com/2wheeh)! - Add `useEndReached`, a small fetching-agnostic hook for infinite loading. Pass it `useMasonry().items` plus your data length and a callback; it fires when the last rendered item nears the end of loaded data. Wire the callback to `fetchNextPage` (TanStack Query), `setSize` (SWR), `fetchMore` (Apollo), or any loader — the hook never fetches itself. The `<Masonry>` component also accepts `onEndReached` (with `endReachedThreshold` / `endReachedDisabled`) so component users get infinite loading without composing the hook.
+
+- [#51](https://github.com/2wheeh/react-virtual-masonry/pull/51) [`424c621`](https://github.com/2wheeh/react-virtual-masonry/commit/424c62198085470930f2f5a65ba0de3c4fa665dc) Thanks [@2wheeh](https://github.com/2wheeh)! - Add first-class `scrollToIndex(index, options?)` to `useMasonry`. It's also reachable from the `<Masonry>` component via a `ref` typed `MasonryHandle` (exposing `scrollToIndex` and the `virtualizer` escape hatch), so imperative control no longer requires composing the hook.
+
+### Patch Changes
+
+- [#48](https://github.com/2wheeh/react-virtual-masonry/pull/48) [`670010c`](https://github.com/2wheeh/react-virtual-masonry/commit/670010c450f33294e11e29adeef537bab64beaa8) Thanks [@2wheeh](https://github.com/2wheeh)! - Added workaround for gutter to update vertical gap
+
 ## 0.3.0
 
 ### Minor Changes
