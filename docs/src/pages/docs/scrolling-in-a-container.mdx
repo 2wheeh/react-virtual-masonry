@@ -4,6 +4,34 @@ By default the grid virtualizes against the **window** — it assumes the page i
 
 ## Usage
 
+Own the scroll container, pass its ref, and render [`<Masonry>`](/docs/api/masonry) inside it:
+
+```tsx
+import { useRef } from 'react';
+import { Masonry } from 'react-virtual-masonry';
+
+function Panel({ data }: { data: number[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div ref={scrollRef} style={{ height: 600, overflow: 'auto' }}>
+      <Masonry
+        data={data}
+        estimateSize={(i) => data[i]}
+        scrollElementRef={scrollRef}
+        renderItem={({ item, index }) => <div style={{ height: item }}>{index}</div>}
+      />
+    </div>
+  );
+}
+```
+
+Omit `scrollElementRef` and everything falls back to window scrolling — the default behavior is unchanged.
+
+## Composing with the hook
+
+`scrollElementRef` is a plain [`useMasonry`](/docs/api/use-masonry) option, so a fully custom element structure gets the same behavior:
+
 ```tsx
 import { useRef } from 'react';
 import { useMasonry } from 'react-virtual-masonry';
@@ -29,8 +57,6 @@ function Panel({ data }: { data: number[] }) {
   );
 }
 ```
-
-Omit `scrollElementRef` and everything falls back to window scrolling — the default behavior is unchanged.
 
 ## Constraints
 
