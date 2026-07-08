@@ -1,0 +1,73 @@
+# Scrolling in a Container [Virtualize inside a scroll element instead of the page]
+
+By default the grid virtualizes against the **window** — it assumes the page itself scrolls. To embed a masonry grid inside a scrollable panel (a modal, a sidebar feed, a dashboard widget), pass a ref to that `overflow:auto` element as `scrollElementRef`. The grid then windows against the element's scroll position instead of `window.scrollY`.
+
+## Usage
+
+Own the scroll container, pass its ref, and render [`<Masonry>`](/docs/api/masonry) inside it:
+
+```tsx
+import { useRef } from 'react';
+import { Masonry } from 'react-virtual-masonry';
+
+function Panel({ data }: { data: number[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div ref={scrollRef} style={{ height: 600, overflow: 'auto' }}>
+      <Masonry
+        data={data}
+        estimateSize={(i) => data[i]}
+        scrollElementRef={scrollRef}
+        renderItem={({ item, index }) => <div style={{ height: item }}>{index}</div>}
+      />
+    </div>
+  );
+}
+```
+
+Omit `scrollElementRef` and everything falls back to window scrolling — the default behavior is unchanged.
+
+## Composing with the hook
+
+`scrollElementRef` is a plain [`useMasonry`](/docs/api/use-masonry) option, so a fully custom element structure gets the same behavior:
+
+```tsx
+import { useRef } from 'react';
+import { useMasonry } from 'react-virtual-masonry';
+
+function Panel({ data }: { data: number[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { gridProps, getItemProps, items } = useMasonry({
+    data,
+    estimateSize: (i) => data[i],
+    scrollElementRef: scrollRef,
+  });
+
+  return (
+    <div ref={scrollRef} style={{ height: 600, overflow: 'auto' }}>
+      <div {...gridProps}>
+        {items.map((item) => (
+          <div key={item.key} {...getItemProps(item)}>
+            {/* render data[item.index] */}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## Constraints
+
+:::warning
+**Container mode is client-only.** `scrollElementRef` and [`ssr`](/docs/api/use-masonry#ssr) are mutually exclusive — passing both is a compile error. Server-rendered positioned HTML inside a scroll container is a known follow-up.
+:::
+
+:::warning
+**Content above the grid must have stable height.** A fixed-height scroll container has no resize signal when its content _above_ the grid grows or shrinks, so the grid's offset can go stale. The simplest reliable layout makes the grid the container's first (or only) child. If you need content above it, keep that content's height fixed.
+:::
+
+## Responsive columns
+
+Lane count is still CSS-driven via `--lanes`. Because the container has a known width, `@container` queries pair naturally — give the scroll element (or a wrapper) `container-type: inline-size` and drive `--lanes` off its width rather than the viewport's. See [Getting Started › Responsive Lane Count](/docs/getting-started).

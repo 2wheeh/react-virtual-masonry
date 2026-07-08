@@ -1,11 +1,13 @@
 import { CSSProperties, RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import {
+  useVirtualizer,
   useWindowVirtualizer,
   type ScrollToOptions,
   type VirtualItem,
   type Virtualizer,
 } from '@tanstack/react-virtual';
 
+import { useContainerOffsetTop } from './useContainerOffsetTop';
 import { useCSSLaneCount } from './useCSSLaneCount';
 import { useOffsetTop } from './useOffsetTop';
 
@@ -13,9 +15,7 @@ const DEFAULT_LANES = 4;
 const DEFAULT_OVERSCAN = 3;
 const DEFAULT_GUTTER = 20;
 
-/** SSR rendering configuration. Pass to opt into server-rendered positioned items.
- *  Server-side layout cost scales with `data.length`, not `itemCount` — lane
- *  assignment is order-dependent, so the whole list is laid out per request. */
+/** SSR rendering configuration — opt into server-rendered positioned items. */
 export interface SSRConfig {
   /** Number of items to render in server HTML. */
   itemCount: number;
@@ -33,23 +33,24 @@ interface BaseOptions<Data> {
 
 interface ClientOnlyOptions<Data> extends BaseOptions<Data> {
   ssr?: undefined;
-  /** Optional in client-only mode — items get measured post-mount. Recommended for
-   *  large lists so off-screen sizes contribute to `getTotalSize()` and lane balance. */
+  /** Optional in client-only mode (items measure post-mount); recommended for large
+   *  lists so off-screen sizes feed `getTotalSize()` and lane balance. */
   estimateSize?: (index: number) => number;
+  /** Virtualize inside this `overflow:auto` element instead of the window; omit for
+   *  window scrolling. Mutually exclusive with `ssr` (container mode is client-only). */
+  scrollElementRef?: RefObject<HTMLElement | null>;
 }
 
 interface SSROptions<Data> extends BaseOptions<Data> {
   ssr: SSRConfig;
-  /** Required with `ssr` — server has no DOM to measure, so this is the only height
-   *  source for SSR HTML. Without it every item collapses to 0 and the server output
-   *  is broken. */
+  /** Required with `ssr` — the only height source for server HTML (no DOM to measure). */
   estimateSize: (index: number) => number;
+  /** `never` so `scrollElementRef` can't combine with `ssr` (SSR is window-only). */
+  scrollElementRef?: never;
 }
 
-/**
- * Options for {@link useMasonry}. Discriminated on `ssr`: opting into SSR makes
- * `estimateSize` required so server output is well-formed.
- */
+/** Options for {@link useMasonry}. Discriminated on `ssr`: SSR requires `estimateSize`
+ *  and excludes `scrollElementRef` (SSR is window-only). */
 export type UseMasonryOptions<Data> = ClientOnlyOptions<Data> | SSROptions<Data>;
 
 /** Spread onto the grid root element. */
@@ -79,21 +80,14 @@ export interface UseMasonryReturn {
   items: VirtualItem[];
   /** Current lane count — `--lanes` post-mount, fallback pre-mount. */
   lanes: number;
-  /** Underlying TanStack virtualizer (escape hatch for imperative APIs beyond
-   *  `scrollToIndex`). Stable identity + mutable internals — deriving render
-   *  values from it in a compiled component caches stale. Prefer `items`/`lanes`,
-   *  or `'use no memo'`. */
-  virtualizer: Virtualizer<Window, Element>;
-  /**
-   * Scrolls so `index` is positioned per `align` (default `'auto'`: nearest edge,
-   * no-op if already visible). Referentially stable — safe in effect deps.
-   *
-   * A thin forward to TanStack Virtual's
-   * {@link https://tanstack.com/virtual/latest/docs/api/virtualizer#scrolltoindex scrollToIndex}
-   * (`options` is its `ScrollToOptions`). Cold-jump accuracy is bounded by
-   * `estimateSize` — inherent to estimate-based virtualization, not specific to
-   * this library; see the docs for the error model.
-   */
+  /** Underlying TanStack virtualizer — escape hatch for imperative APIs beyond
+   *  `scrollToIndex`. Element-scoped when `scrollElementRef` is set, else window-scoped.
+   *  Stable identity + mutable internals: prefer `items`/`lanes` in render (or `'use no memo'`). */
+  virtualizer: Virtualizer<HTMLElement, Element> | Virtualizer<Window, Element>;
+  /** Scrolls so `index` is positioned per `options.align` (default `'auto'`). Referentially
+   *  stable — safe in effect deps. Thin forward to TanStack Virtual's
+   *  {@link https://tanstack.com/virtual/latest/docs/api/virtualizer#scrolltoindex scrollToIndex};
+   *  cold-jump accuracy is bounded by `estimateSize` (see docs). */
   scrollToIndex: (index: number, options?: ScrollToOptions) => void;
 }
 
@@ -101,12 +95,8 @@ export interface UseMasonryReturn {
  * Headless masonry hook. Owns the virtualizer, lane-count tracking, and the SSR
  * fallback chain; returns prop bags you spread onto your own JSX.
  *
- * Selector contract emitted via the returned props:
- * - `[data-rvm-grid]` on the root, with `data-rvm-lanes="<n>"`
- * - `[data-rvm-item]` on each rendered item
- *
- * The grid root never declares `container-type`. For `@container` responsiveness,
- * wrap externally with your own `container-type: inline-size` element.
+ * Emits `[data-rvm-grid]` (with `data-rvm-lanes`) and `[data-rvm-item]` selectors.
+ * Never declares `container-type` — wrap externally for `@container`.
  */
 export function useMasonry<Data>({
   data,
@@ -114,33 +104,56 @@ export function useMasonry<Data>({
   estimateSize,
   overscan = DEFAULT_OVERSCAN,
   ssr,
+  scrollElementRef,
 }: UseMasonryOptions<Data>): UseMasonryReturn {
   // `getVirtualItems()` side-effects `measurementsCache` every render — auto-memo
   // would starve the SSR fallback slice.
   'use no memo';
 
   const gridRef = useRef<HTMLDivElement>(null);
+  const useContainer = !!scrollElementRef;
 
   // Clamp to >= 1 — lane math divides by n; 0/negative would emit Infinity/NaN CSS.
   const lanes = useCSSLaneCount(gridRef, {
     fallback: Math.max(1, ssr?.lanes ?? DEFAULT_LANES),
   });
 
-  const scrollMargin = useOffsetTop(gridRef, { fallback: ssr?.scrollMargin ?? 0 });
+  // Both offset hooks always run (rules-of-hooks); mode picks the active one.
+  // `ssr` is type-excluded in container mode, so the container fallback is 0.
+  const windowScrollMargin = useOffsetTop(gridRef, { fallback: ssr?.scrollMargin ?? 0 });
+  const containerScrollMargin = useContainerOffsetTop(gridRef, scrollElementRef, { fallback: 0 });
 
   // Explicit mount signal — reading `gridRef.current` during render is impure.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const virtualizer = useWindowVirtualizer({
+  // Rules-of-hooks forbids picking one virtualizer by mode, and their types are
+  // incompatible (`useVirtualizer` rejects `Window`). So both run; the idle one is
+  // made inert by TanStack's `enabled` option — no scroll/resize listeners.
+  const windowVirtualizer = useWindowVirtualizer({
     count: data.length,
     estimateSize: estimateSize ?? (() => 0),
     overscan,
     lanes,
-    scrollMargin,
+    scrollMargin: windowScrollMargin,
     gap: gutter,
     laneAssignmentMode: 'measured',
+    enabled: !useContainer,
   });
+
+  const elementVirtualizer = useVirtualizer({
+    count: data.length,
+    estimateSize: estimateSize ?? (() => 0),
+    overscan,
+    lanes,
+    scrollMargin: containerScrollMargin,
+    gap: gutter,
+    laneAssignmentMode: 'measured',
+    getScrollElement: () => scrollElementRef?.current ?? null,
+    enabled: useContainer,
+  });
+
+  const virtualizer = useContainer ? elementVirtualizer : windowVirtualizer;
 
   // Workaround: gap changes don't invalidate virtual-core's measurement cache.
   // https://github.com/TanStack/virtual/issues/1222

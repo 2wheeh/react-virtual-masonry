@@ -64,7 +64,29 @@ Number of items rendered beyond the visible window.
 - **Type:** `SSRConfig`
 - **Default:** `undefined` (client-only rendering)
 
-SSR rendering configuration — see [`<Masonry /> › ssr`](/docs/api/masonry#ssr).
+SSR rendering configuration — see [`<Masonry /> › ssr`](/docs/api/masonry#ssr). Mutually exclusive with `scrollElementRef` (SSR is window-only).
+
+### scrollElementRef
+
+- **Type:** `RefObject<HTMLElement | null>`
+- **Default:** `undefined` (window scrolling)
+
+Virtualize inside an `overflow:auto` element instead of the page. Pass a ref to the scroll container and the grid windows against that element's scroll position; omit it for the default window scrolling.
+
+```tsx
+const scrollRef = useRef<HTMLDivElement>(null);
+const { gridProps, getItemProps, items } = useMasonry({ data, scrollElementRef: scrollRef });
+
+return (
+  <div ref={scrollRef} style={{ height: 600, overflow: 'auto' }}>
+    <div {...gridProps}>{/* items */}</div>
+  </div>
+);
+```
+
+:::warning
+Container mode is client-only — `scrollElementRef` and `ssr` cannot be combined (it's a compile error). Content **above** the grid inside the container must have stable height: a fixed-height scroll container has no resize signal for content growing above the grid. The simplest layout makes the grid the container's first (or only) child.
+:::
 
 ## Returns
 
@@ -96,9 +118,9 @@ Current lane count — resolved from the `--lanes` CSS custom property post-moun
 
 ### virtualizer
 
-- **Type:** `Virtualizer<Window, Element>`
+- **Type:** `Virtualizer<HTMLElement, Element> | Virtualizer<Window, Element>`
 
-The underlying TanStack virtualizer — an escape hatch for imperative APIs beyond `scrollToIndex` (e.g. `scrollToOffset`, `measure`).
+The underlying TanStack virtualizer — an escape hatch for imperative APIs beyond `scrollToIndex` (e.g. `scrollToOffset`, `measure`). Element-scoped when `scrollElementRef` is set, otherwise window-scoped.
 
 :::warning
 The virtualizer has a stable identity with mutable internals. Deriving render values from it inside a React-Compiler-compiled component caches stale results — prefer `items` / `lanes`, or opt out with `'use no memo'`.

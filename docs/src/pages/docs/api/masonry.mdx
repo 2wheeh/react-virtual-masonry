@@ -59,6 +59,13 @@ Gap between items in pixels, applied both between lanes and between items within
 
 Number of items rendered beyond the visible window, passed through to the underlying virtualizer.
 
+### scrollElementRef
+
+- **Type:** `RefObject<HTMLElement | null>`
+- **Default:** `undefined` (window scrolling)
+
+Virtualize inside an `overflow:auto` element instead of the page. Own the scroll container yourself, pass its ref, and drop `<Masonry>` inside it — the grid then windows against that element's scroll position. See [Scrolling in a Container](/docs/scrolling-in-a-container) for the full example and constraints. Mutually exclusive with `ssr` (container mode is client-only).
+
 ### ssr
 
 - **Type:** `SSRConfig`

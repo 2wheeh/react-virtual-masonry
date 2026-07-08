@@ -21,8 +21,9 @@ const NOOP = () => {};
 export interface MasonryHandle {
   /** See {@link useMasonry}'s `scrollToIndex`. */
   scrollToIndex: (index: number, options?: ScrollToOptions) => void;
-  /** Underlying TanStack virtualizer — escape hatch for other imperative APIs. */
-  virtualizer: Virtualizer<Window, Element>;
+  /** Underlying TanStack virtualizer — escape hatch for other imperative APIs.
+   *  Element-scoped when `scrollElementRef` is set, else window-scoped. */
+  virtualizer: Virtualizer<HTMLElement, Element> | Virtualizer<Window, Element>;
 }
 
 // `UseMasonryOptions` is a discriminated union — use intersection, not `extends`.

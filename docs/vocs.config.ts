@@ -21,6 +21,7 @@ export default defineConfig({
       text: 'Introduction',
       items: [
         { text: 'Getting Started', link: '/docs/getting-started' },
+        { text: 'Scrolling in a Container', link: '/docs/scrolling-in-a-container' },
         { text: 'Demo', link: '/demo' },
       ],
     },
