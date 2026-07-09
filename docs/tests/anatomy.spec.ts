@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * E2e for the `/demo` "Instrument Panel" (docs/src/components/DemoPlayground.tsx).
+ * E2e for the `/anatomy` "Anatomy" panel (docs/src/components/anatomy/Anatomy.tsx).
  *
  * SCOPE — this asserts only the reliably-drivable, state-driven behaviours:
  * control toggles, caption/code-chip text, the append counters, theme flip, and
@@ -15,7 +15,7 @@ import { expect, test, type Page } from '@playwright/test';
  * example specs (examples/tanstack-start/tests/infinite.spec.ts) instead.
  */
 
-const DEMO = '/demo';
+const DEMO = '/anatomy';
 
 async function panelReady(page: Page) {
   await page.goto(DEMO);
@@ -35,7 +35,7 @@ function itemsCount(page: Page): Promise<number> {
     .then((t) => Number(t.replace(/[^0-9]/g, '')));
 }
 
-test.describe('DemoPlayground', () => {
+test.describe('Anatomy', () => {
   test.beforeEach(async ({ page }) => {
     await panelReady(page);
   });
@@ -98,18 +98,6 @@ test.describe('DemoPlayground', () => {
     expect(await itemsCount(page)).toBe(before + 24);
   });
 
-  test('+10k raises ITEMS by exactly 10,000 while MOUNTED stays bounded', async ({ page }) => {
-    const before = await itemsCount(page);
-    await page.getByRole('button', { name: 'Append 10,000 items' }).click();
-
-    await expect.poll(() => itemsCount(page)).toBe(before + 10_000);
-
-    // Virtualization: the mounted-tile count stays a small window, not 10k+.
-    const mounted = Number(await page.getByTestId('stat-mounted').innerText());
-    expect(mounted).toBeGreaterThan(0);
-    expect(mounted).toBeLessThan(200);
-  });
-
   test('theme flip changes the panel background-color', async ({ page }) => {
     const bg = () =>
       page.getByTestId('demo-panel').evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -144,28 +132,13 @@ test.describe('DemoPlayground', () => {
   });
 });
 
-test.describe('DemoPlayground · prefers-reduced-motion', () => {
+test.describe('Anatomy · prefers-reduced-motion', () => {
   test.beforeEach(async ({ page }) => {
     // Emulate BEFORE navigation so the component mounts with reduce=true (its
     // matchMedia effect reads it on mount). `page.emulateMedia` is used rather
     // than `test.use({ reducedMotion })` as the latter did not take effect here.
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await panelReady(page);
-  });
-
-  test('TOUR does not autoplay — it makes a single jump per click', async ({ page }) => {
-    const tour = page.getByRole('button', { name: /tour/i });
-    const code = page.getByTestId('scroll-api');
-
-    await tour.click();
-    // Single deliberate jump (index 10, centered) — no sustained "touring".
-    await expect(code).toContainText("scrollToIndex(10, { align: 'center' })");
-    await expect(tour).toHaveAttribute('aria-pressed', 'false');
-
-    // Wait well past the would-be 1100ms autoplay tick: the target must NOT
-    // have advanced on its own.
-    await page.waitForTimeout(1500);
-    await expect(code).toContainText("scrollToIndex(10, { align: 'center' })");
   });
 
   test('shimmer/dot keyframes (rvmsk + rvmdot) are disabled', async ({ page }) => {

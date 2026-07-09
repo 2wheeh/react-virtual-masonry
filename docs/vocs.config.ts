@@ -32,7 +32,7 @@ export default defineConfig({
       items: [
         { text: 'Getting Started', link: '/docs/getting-started' },
         { text: 'Scrolling in a Container', link: '/docs/scrolling-in-a-container' },
-        { text: 'Demo', link: '/demo' },
+        { text: 'Anatomy', link: '/anatomy' },
       ],
     },
     {
@@ -56,7 +56,7 @@ export default defineConfig({
       link: '/docs/getting-started',
       match: (path) => Boolean(path?.startsWith('/docs')),
     },
-    { text: 'Demo', link: '/demo', match: (path) => Boolean(path?.startsWith('/demo')) },
+    { text: 'Anatomy', link: '/anatomy', match: (path) => Boolean(path?.startsWith('/anatomy')) },
     {
       text: pkg.version,
       items: [

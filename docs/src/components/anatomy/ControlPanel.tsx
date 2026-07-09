@@ -1,0 +1,165 @@
+import { css } from '../../../styled-system/css';
+import { SectionLabel } from './SectionLabel';
+import { AlignButton } from './AlignButton';
+import { Segmented } from './Segmented';
+import { Slider } from './Slider';
+
+// Monospace stack for the instrument-panel numerals / code chips. Declared
+// file-local (not imported) so Panda statically extracts the font-family rule.
+const MONO =
+  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
+
+type ScrollBtn = 'start' | 'center' | 'end' | 'last';
+
+// ---------------------------------------------------------------------------
+// Control panel — SCROLL API code chip + align buttons, LOAD segmented, and the
+// GUTTER / OVERSCAN / THRESHOLD sliders.
+// ---------------------------------------------------------------------------
+export function ControlPanel({
+  scrollArgs,
+  scrollBtn,
+  runScroll,
+  loadMode,
+  setLoadMode,
+  gutter,
+  setGutter,
+  overscan,
+  setOverscan,
+  threshold,
+  setThreshold,
+}: {
+  scrollArgs: { index: number; align: 'start' | 'center' | 'end' | 'auto' };
+  scrollBtn: ScrollBtn;
+  runScroll: (btn: ScrollBtn) => void;
+  loadMode: 'auto' | 'manual';
+  setLoadMode: (v: 'auto' | 'manual') => void;
+  gutter: number;
+  setGutter: (v: number) => void;
+  overscan: number;
+  setOverscan: (v: number) => void;
+  threshold: number;
+  setThreshold: (v: number) => void;
+}) {
+  return (
+    <div
+      className={css({
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '14px',
+        p: '16px',
+        borderBottom: '1px solid',
+        borderColor: 'border',
+      })}
+    >
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+          flexWrap: 'wrap',
+        })}
+      >
+        <SectionLabel>Scroll API</SectionLabel>
+        <code
+          data-testid="scroll-api"
+          className={css({
+            fontFamily: MONO,
+            fontSize: '12px',
+            color: 't2',
+            bg: 'panel',
+            border: '1px solid',
+            borderColor: 'border',
+            borderRadius: '6px',
+            px: '8px',
+            py: '4px',
+            // Narrow viewports: scroll the chip within itself rather than
+            // letting the glyph string push the panel wider.
+            maxWidth: '100%',
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
+            _xray: {
+              color: 'coral',
+              bg: 'rgba(244,112,103,0.10)',
+              borderColor: 'coral',
+              boxShadow: '0 0 0 3px rgba(244,112,103,0.12)',
+            },
+          })}
+        >
+          scrollToIndex({scrollArgs.index}, {'{'} align: '{scrollArgs.align}' {'}'})
+        </code>
+      </div>
+
+      <div className={css({ display: 'flex', gap: '10px' })}>
+        <AlignButton
+          num="184"
+          sub="START"
+          active={scrollBtn === 'start'}
+          onClick={() => runScroll('start')}
+        />
+        <AlignButton
+          num="198"
+          sub="CENTER"
+          active={scrollBtn === 'center'}
+          onClick={() => runScroll('center')}
+        />
+        <AlignButton
+          num="212"
+          sub="END"
+          active={scrollBtn === 'end'}
+          onClick={() => runScroll('end')}
+        />
+        <AlignButton
+          num="last"
+          sub="END"
+          active={scrollBtn === 'last'}
+          onClick={() => runScroll('last')}
+        />
+      </div>
+
+      <div
+        className={css({ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' })}
+      >
+        <SectionLabel width="78px">Load</SectionLabel>
+        <Segmented value={loadMode} onChange={setLoadMode} />
+        <code
+          data-testid="load-caption"
+          className={css({ fontFamily: MONO, fontSize: '11px', color: 't3' })}
+        >
+          endReachedDisabled: {loadMode === 'manual' ? 'true' : 'false'}
+        </code>
+      </div>
+
+      <div className={css({ display: 'flex', flexDirection: 'column', gap: '10px' })}>
+        <Slider
+          label="GUTTER"
+          value={`${gutter} px`}
+          fillPct={Math.round((gutter / 40) * 100)}
+          min={0}
+          max={40}
+          step={2}
+          numericValue={gutter}
+          onChange={setGutter}
+        />
+        <Slider
+          label="OVERSCAN"
+          value={`${overscan}`}
+          fillPct={Math.round((overscan / 10) * 100)}
+          min={0}
+          max={10}
+          numericValue={overscan}
+          onChange={setOverscan}
+        />
+        <Slider
+          label="THRESHOLD"
+          value={`${threshold} items`}
+          fillPct={Math.round((threshold / 10) * 100)}
+          min={0}
+          max={10}
+          numericValue={threshold}
+          onChange={setThreshold}
+        />
+      </div>
+    </div>
+  );
+}

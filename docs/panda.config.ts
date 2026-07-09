@@ -33,7 +33,7 @@ export default defineConfig({
       tokens: {
         colors: {
           // Theme-invariant brand constant. (Lane accent colors live only where
-          // they're consumed — the `LANE_COLORS` array in DemoPlayground — since
+          // they're consumed — the `LANE_COLORS` array in anatomy/constants — since
           // they're applied via dynamic inline `style`, not Panda class props.)
           coral: { value: '#F47067' },
         },
