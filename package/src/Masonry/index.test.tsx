@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createRef } from 'react';
 import { render } from '@testing-library/react';
+import type { VirtualItem } from '@tanstack/react-virtual';
 
 import { Masonry, type MasonryHandle } from './index';
 
@@ -24,6 +25,74 @@ describe('Masonry — imperative handle', () => {
     ref.current!.scrollToIndex(3, { align: 'center' });
 
     expect(spy).toHaveBeenCalledWith(3, { align: 'center' });
+  });
+});
+
+describe('Masonry — renderItem args', () => {
+  // Distinct values so we can prove `index` maps to the right data element.
+  const VALUES = [10, 20, 30, 40, 50, 60, 70, 80];
+
+  it('forwards the full VirtualItem fields alongside item', () => {
+    const seen: (VirtualItem & { item: number })[] = [];
+    render(
+      <Masonry
+        data={VALUES}
+        estimateSize={(i) => VALUES[i]}
+        renderItem={(props) => {
+          seen.push(props);
+          return <div>{props.index}</div>;
+        }}
+      />
+    );
+
+    expect(seen.length).toBeGreaterThan(0);
+    for (const props of seen) {
+      // VirtualItem fields are all present.
+      expect(props.key).toBeDefined();
+      expect(typeof props.index).toBe('number');
+      expect(typeof props.start).toBe('number');
+      expect(typeof props.end).toBe('number');
+      expect(typeof props.size).toBe('number');
+      expect(typeof props.lane).toBe('number');
+    }
+  });
+
+  it('keeps lane within [0, lanes-1] and index mapping to the right data element', () => {
+    // No `--lanes` stylesheet under happy-dom → falls back to DEFAULT_LANES (4).
+    const LANES = 4;
+    const seen: (VirtualItem & { item: number })[] = [];
+    render(
+      <Masonry
+        data={VALUES}
+        estimateSize={(i) => VALUES[i]}
+        renderItem={(props) => {
+          seen.push(props);
+          return <div>{props.index}</div>;
+        }}
+      />
+    );
+
+    for (const props of seen) {
+      expect(props.lane).toBeGreaterThanOrEqual(0);
+      expect(props.lane).toBeLessThanOrEqual(LANES - 1);
+      // `index` still points at the matching data element.
+      expect(props.item).toBe(VALUES[props.index]);
+    }
+  });
+
+  it('still supports the old ({ item, index }) destructuring shape', () => {
+    // Backwards compat: consumers written against the narrow prior signature keep working.
+    const { container } = render(
+      <Masonry
+        data={VALUES}
+        estimateSize={(i) => VALUES[i]}
+        renderItem={({ item, index }) => <div data-testid="cell">{`${index}:${item}`}</div>}
+      />
+    );
+    const cells = container.querySelectorAll('[data-testid="cell"]');
+    expect(cells.length).toBeGreaterThan(0);
+    // First cell reads `0:10` — index 0 mapped to VALUES[0].
+    expect(cells[0]?.textContent).toBe('0:10');
   });
 });
 
