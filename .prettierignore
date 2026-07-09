@@ -1,2 +1,4 @@
 pnpm-lock.yaml
 docs/src/pages.gen.ts
+docs/styled-system
+docs/.design

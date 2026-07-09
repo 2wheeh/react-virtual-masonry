@@ -1,6 +1,10 @@
 # build output
 dist/
 
+# playwright e2e artifacts
+test-results/
+playwright-report/
+
 # vocs cache
 .vocs/
 
@@ -19,3 +23,5 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+# Panda CSS generated output
+styled-system/

@@ -4,6 +4,7 @@
   "type": "module",
   "version": "0.2.0",
   "scripts": {
+    "postinstall": "panda codegen",
     "dev": "vocs dev",
     "build": "vocs build",
     "preview": "vocs preview"
@@ -16,6 +17,7 @@
     "waku": "^1.0.0-beta.6"
   },
   "devDependencies": {
+    "@pandacss/dev": "^1.11.4",
     "@tanstack/react-query": "^5.101.2",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
