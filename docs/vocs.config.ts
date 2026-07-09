@@ -8,6 +8,16 @@ export default defineConfig({
   iconUrl: '/favicon.svg',
   renderStrategy: 'full-static',
   twoslash: {
+    // twoslash fails on Vercel's cold build: its lib map lacks TS 5.9's
+    // lib.es2025.iterator.d.ts (pulled by @tanstack/react-query's types) — a
+    // @typescript/vfs bug that isn't reproducible locally. Instead of fixing the
+    // vfs, cache twoslash results inline (//@twoslash-cache comments, written by
+    // a local build and committed) so cold CI builds read the cache and never
+    // re-run twoslash — annotations still render. throws:false guards a cache
+    // miss (an edited snippet whose cache wasn't regenerated). Regenerate by
+    // rebuilding docs after editing any twoslash snippet.
+    throws: false,
+    inlineCache: true,
     twoslashOptions: {
       compilerOptions: {
         strict: true,
