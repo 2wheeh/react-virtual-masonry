@@ -12,7 +12,7 @@ The rendered markup exposes stable selectors:
 Target these and you can omit `className` entirely. Pass `className` only when several grids on one page need different styling.
 
 :::warning
-`style` is merged **after** the library's grid styles. Do not override `height`, `width`, or `position` — the layout depends on them.
+Whatever you layer on top of the grid root — the component's `style` prop, or your own props merged after `gridProps` — must not override `height`, `width`, or `position`. The layout depends on them.
 :::
 
 ## Responsive lane count
@@ -48,3 +48,9 @@ This pairs naturally with [Scrolling in a Container](/docs/scrolling-in-a-contai
 ## During SSR and first paint
 
 Before the client resolves `--lanes`, the lane count falls back to `ssr.lanes` (default `4`). The hook exposes the resolved value as `lanes`. See [Server-Side Rendering](/docs/ssr).
+
+## Reference
+
+- [`<Masonry />` › className](/docs/api/masonry#classname)
+- [`<Masonry />` › style](/docs/api/masonry#style)
+- [`useMasonry` › lanes](/docs/api/use-masonry#lanes)

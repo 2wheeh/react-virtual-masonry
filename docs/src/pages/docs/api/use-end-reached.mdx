@@ -4,6 +4,15 @@ A small, fetching-agnostic hook that fires a callback once the last rendered ite
 
 The [`<Masonry>`](/docs/api/masonry) component wires this hook internally via its `onEndReached` prop. For end-to-end examples of both flavors, see the [Infinite Loading](/docs/infinite-loading) guide.
 
+```ts
+function useEndReached(
+  items: Pick<VirtualItem, 'index'>[],
+  dataLength: number,
+  onEndReached: () => void,
+  options?: UseEndReachedOptions // { threshold?: number; disabled?: boolean }
+): void;
+```
+
 ## Parameters
 
 ### items

@@ -6,9 +6,18 @@ Sometimes the grid has to move on its own — restoring a position after navigat
 
 ## With the component
 
-You don't have to drop to [`useMasonry`](/docs/api/use-masonry) for imperative control. Pass a `ref` typed `MasonryHandle` to reach `scrollToIndex` — and the `virtualizer` escape hatch — from the component. See [`<Masonry />` › ref](/docs/api/masonry#ref) for the runnable example and the handle's full surface.
+You don't have to drop to [`useMasonry`](/docs/api/use-masonry) for imperative control. Pass a `ref` typed `MasonryHandle` to reach `scrollToIndex` — and the `virtualizer` escape hatch — from the component:
 
-Reach for the hook instead only when you also need a custom element structure.
+```tsx
+const ref = useRef<MasonryHandle>(null);
+
+<>
+  <button onClick={() => ref.current?.scrollToIndex(5, { align: 'center' })}>Jump to 5</button>
+  <Masonry ref={ref} data={data} estimateSize={estimate} renderItem={renderItem} />
+</>;
+```
+
+See [`<Masonry />` › ref](/docs/api/masonry#ref) for the full runnable example and the handle's surface. Reach for the hook instead only when you also need a custom element structure.
 
 ## With the hook
 
@@ -47,7 +56,7 @@ Accuracy is bounded by `estimateSize`: rows before `index` that have never been 
 
 ## Beyond scrollToIndex
 
-For imperative APIs the wrapper does not forward — `scrollToOffset`, `measure` — reach through to the underlying TanStack virtualizer, exposed as `virtualizer` on both the hook return and `MasonryHandle`.
+For imperative APIs beyond `scrollToIndex` — `scrollToOffset`, `measure` — reach through to the underlying TanStack virtualizer. It is exposed as `virtualizer` on both the hook return and `MasonryHandle`.
 
 :::warning
 The virtualizer has a stable identity with mutable internals. Deriving render values from it inside a React-Compiler-compiled component caches stale results — prefer `items` / `lanes`, or opt out with `'use no memo'`.

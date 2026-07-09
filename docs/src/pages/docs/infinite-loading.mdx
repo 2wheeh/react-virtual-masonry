@@ -1,6 +1,6 @@
 # Infinite Loading [Fetch the next page as the grid scrolls]
 
-kaskaid never fetches anything for you. It only tells you *when* the last rendered item has come close enough to the end of your data that it is time to load more — you wire that signal to whatever data layer you already use ([TanStack Query](https://tanstack.com/query), SWR, Apollo, a raw loader).
+kaskaid never fetches anything for you. It only tells you _when_ the last rendered item has come close enough to the end of your data that it is time to load more — you wire that signal to whatever data layer you already use ([TanStack Query](https://tanstack.com/query), SWR, Apollo, a raw loader).
 
 Both flavors expose the same trigger. The component takes an `onEndReached` callback; the hook lets you call [`useEndReached`](/docs/api/use-end-reached) yourself when you need custom markup around the grid.
 
@@ -39,10 +39,6 @@ function App() {
   );
 }
 ```
-
-:::note
-`endReachedThreshold` should be ≥ your `overscan` value (default `3`) so prefetch happens before the visible window runs out of data.
-:::
 
 ## With the hook
 
