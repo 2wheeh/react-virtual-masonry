@@ -1,5 +1,23 @@
 # react-virtual-masonry
 
+## 0.5.0
+
+### Minor Changes
+
+- [#57](https://github.com/2wheeh/react-virtual-masonry/pull/57) [`47c1b44`](https://github.com/2wheeh/react-virtual-masonry/commit/47c1b44f4e4a499ca622a779d9ff5a3a0baaa271) Thanks [@2wheeh](https://github.com/2wheeh)! - Add `computeMasonryLayout({ sizes, lanes, gutter })` — a pure helper that returns the full shortest-column packing (`{ items: { index, lane, start, size }[], totalSize }`) so whole-list UIs like minimaps can reuse the library's layout instead of forking it.
+
+- [#60](https://github.com/2wheeh/react-virtual-masonry/pull/60) [`9ff6257`](https://github.com/2wheeh/react-virtual-masonry/commit/9ff62579694b5d1add991803c8e952c3ac2edf54) Thanks [@2wheeh](https://github.com/2wheeh)! - `<Masonry>`'s `renderItem` callback now receives the full TanStack `VirtualItem` (`key`, `index`, `start`, `end`, `size`, `lane`) alongside the data `item`. This is additive — existing `({ item, index }) => ...` call sites keep working — and lets consumers read `lane` / `size` / `start` without dropping down to `useMasonry`.
+
+- [#56](https://github.com/2wheeh/react-virtual-masonry/pull/56) [`2f05666`](https://github.com/2wheeh/react-virtual-masonry/commit/2f0566661de056235389880110e546a04223efe9) Thanks [@2wheeh](https://github.com/2wheeh)! - `useMasonry` now returns `scrollOffset` and `viewportSize` for the active scroller, so consumers building scroll-aware UI (minimaps, position indicators) don't need to attach their own scroll listener + ResizeObserver.
+
+### Patch Changes
+
+- [#59](https://github.com/2wheeh/react-virtual-masonry/pull/59) [`3eb0af9`](https://github.com/2wheeh/react-virtual-masonry/commit/3eb0af90958e3092c02e6ea69ebc39a01f0d8f52) Thanks [@2wheeh](https://github.com/2wheeh)! - drop baseUrl for ts7 compliance
+
+- [#54](https://github.com/2wheeh/react-virtual-masonry/pull/54) [`2e08acc`](https://github.com/2wheeh/react-virtual-masonry/commit/2e08acc39b952c88ab76b70188719773102e843c) Thanks [@2wheeh](https://github.com/2wheeh)! - Clamp out-of-range indices before invoking the consumer's `estimateSize`, so estimators like `(i) => data[i].height` no longer throw when the virtualizer transiently probes an index outside the data range.
+
+- [#55](https://github.com/2wheeh/react-virtual-masonry/pull/55) [`9998311`](https://github.com/2wheeh/react-virtual-masonry/commit/9998311fb67f6b1207e75b3a695daf0a09147d85) Thanks [@2wheeh](https://github.com/2wheeh)! - Re-export the `VirtualItem` type from `@tanstack/react-virtual`, so consumers can type items from `useMasonry`/`getItemProps` directly instead of deriving `UseMasonryReturn['items'][number]`.
+
 ## 0.4.0
 
 ### Minor Changes
