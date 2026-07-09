@@ -19,7 +19,8 @@ export function StageRow({
   data,
   gutter,
   lanes,
-  scroll,
+  scrollOffset,
+  viewportSize,
   visibleSet,
   mountedSet,
   stageW,
@@ -42,7 +43,8 @@ export function StageRow({
   data: Descriptor[];
   gutter: number;
   lanes: number;
-  scroll: { top: number; h: number };
+  scrollOffset: number;
+  viewportSize: number;
   visibleSet: Set<number>;
   mountedSet: Set<number>;
   stageW: number | null;
@@ -68,7 +70,8 @@ export function StageRow({
         data={data}
         gutter={gutter}
         lanes={lanes}
-        scroll={scroll}
+        scrollOffset={scrollOffset}
+        viewportSize={viewportSize}
         visibleSet={visibleSet}
         mountedSet={mountedSet}
       />

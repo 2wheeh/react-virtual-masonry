@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { computeMasonryLayout } from 'react-virtual-masonry';
 import { css } from '../../../styled-system/css';
 import { MINIMAP_H } from './constants';
 import { SectionLabel } from './SectionLabel';
@@ -26,41 +27,37 @@ export function Minimap({
   data,
   gutter,
   lanes,
-  scroll,
+  scrollOffset,
+  viewportSize,
   visibleSet,
   mountedSet,
 }: {
   data: Descriptor[];
   gutter: number;
   lanes: number;
-  scroll: { top: number; h: number };
+  scrollOffset: number;
+  viewportSize: number;
   visibleSet: Set<number>;
   mountedSet: Set<number>;
 }) {
-  // Minimap schematic — shortest-column packing across the CURRENT lane count
-  // (not a fixed 3), so it mirrors the real layout the stage is showing. Sharing
-  // the lane count means the minimap's content height tracks the virtualizer's,
-  // which lets a single scale drive both the blocks and the viewport window.
-  const minimap = useMemo(() => {
-    const n = Math.max(lanes, 1);
-    const cols = Array.from({ length: n }, () => 0);
-    const blocks = data.map((d) => {
-      let lane = 0;
-      for (let l = 1; l < n; l++) if (cols[l] < cols[lane]) lane = l;
-      const start = cols[lane];
-      cols[lane] += d.height + gutter;
-      return { lane, start, size: d.height };
-    });
-    return { blocks, lanes: n, total: Math.max(...cols, 1) };
-  }, [data, gutter, lanes]);
+  // Minimap schematic — the library's own packing, run over the CURRENT lane
+  // count (not a fixed 3), so it mirrors the real layout the stage is showing.
+  // Sharing the packer means the minimap's content height tracks the
+  // virtualizer's, which lets a single scale drive both the blocks and the
+  // viewport window.
+  const minimap = useMemo(
+    () => computeMasonryLayout({ sizes: data.map((d) => d.height), lanes, gutter }),
+    [data, gutter, lanes]
+  );
 
   // ONE scale for the whole minimap. The window is in the virtualizer's real
-  // coordinate space and the blocks are in the schematic's — but both are packed
-  // with the same lane count / heights / gutter, so their totals agree and this
-  // single px-per-unit factor keeps the window box locked onto the blocks.
-  const scale = MINIMAP_H / minimap.total;
-  const winTop = scroll.top * scale;
-  const winH = Math.max(scroll.h * scale, 6);
+  // coordinate space and the blocks are in the schematic's — but both come from
+  // the same shortest-column packing over the same lane count / heights /
+  // gutter, so their totals agree and this single px-per-unit factor keeps the
+  // window box locked onto the blocks.
+  const scale = MINIMAP_H / Math.max(minimap.totalSize, 1);
+  const winTop = scrollOffset * scale;
+  const winH = Math.max(viewportSize * scale, 6);
 
   return (
     <div
@@ -86,7 +83,8 @@ export function Minimap({
           overflow: 'hidden',
         })}
       >
-        {minimap.blocks.map((b, i) => {
+        {minimap.items.map((b) => {
+          const i = b.index;
           const colW = 100 / minimap.lanes; // column fraction for the current lane count
           // Tier by the live virtualizer window: on-screen → solid coral,
           // mounted-but-off-screen (overscan) → dimmed coral, else ghost.

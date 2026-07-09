@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { VirtualItem } from '../types';
+import type { VirtualItem } from 'react-virtual-masonry';
 
 export interface VisibleRange {
   // The virtualizer's mounted set (window + overscan) — every rendered index.
@@ -10,12 +10,16 @@ export interface VisibleRange {
   visible: number;
 }
 
-// Derives the mounted / visible index sets from the virtualizer's items and the
-// stage scroll window. Pure (no refs/effects) — the scroll window is supplied by
-// useStageScroll.
+// Derives the mounted / visible index sets from the virtualizer's items and its
+// scroll window. Pure (no refs/effects) — `scrollOffset` / `viewportSize` come
+// straight off `useMasonry`, so the demo attaches no scroll listener of its own.
+// Taken as primitives rather than a `{top, h}` object: the caller derives them
+// each render, and an object literal would change identity every commit and
+// defeat these memos.
 export function useVisibleRange(
   items: VirtualItem[],
-  scroll: { top: number; h: number }
+  scrollOffset: number,
+  viewportSize: number
 ): VisibleRange {
   // The virtualizer's mounted set (window + overscan) — every index currently
   // rendered in the stage. Drives the minimap's "mounted" tier.
@@ -27,10 +31,12 @@ export function useVisibleRange(
     () =>
       new Set(
         items
-          .filter((it) => it.start < scroll.top + scroll.h && it.start + it.size > scroll.top)
+          .filter(
+            (it) => it.start < scrollOffset + viewportSize && it.start + it.size > scrollOffset
+          )
           .map((it) => it.index)
       ),
-    [items, scroll]
+    [items, scrollOffset, viewportSize]
   );
   const visible = visibleSet.size;
 

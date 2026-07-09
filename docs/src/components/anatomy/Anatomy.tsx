@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMasonry, useEndReached } from 'react-virtual-masonry';
 import { css } from '../../../styled-system/css';
 import { HeaderStrip } from './HeaderStrip';
@@ -9,7 +9,6 @@ import { StageRow } from './StageRow';
 import { useInfiniteFeed } from './hooks/useInfiniteFeed';
 import { useReducedMotion } from './hooks/useReducedMotion';
 import { useStageResize } from './hooks/useStageResize';
-import { useStageScroll } from './hooks/useStageScroll';
 import { useVisibleRange } from './hooks/useVisibleRange';
 
 // ---------------------------------------------------------------------------
@@ -42,21 +41,21 @@ export function Anatomy() {
   // Reflected `prefers-reduced-motion` — gates the smooth scroll animation.
   const reduceMotion = useReducedMotion();
 
-  // Stage scroll element ref + its rAF-throttled scroll window.
-  const { stageRef, scroll } = useStageScroll();
+  // The stage is the scroll container; the library windows against it and hands
+  // back its live scroll window, so the demo attaches no scroll listener.
+  const stageRef = useRef<HTMLDivElement>(null);
   // Drag-handle resize (mouse + keyboard) + the column/row refs and clamp bounds.
   const { stageColRef, stageRowRef, stageW, dragBounds, onHandleDown, onHandleKey } =
     useStageResize();
 
-  const { gridProps, getItemProps, items, lanes, scrollToIndex } = useMasonry({
-    data,
-    // Guard the lookup: the virtualizer can probe an index transiently out of
-    // range (e.g. mid-`scrollToIndex`), and `data[i]` would then be undefined.
-    estimateSize: (i) => data[i]?.height ?? 0,
-    gutter,
-    overscan,
-    scrollElementRef: stageRef,
-  });
+  const { gridProps, getItemProps, items, lanes, scrollToIndex, scrollOffset, viewportSize } =
+    useMasonry({
+      data,
+      estimateSize: (i) => data[i].height,
+      gutter,
+      overscan,
+      scrollElementRef: stageRef,
+    });
 
   // AUTO fires near the end; MANUAL never auto-fires (disabled). Either way a
   // fetch already in flight suppresses re-entry.
@@ -66,7 +65,7 @@ export function Anatomy() {
   });
 
   // Derived mounted/visible index sets from the virtualizer items + scroll window.
-  const { mountedSet, visibleSet, visible } = useVisibleRange(items, scroll);
+  const { mountedSet, visibleSet, visible } = useVisibleRange(items, scrollOffset, viewportSize);
 
   // Drive one align/scroll interaction and reflect it into the chip + buttons.
   // Plain handler — only used as an onClick (ControlPanel), so no useCallback
@@ -144,7 +143,8 @@ export function Anatomy() {
         data={data}
         gutter={gutter}
         lanes={lanes}
-        scroll={scroll}
+        scrollOffset={scrollOffset}
+        viewportSize={viewportSize}
         visibleSet={visibleSet}
         mountedSet={mountedSet}
         stageW={stageW}
