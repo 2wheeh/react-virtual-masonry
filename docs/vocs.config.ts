@@ -31,8 +31,17 @@ export default defineConfig({
       text: 'Introduction',
       items: [
         { text: 'Getting Started', link: '/docs/getting-started' },
-        { text: 'Scrolling in a Container', link: '/docs/scrolling-in-a-container' },
         { text: 'Anatomy', link: '/anatomy' },
+      ],
+    },
+    {
+      text: 'Guides',
+      items: [
+        { text: 'Infinite Loading', link: '/docs/infinite-loading' },
+        { text: 'Scrolling in a Container', link: '/docs/scrolling-in-a-container' },
+        { text: 'Server-Side Rendering', link: '/docs/ssr' },
+        { text: 'Imperative Scrolling', link: '/docs/imperative-scrolling' },
+        { text: 'Styling & Responsive Lanes', link: '/docs/styling' },
       ],
     },
     {

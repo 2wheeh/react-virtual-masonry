@@ -2,46 +2,7 @@
 
 A small, fetching-agnostic hook that fires a callback once the last rendered item nears the end of your loaded data. It never fetches anything itself — you wire the callback to whatever data layer you use ([TanStack Query](https://tanstack.com/query), SWR, Apollo, a raw loader). It pairs with [`useMasonry`](/docs/api/use-masonry) but works with any `{ index }[]` list.
 
-The [`<Masonry>`](/docs/api/masonry) component wires this hook internally — see its [Infinite loading](/docs/api/masonry#infinite-loading) section for the component API.
-
-## Composing directly
-
-```tsx twoslash
-// @twoslash-cache: {"v":1,"hash":"7242e33f56dd74f2fc9ffa8d7f3d137007dd920fd0ed5021dc0e48ce1476d020","data":"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"}
-import { useMasonry, useEndReached } from 'kaskaid';
-
-declare const data: number[];
-declare function loadMore(): void;
-declare const hasMore: boolean;
-declare const isLoading: boolean;
-// ---cut---
-const { items } = useMasonry({ data, estimateSize: (i) => data[i] });
-
-useEndReached(items, data.length, loadMore, {
-  threshold: 20,
-  disabled: !hasMore || isLoading,
-});
-```
-
-`onEndReached` is a plain no-arg callback, so you can pass your loader (`fetchNextPage`, `setSize`, `fetchMore`) directly — no wrapper needed.
-
-## With TanStack Query
-
-Flatten the pages into `data`, then hand `useEndReached` a callback that requests the next page. Gate re-firing with `disabled` while a page is in flight or there is no next page.
-
-```tsx
-const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-  /* … */
-});
-const items = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
-
-const { gridProps, getItemProps, items: virtualItems } = useMasonry({ data: items /* … */ });
-
-useEndReached(virtualItems, items.length, fetchNextPage, {
-  threshold: 20,
-  disabled: !hasNextPage || isFetchingNextPage,
-});
-```
+The [`<Masonry>`](/docs/api/masonry) component wires this hook internally via its `onEndReached` prop. For end-to-end examples of both flavors, see the [Infinite Loading](/docs/infinite-loading) guide.
 
 ## Parameters
 

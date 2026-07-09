@@ -11,6 +11,7 @@ type Page =
   | { path: '/docs/api/use-end-reached'; render: 'static' }
   | { path: '/docs/api/use-masonry'; render: 'static' }
   | { path: '/docs/getting-started'; render: 'static' }
+  | { path: '/docs/infinite-loading'; render: 'static' }
   | { path: '/docs/scrolling-in-a-container'; render: 'static' }
   | { path: '/'; render: 'static' }
 
