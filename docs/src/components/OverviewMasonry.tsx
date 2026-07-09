@@ -1,6 +1,6 @@
 'use client';
 
-import { Masonry } from 'react-virtual-masonry';
+import { Masonry } from 'kaskaid';
 
 const HEIGHTS = [200, 600, 200, 400, 100, 100, 50, 200];
 

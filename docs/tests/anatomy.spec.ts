@@ -25,7 +25,7 @@ async function panelReady(page: Page) {
   // mount only after client-side measurement — `scrollElementRef` is null during
   // SSR. Waiting for the first mounted item guarantees the panel is interactive,
   // avoiding a click landing on a not-yet-hydrated control.
-  await page.locator('[data-rvm-item]').first().waitFor();
+  await page.locator('[data-kaskaid-item]').first().waitFor();
 }
 
 function itemsCount(page: Page): Promise<number> {
@@ -161,13 +161,13 @@ test.describe('Anatomy · prefers-reduced-motion', () => {
     await panelReady(page);
   });
 
-  test('shimmer/dot keyframes (rvmsk + rvmdot) are disabled', async ({ page }) => {
-    // MANUAL Load more mounts both skeletons (rvmsk) and the footer dots (rvmdot),
-    // all carrying [data-rvm-anim]; the reduced-motion <style> must zero them.
+  test('shimmer/dot keyframes (kskshimmer + kskdot) are disabled', async ({ page }) => {
+    // MANUAL Load more mounts both skeletons (kskshimmer) and the footer dots (kskdot),
+    // all carrying [data-kaskaid-anim]; the reduced-motion <style> must zero them.
     await page.getByRole('button', { name: 'MANUAL', exact: true }).click();
     await page.getByRole('button', { name: /Load more/i }).click();
 
-    const animated = page.locator('[data-rvm-anim]');
+    const animated = page.locator('[data-kaskaid-anim]');
     await expect(animated.first()).toBeVisible();
     const names = await animated.evaluateAll((els) =>
       els.map((el) => getComputedStyle(el).animationName)

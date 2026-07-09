@@ -3,7 +3,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type RefObject,
 } from 'react';
-import { type UseMasonryReturn } from 'react-virtual-masonry';
+import { type UseMasonryReturn } from 'kaskaid';
 import { css } from '../../../styled-system/css';
 import type { Descriptor } from './data';
 import { Minimap } from './Minimap';

@@ -130,7 +130,7 @@ describe('Masonry — onEndReached', () => {
     const { container } = render(
       <Masonry data={DATA} estimateSize={(i) => DATA[i]} renderItem={renderItem} />
     );
-    expect(container.querySelector('[data-rvm-grid]')).not.toBeNull();
+    expect(container.querySelector('[data-kaskaid-grid]')).not.toBeNull();
   });
 });
 
@@ -185,6 +185,6 @@ describe('Masonry — scrollElementRef (container mode)', () => {
     // (Scroll-tracking/windowing math is covered in useMasonry.container.test.ts;
     // item DOM measures to 0 under happy-dom, so a mounted-count bound is unreliable here.)
     expect(ref.current?.virtualizer.scrollElement).toBe(scrollEl);
-    expect(document.querySelectorAll('[data-rvm-item]').length).toBeGreaterThan(0);
+    expect(document.querySelectorAll('[data-kaskaid-item]').length).toBeGreaterThan(0);
   });
 });

@@ -1,5 +1,5 @@
 // Shared control types for the Scroll API panel. `VirtualItem` is NOT declared
-// here — the library re-exports it, so import it from 'react-virtual-masonry'.
+// here — the library re-exports it, so import it from 'kaskaid'.
 
 /** The four Scroll API buttons. */
 export type ScrollBtn = 'start' | 'center' | 'end' | 'offset';

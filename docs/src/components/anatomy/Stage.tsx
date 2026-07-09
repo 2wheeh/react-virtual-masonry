@@ -3,7 +3,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type RefObject,
 } from 'react';
-import { type UseMasonryReturn } from 'react-virtual-masonry';
+import { type UseMasonryReturn } from 'kaskaid';
 import { css } from '../../../styled-system/css';
 import type { Descriptor } from './data';
 import { ArchetypeCard } from './Card';
@@ -337,9 +337,9 @@ export function Stage({
 }
 
 // The scroll container also establishes the `@container` context (class hook
-// `rvm-stage`) that maps width → `--lanes` on `[data-rvm-grid]`.
+// `ksk-stage`) that maps width → `--lanes` on `[data-kaskaid-grid]`.
 function cssStage() {
-  return `rvm-stage ${css({
+  return `ksk-stage ${css({
     position: 'absolute',
     inset: 0,
     overflow: 'auto',

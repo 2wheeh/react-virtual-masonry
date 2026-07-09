@@ -1,7 +1,7 @@
 import { css } from '../../../styled-system/css';
 import { LANE_COLORS } from './constants';
 import type { Descriptor } from './data';
-import type { VirtualItem } from 'react-virtual-masonry';
+import type { VirtualItem } from 'kaskaid';
 
 // Monospace stack for the instrument-panel numerals / code chips. Declared
 // file-local (not imported) so Panda statically extracts the font-family rule.

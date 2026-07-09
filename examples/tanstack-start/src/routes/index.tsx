@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Masonry } from 'react-virtual-masonry';
+import { Masonry } from 'kaskaid';
 
 import { createTiles, type Tile } from '../data';
 
@@ -16,13 +16,13 @@ const HOST_CLASS = 'cq-host';
 function HomePage() {
   return (
     <section data-testid="home">
-      {/* Wrapper owns `container-type`. @container rules target `[data-rvm-grid]`. */}
+      {/* Wrapper owns `container-type`. @container rules target `[data-kaskaid-grid]`. */}
       <style>{`
         .${HOST_CLASS}             { container-type: inline-size; }
-        [data-rvm-grid]            { --lanes: 1; }
-        @container (min-width: 640px)  { [data-rvm-grid] { --lanes: 2; } }
-        @container (min-width: 1024px) { [data-rvm-grid] { --lanes: 3; } }
-        @container (min-width: 1440px) { [data-rvm-grid] { --lanes: 4; } }
+        [data-kaskaid-grid]            { --lanes: 1; }
+        @container (min-width: 640px)  { [data-kaskaid-grid] { --lanes: 2; } }
+        @container (min-width: 1024px) { [data-kaskaid-grid] { --lanes: 3; } }
+        @container (min-width: 1440px) { [data-kaskaid-grid] { --lanes: 4; } }
       `}</style>
       <h1>SSR Masonry</h1>
       <p style={{ color: '#555' }}>

@@ -6,7 +6,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'TanStack Start | react-virtual-masonry SSR example' },
+      { title: 'TanStack Start | kaskaid SSR example' },
     ],
   }),
   component: RootComponent,

@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-virtual-masonry": "workspace:*",
+    "kaskaid": "workspace:*",
     "vocs": "^2.3.3",
     "waku": "^1.0.0-beta.6"
   },

@@ -1,10 +1,10 @@
 import { defineConfig } from 'vocs/config';
 
-import pkg from 'react-virtual-masonry/package.json' with { type: 'json' };
+import pkg from 'kaskaid/package.json' with { type: 'json' };
 
 export default defineConfig({
-  title: 'React Virtual Masonry',
-  description: 'Modern Masonry Layout with ease, powered by @tanstack/virtual',
+  title: 'kaskaid',
+  description: 'Virtualized masonry layout for React, powered by @tanstack/virtual',
   iconUrl: '/favicon.svg',
   renderStrategy: 'full-static',
   twoslash: {
@@ -47,7 +47,7 @@ export default defineConfig({
   socials: [
     {
       icon: 'github',
-      link: 'https://github.com/2wheeh/react-virtual-masonry',
+      link: 'https://github.com/2wheeh/kaskaid',
     },
   ],
   topNav: [
@@ -62,7 +62,7 @@ export default defineConfig({
       items: [
         {
           text: 'Changelog',
-          link: 'https://github.com/2wheeh/react-virtual-masonry/blob/main/package/CHANGELOG.md',
+          link: 'https://github.com/2wheeh/kaskaid/blob/main/package/CHANGELOG.md',
         },
       ],
     },
