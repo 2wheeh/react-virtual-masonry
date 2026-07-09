@@ -1,6 +1,6 @@
 # Demo [React Virtual Masonry in action]
 
-Drag the width slider to resize the preview _container_ — lane count is driven by `@container` queries reading the container's own size, not the browser viewport. Try the item count selector to see virtualization keep the DOM small even at 20,000 rows, and scroll the page to watch mounted item indexes shift.
+Drag the stage's right edge (or focus it and press ← / →) to resize the preview _container_ — lane count is driven by `@container` queries reading the container's own size, not the browser viewport. Hit **+10k** to append ten thousand items and watch `MOUNTED` stay small while `ITEMS` jumps, then scroll the stage to see the mounted-index window shift. The coral **x-ray** overlay annotates each card's live `index`, measured `size`, and `lane`.
 
 import { DemoPlayground } from '../../components/DemoPlayground';
 

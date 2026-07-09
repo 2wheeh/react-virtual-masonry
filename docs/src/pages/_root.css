@@ -1,3 +1,5 @@
+@layer reset, base, tokens, recipes, utilities;
+
 .footer {
   align-items: center;
   color: var(--vocs-color-text-muted, #8b8b8b);
