@@ -15,3 +15,10 @@ export { useEndReached } from './hooks/useEndReached';
 export type { UseEndReachedOptions } from './hooks/useEndReached';
 
 export type { VirtualItem } from '@tanstack/react-virtual';
+
+export { computeMasonryLayout } from './computeMasonryLayout';
+export type {
+  MasonryLayout,
+  MasonryLayoutItem,
+  ComputeMasonryLayoutOptions,
+} from './computeMasonryLayout';
