@@ -97,7 +97,7 @@ L1 `#3DA35D` (green), L2 `#B983FF` (purple).
   - Top-right `--lanes: 3` readout (mono, coral text, `readoutBg`, `border`).
   - Right-edge 10px drag handle (ew-resize; 3 dots).
   - Footer (fades in over `page`): AUTO → coral code chip
-    `useEndReached → fetchNextPage()` + (loading) 3 pulsing coral dots (`rvmdot`) +
+    `useEndReached → fetchNextPage()` + (loading) 3 pulsing coral dots (`kskdot`) +
     `mounting 12 skeletons`; MANUAL → `↓ Load more` button + `endReachedDisabled: true`.
 - **x-ray per card**: content dimmed (opacity .14 dark / .20 light); coral overlay
   border + glow; 3px lane-accent stripe (L0 blue / L1 green / L2 purple by
@@ -107,8 +107,8 @@ L1 `#3DA35D` (green), L2 `#B983FF` (purple).
 - Below the card: mono `t4` note `// heights are measured post-layout, never equalized · the feed only grows`.
 
 ## Keyframes
-- `rvmdot` — pulsing loading dots (opacity .25→1→.25).
-- `rvmsk` — skeleton shimmer (opacity .5→1→.5).
+- `kskdot` — pulsing loading dots (opacity .25→1→.25).
+- `kskshimmer` — skeleton shimmer (opacity .5→1→.5).
 Both must be disabled under `prefers-reduced-motion`.
 
 ## 8 target catalog states (from `Instrument Panel Demo.dc.html`)

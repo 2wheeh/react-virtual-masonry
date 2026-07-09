@@ -21,11 +21,11 @@ export default defineConfig({
       keyframes: {
         // Pulsing loading dots + skeleton shimmer. Consumers gate these on
         // `prefers-reduced-motion` at the call site (animation set to none).
-        rvmdot: {
+        kskdot: {
           '0%, 100%': { opacity: '0.25' },
           '50%': { opacity: '1' },
         },
-        rvmsk: {
+        kskshimmer: {
           '0%, 100%': { opacity: '0.5' },
           '50%': { opacity: '1' },
         },

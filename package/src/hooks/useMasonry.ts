@@ -57,15 +57,15 @@ export type UseMasonryOptions<Data> = ClientOnlyOptions<Data> | SSROptions<Data>
 export interface MasonryGridProps {
   ref: RefObject<HTMLDivElement | null>;
   style: CSSProperties;
-  'data-rvm-grid': '';
-  'data-rvm-lanes': number;
+  'data-kaskaid-grid': '';
+  'data-kaskaid-lanes': number;
 }
 
 /** Spread onto an item element. Pass `key={item.key}` separately. */
 export interface MasonryItemProps {
   ref: (el: HTMLElement | null) => void;
   'data-index': number;
-  'data-rvm-item': '';
+  'data-kaskaid-item': '';
   style: CSSProperties;
 }
 
@@ -104,7 +104,7 @@ export interface UseMasonryReturn {
  * Headless masonry hook. Owns the virtualizer, lane-count tracking, and the SSR
  * fallback chain; returns prop bags you spread onto your own JSX.
  *
- * Emits `[data-rvm-grid]` (with `data-rvm-lanes`) and `[data-rvm-item]` selectors.
+ * Emits `[data-kaskaid-grid]` (with `data-kaskaid-lanes`) and `[data-kaskaid-item]` selectors.
  * Never declares `container-type` — wrap externally for `@container`.
  */
 export function useMasonry<Data>({
@@ -210,13 +210,13 @@ export function useMasonry<Data>({
         width: '100%',
         position: 'relative',
       },
-      'data-rvm-grid': '',
-      'data-rvm-lanes': lanes,
+      'data-kaskaid-grid': '',
+      'data-kaskaid-lanes': lanes,
     },
     getItemProps: ({ lane, index, start }: VirtualItem) => ({
       ref: virtualizer.measureElement,
       'data-index': index,
-      'data-rvm-item': '',
+      'data-kaskaid-item': '',
       style: {
         position: 'absolute',
         top: 0,

@@ -4,8 +4,8 @@ import { expect, test } from '@playwright/test';
  * SSR invariants for <Masonry> on the root route:
  *   1. Opt-in SSR emits the first `ssr.itemCount` positioned tiles in raw HTML,
  *      using the same lane-assignment code path the client uses.
- *   2. Stable attrs: `data-rvm-grid` on root, `data-rvm-lanes="<n>"` reflecting
- *      the current lane count, `data-rvm-item` on each rendered item.
+ *   2. Stable attrs: `data-kaskaid-grid` on root, `data-kaskaid-lanes="<n>"` reflecting
+ *      the current lane count, `data-kaskaid-item` on each rendered item.
  *   3. Library never declares `container-type` on its root — that lives on a
  *      caller-owned wrapper. (Otherwise `@container` rules targeting the same
  *      element couldn't match.)
@@ -23,12 +23,12 @@ test.describe('Masonry SSR', () => {
     expect(response.status()).toBe(200);
   });
 
-  test('emits stable data-rvm-grid attr with current lane count', async ({ request }) => {
+  test('emits stable data-kaskaid-grid attr with current lane count', async ({ request }) => {
     const response = await request.get('/');
     const html = await response.text();
-    expect(html).toContain('data-rvm-grid=""');
+    expect(html).toContain('data-kaskaid-grid=""');
     // SSR initial lane count = ssr.lanes (3)
-    expect(html).toContain('data-rvm-lanes="3"');
+    expect(html).toContain('data-kaskaid-lanes="3"');
   });
 
   test('emits the first N positioned tiles in raw HTML', async ({ request }) => {
@@ -38,7 +38,7 @@ test.describe('Masonry SSR', () => {
     const tileMatches = html.match(/data-testid="tile"/g) ?? [];
     expect(tileMatches.length).toBe(SSR_ITEM_COUNT);
 
-    const itemMatches = html.match(/data-rvm-item=""/g) ?? [];
+    const itemMatches = html.match(/data-kaskaid-item=""/g) ?? [];
     expect(itemMatches.length).toBe(SSR_ITEM_COUNT);
   });
 
@@ -86,14 +86,14 @@ test.describe('Masonry SSR', () => {
     const html = await response.text();
     // Author CSS declares it on .cq-host
     expect(html).toMatch(/\.cq-host\s*\{\s*container-type:\s*inline-size/);
-    // Masonry root (the element with data-rvm-grid) must NOT inline container-type.
-    expect(html).not.toMatch(/data-rvm-grid="[^"]*"[^>]*style="[^"]*container-type/);
+    // Masonry root (the element with data-kaskaid-grid) must NOT inline container-type.
+    expect(html).not.toMatch(/data-kaskaid-grid="[^"]*"[^>]*style="[^"]*container-type/);
   });
 
   test('--lanes is never inlined on the masonry root', async ({ request }) => {
     const response = await request.get('/');
     const html = await response.text();
-    expect(html).not.toMatch(/data-rvm-grid="[^"]*"[^>]*style="[^"]*--lanes:/);
+    expect(html).not.toMatch(/data-kaskaid-grid="[^"]*"[^>]*style="[^"]*--lanes:/);
   });
 
   test('hydrates without hydration errors', async ({ page }) => {

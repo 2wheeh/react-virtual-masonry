@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { useMasonry, useEndReached } from 'react-virtual-masonry';
+import { useMasonry, useEndReached } from 'kaskaid';
 import { css } from '../../../styled-system/css';
 import { HeaderStrip } from './HeaderStrip';
 import { ControlPanel } from './ControlPanel';
@@ -120,17 +120,17 @@ export function Anatomy() {
         color: 'text',
       })}
     >
-      {/* container-query → --lanes, read by the library off [data-rvm-grid]. */}
+      {/* container-query → --lanes, read by the library off [data-kaskaid-grid]. */}
       <style>{`
-        .rvm-stage { container-type: inline-size; container-name: rvmstage; }
-        .rvm-stage [data-rvm-grid] { --lanes: 1; }
-        @container rvmstage (min-width: 380px) { .rvm-stage [data-rvm-grid] { --lanes: 2; } }
-        @container rvmstage (min-width: 560px) { .rvm-stage [data-rvm-grid] { --lanes: 3; } }
+        .ksk-stage { container-type: inline-size; container-name: kskstage; }
+        .ksk-stage [data-kaskaid-grid] { --lanes: 1; }
+        @container kskstage (min-width: 380px) { .ksk-stage [data-kaskaid-grid] { --lanes: 2; } }
+        @container kskstage (min-width: 560px) { .ksk-stage [data-kaskaid-grid] { --lanes: 3; } }
         @media (prefers-reduced-motion: reduce) {
-          /* Unscoped: the skeleton shimmer (rvmsk) lives inside .rvm-stage but the
-             footer loading dots (rvmdot) are a sibling of it — target every
-             [data-rvm-anim] so BOTH keyframes are killed. */
-          [data-rvm-anim] { animation: none !important; }
+          /* Unscoped: the skeleton shimmer (kskshimmer) lives inside .ksk-stage but the
+             footer loading dots (kskdot) are a sibling of it — target every
+             [data-kaskaid-anim] so BOTH keyframes are killed. */
+          [data-kaskaid-anim] { animation: none !important; }
         }
       `}</style>
 

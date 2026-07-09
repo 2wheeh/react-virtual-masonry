@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider, useInfiniteQuery } from '@tanstack/react-query';
-import { useEndReached, useMasonry } from 'react-virtual-masonry';
+import { useEndReached, useMasonry } from 'kaskaid';
 
 import { fetchFeedPage, type FeedItem } from '../infinite-data';
 
@@ -59,10 +59,10 @@ function InfiniteFeed() {
     <section data-testid="infinite-feed">
       <style>{`
         .${HOST_CLASS}             { container-type: inline-size; }
-        [data-rvm-grid]            { --lanes: 1; }
-        @container (min-width: 640px)  { [data-rvm-grid] { --lanes: 2; } }
-        @container (min-width: 1024px) { [data-rvm-grid] { --lanes: 3; } }
-        @container (min-width: 1440px) { [data-rvm-grid] { --lanes: 4; } }
+        [data-kaskaid-grid]            { --lanes: 1; }
+        @container (min-width: 640px)  { [data-kaskaid-grid] { --lanes: 2; } }
+        @container (min-width: 1024px) { [data-kaskaid-grid] { --lanes: 3; } }
+        @container (min-width: 1440px) { [data-kaskaid-grid] { --lanes: 4; } }
       `}</style>
       <h1>Infinite Feed</h1>
       <p style={{ color: '#555' }}>

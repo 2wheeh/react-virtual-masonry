@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { computeMasonryLayout } from 'react-virtual-masonry';
+import { computeMasonryLayout } from 'kaskaid';
 import { css } from '../../../styled-system/css';
 import { MINIMAP_H } from './constants';
 import { SectionLabel } from './SectionLabel';

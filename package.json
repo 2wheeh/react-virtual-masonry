@@ -7,7 +7,7 @@
   "packageManager": "pnpm@10.27.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/2wheeh/react-virtual-masonry"
+    "url": "https://github.com/2wheeh/kaskaid"
   },
   "scripts": {
     "bump": "taze -r -w && pnpm install",
@@ -18,10 +18,10 @@
     "dev": "turbo run dev --filter=demo",
     "build": "turbo run build --filter=demo",
     "check-types": "turbo run check-types",
-    "test": "turbo run test --filter=react-virtual-masonry",
+    "test": "turbo run test --filter=kaskaid",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "release": "turbo run build --filter=react-virtual-masonry && changeset publish",
+    "release": "turbo run build --filter=kaskaid && changeset publish",
     "docs:dev": "turbo run dev --filter=docs",
     "docs:build": "turbo run build --filter=docs",
     "docs:preview": "turbo run preview --filter=docs",

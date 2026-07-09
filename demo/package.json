@@ -15,7 +15,7 @@
   "dependencies": {
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-virtual-masonry": "workspace:*"
+    "kaskaid": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "catalog:",

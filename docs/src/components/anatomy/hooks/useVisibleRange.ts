@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { VirtualItem } from 'react-virtual-masonry';
+import type { VirtualItem } from 'kaskaid';
 
 export interface VisibleRange {
   // The virtualizer's mounted set (window + overscan) — every rendered index.

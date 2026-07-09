@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "2wheeh/react-virtual-masonry" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "2wheeh/kaskaid" }],
   "commit": false,
   "fixed": [],
   "linked": [],

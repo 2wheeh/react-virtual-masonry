@@ -9,7 +9,7 @@ jobs:
   release:
     environment: production
     name: Release
-    if: github.repository == '2wheeh/react-virtual-masonry'
+    if: github.repository == '2wheeh/kaskaid'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

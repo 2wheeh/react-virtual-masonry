@@ -1,4 +1,4 @@
-import { Masonry } from 'react-virtual-masonry';
+import { Masonry } from 'kaskaid';
 
 const DATA = [
   200, 600, 200, 400, 100, 600, 200, 400, 100, 600, 200, 400, 100, 600, 200, 400, 100, 200, 600,
@@ -27,9 +27,9 @@ function App() {
 
       {/* Responsive lane count via CSS — library reads `--lanes` from the grid root. */}
       <style>{`
-        [data-rvm-grid]                        { --lanes: 1; }
-        @media (min-width: 750px)  { [data-rvm-grid] { --lanes: 2; } }
-        @media (min-width: 900px)  { [data-rvm-grid] { --lanes: 3; } }
+        [data-kaskaid-grid]                        { --lanes: 1; }
+        @media (min-width: 750px)  { [data-kaskaid-grid] { --lanes: 2; } }
+        @media (min-width: 900px)  { [data-kaskaid-grid] { --lanes: 3; } }
       `}</style>
       <Masonry data={DATA} renderItem={Cell} estimateSize={() => 400} />
     </>

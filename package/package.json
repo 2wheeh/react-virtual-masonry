@@ -1,7 +1,22 @@
 {
-  "name": "react-virtual-masonry",
+  "name": "kaskaid",
   "type": "module",
   "version": "0.5.0",
+  "description": "Virtualized masonry layout for React, powered by @tanstack/virtual.",
+  "keywords": [
+    "masonry",
+    "masonry-layout",
+    "virtual",
+    "virtualized",
+    "virtualization",
+    "windowing",
+    "react",
+    "pinterest",
+    "layout",
+    "grid",
+    "cascade",
+    "tanstack"
+  ],
   "author": "wnhlee <2wheeh@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.27.0",
@@ -10,7 +25,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/2wheeh/react-virtual-masonry.git"
+    "url": "https://github.com/2wheeh/kaskaid.git"
   },
   "main": "dist/index.cjs",
   "module": "dist/index.js",

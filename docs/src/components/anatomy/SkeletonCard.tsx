@@ -4,7 +4,7 @@ import { css } from '../../../styled-system/css';
 // In-flight page placeholder. Same descriptor height as the eventual real card
 // (so lanes don't reflow when it resolves), a shimmering `skbg` fill, and no
 // x-ray chip — a skeleton has no measured `item` identity worth annotating.
-// The `data-rvm-anim` hook lets the reduced-motion `<style>` kill the shimmer.
+// The `data-kaskaid-anim` hook lets the reduced-motion `<style>` kill the shimmer.
 // ---------------------------------------------------------------------------
 export function SkeletonCard({ height }: { height: number }) {
   return (
@@ -21,13 +21,13 @@ export function SkeletonCard({ height }: { height: number }) {
       style={{ height }}
     >
       <div
-        data-rvm-anim
+        data-kaskaid-anim
         className={css({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           gap: '10px',
-          animation: 'rvmsk 1.2s ease-in-out infinite',
+          animation: 'kskshimmer 1.2s ease-in-out infinite',
         })}
       >
         <div className={css({ display: 'flex', alignItems: 'center', gap: '8px' })}>
@@ -62,13 +62,13 @@ export function LoadingDots() {
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          data-rvm-anim
+          data-kaskaid-anim
           className={css({
             width: '5px',
             height: '5px',
             borderRadius: 'full',
             bg: 'coral',
-            animation: 'rvmdot 1s ease-in-out infinite',
+            animation: 'kskdot 1s ease-in-out infinite',
           })}
           style={{ animationDelay: `${i * 0.18}s` }}
         />

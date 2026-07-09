@@ -20,7 +20,7 @@
     "@tanstack/react-virtual": "^3.13.24",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-virtual-masonry": "workspace:*"
+    "kaskaid": "workspace:*"
   },
   "devDependencies": {
     "@tanstack/router-cli": "^1.166.38",

@@ -57,7 +57,7 @@ test.describe('Infinite feed', () => {
 
     // No duplicate `data-index` among the currently-rendered virtualized items.
     const indices = await page
-      .locator('[data-rvm-item]')
+      .locator('[data-kaskaid-item]')
       .evaluateAll((els) => els.map((el) => el.getAttribute('data-index')));
     expect(new Set(indices).size).toBe(indices.length);
   });
@@ -92,7 +92,7 @@ test.describe('Infinite feed', () => {
 
     // No duplicates at the tail either.
     const indices = await page
-      .locator('[data-rvm-item]')
+      .locator('[data-kaskaid-item]')
       .evaluateAll((els) => els.map((el) => el.getAttribute('data-index')));
     expect(new Set(indices).size).toBe(indices.length);
     expect(Math.max(...indices.map(Number))).toBe(TOTAL_ITEMS - 1);

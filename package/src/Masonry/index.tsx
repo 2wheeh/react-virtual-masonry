@@ -36,7 +36,7 @@ type Props<Data> = UseMasonryOptions<Data> & {
    *  `<Masonry>` and down to {@link useMasonry} just to read them. */
   renderItem: (props: VirtualItem & { item: Data }) => ReactNode;
   /** Instance-specific selector when multiple grids need different styling.
-   *  Most usage can target `[data-rvm-grid]` and omit this. */
+   *  Most usage can target `[data-kaskaid-grid]` and omit this. */
   className?: string;
   /** Merged after the library's grid styles. Do not override `height` / `width`
    *  / `position`. */
