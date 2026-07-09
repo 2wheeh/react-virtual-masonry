@@ -4,9 +4,9 @@
   "type": "module",
   "version": "0.2.0",
   "scripts": {
-    "codegen": "panda codegen",
-    "dev": "panda codegen && vocs dev",
-    "build": "panda codegen && vocs build",
+    "postinstall": "panda codegen",
+    "dev": "vocs dev",
+    "build": "vocs build",
     "preview": "vocs preview"
   },
   "dependencies": {
