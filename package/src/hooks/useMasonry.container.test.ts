@@ -81,6 +81,29 @@ describe('useMasonry — scrollElementRef', () => {
     expect(result.current.virtualizer.scrollElement).toBe(window);
   });
 
+  it('exposes the container scrollOffset and viewportSize, tracking scroll', () => {
+    const data = Array.from({ length: 1000 }, (_, i) => i);
+    const scrollElementRef = { current: container };
+
+    const { result } = renderHook(() =>
+      useMasonry({ data, estimateSize: () => 100, scrollElementRef })
+    );
+
+    // viewportSize mirrors the container's measured height (clientHeight: 400).
+    expect(result.current.viewportSize).toBe(400);
+    // Offset starts at the container's scrollTop (0), not window.scrollY.
+    expect(result.current.scrollOffset).toBe(0);
+
+    act(() => {
+      container.scrollTop = 5000;
+      container.dispatchEvent(new Event('scroll'));
+    });
+
+    // Reactive: the offset follows the container's scrollTop after a scroll.
+    expect(result.current.scrollOffset).toBe(5000);
+    expect(result.current.viewportSize).toBe(400);
+  });
+
   it('rejects `ssr` + `scrollElementRef` together at the type level', () => {
     const scrollElementRef = { current: null as HTMLElement | null };
     // Container mode is client-only; SSR is window-only. Passing both must not
