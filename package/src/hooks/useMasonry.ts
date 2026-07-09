@@ -89,6 +89,15 @@ export interface UseMasonryReturn {
    *  {@link https://tanstack.com/virtual/latest/docs/api/virtualizer#scrolltoindex scrollToIndex};
    *  cold-jump accuracy is bounded by `estimateSize` (see docs). */
   scrollToIndex: (index: number, options?: ScrollToOptions) => void;
+  /** Current scroll offset (px) of the active scroller — the window or, in container
+   *  mode, the `scrollElementRef` element. Reactive: re-renders on scroll. `0` before
+   *  the virtualizer has measured. Use for scroll-aware UI (minimaps, position
+   *  indicators) without attaching your own scroll listener. */
+  scrollOffset: number;
+  /** Viewport height (px) of the active scroller — the window or, in container mode,
+   *  the `scrollElementRef` element. Reactive: re-renders as the viewport resizes. `0`
+   *  before the virtualizer has measured. Pairs with {@link scrollOffset}. */
+  viewportSize: number;
 }
 
 /**
@@ -211,5 +220,7 @@ export function useMasonry<Data>({
     lanes,
     virtualizer,
     scrollToIndex,
+    scrollOffset: virtualizer.scrollOffset ?? 0,
+    viewportSize: virtualizer.scrollRect?.height ?? 0,
   };
 }
