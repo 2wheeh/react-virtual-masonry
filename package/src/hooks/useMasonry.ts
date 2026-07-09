@@ -127,12 +127,21 @@ export function useMasonry<Data>({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // The virtualizer transiently probes indices outside `data` (mid-`scrollToIndex`,
+  // or as a growing feed shrinks), so clamp to `[0, length-1]` before handing off to
+  // the consumer's `estimateSize` — otherwise estimators like `(i) => data[i].height`
+  // throw on the out-of-range read. Plain function is fine under `'use no memo'`.
+  const boundedEstimateSize = (index: number) => {
+    if (!estimateSize || data.length === 0) return 0;
+    return estimateSize(Math.min(Math.max(index, 0), data.length - 1));
+  };
+
   // Rules-of-hooks forbids picking one virtualizer by mode, and their types are
   // incompatible (`useVirtualizer` rejects `Window`). So both run; the idle one is
   // made inert by TanStack's `enabled` option — no scroll/resize listeners.
   const windowVirtualizer = useWindowVirtualizer({
     count: data.length,
-    estimateSize: estimateSize ?? (() => 0),
+    estimateSize: boundedEstimateSize,
     overscan,
     lanes,
     scrollMargin: windowScrollMargin,
@@ -143,7 +152,7 @@ export function useMasonry<Data>({
 
   const elementVirtualizer = useVirtualizer({
     count: data.length,
-    estimateSize: estimateSize ?? (() => 0),
+    estimateSize: boundedEstimateSize,
     overscan,
     lanes,
     scrollMargin: containerScrollMargin,
