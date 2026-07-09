@@ -6,6 +6,8 @@ import { css } from '../../../styled-system/css';
 import { HeaderStrip } from './HeaderStrip';
 import { ControlPanel } from './ControlPanel';
 import { StageRow } from './StageRow';
+import { SCROLL_OFFSET_PX, SCROLL_TARGETS } from './data';
+import type { ScrollBtn, ScrollCall } from './types';
 import { useInfiniteFeed } from './hooks/useInfiniteFeed';
 import { useReducedMotion } from './hooks/useReducedMotion';
 import { useStageResize } from './hooks/useStageResize';
@@ -20,15 +22,14 @@ import { useVisibleRange } from './hooks/useVisibleRange';
 export function Anatomy() {
   const [xray] = useState(true);
 
-  // The last `scrollToIndex` invocation, mirrored into the code chip + the
-  // active (coral) align button. `btn` is the pressed control; `index/align`
-  // are the *actual* arguments (last resolves to the live final index).
-  const [scrollBtn, setScrollBtn] = useState<'start' | 'center' | 'end' | 'last'>('start');
-  const [scrollArgs, setScrollArgs] = useState<{
-    index: number;
-    align: 'start' | 'center' | 'end' | 'auto';
-  }>({
-    index: 184,
+  // The last scroll invocation, mirrored into the code chip + the active (coral)
+  // button. `btn` is the pressed control; `scrollCall` holds the *actual*
+  // arguments, tagged by which API ran — END resolves against the live feed
+  // length, and OFFSET calls `scrollToOffset` rather than `scrollToIndex`.
+  const [scrollBtn, setScrollBtn] = useState<ScrollBtn>('start');
+  const [scrollCall, setScrollCall] = useState<ScrollCall>({
+    kind: 'index',
+    index: SCROLL_TARGETS.start,
     align: 'start',
   });
   const [loadMode, setLoadMode] = useState<'auto' | 'manual'>('auto');
@@ -48,14 +49,24 @@ export function Anatomy() {
   const { stageColRef, stageRowRef, stageW, dragBounds, onHandleDown, onHandleKey } =
     useStageResize();
 
-  const { gridProps, getItemProps, items, lanes, scrollToIndex, scrollOffset, viewportSize } =
-    useMasonry({
-      data,
-      estimateSize: (i) => data[i].height,
-      gutter,
-      overscan,
-      scrollElementRef: stageRef,
-    });
+  // `virtualizer` is the escape hatch: `useMasonry` returns `scrollToIndex` but
+  // not `scrollToOffset`, which the OFFSET button needs.
+  const {
+    gridProps,
+    getItemProps,
+    items,
+    lanes,
+    scrollToIndex,
+    scrollOffset,
+    viewportSize,
+    virtualizer,
+  } = useMasonry({
+    data,
+    estimateSize: (i) => data[i].height,
+    gutter,
+    overscan,
+    scrollElementRef: stageRef,
+  });
 
   // AUTO fires near the end; MANUAL never auto-fires (disabled). Either way a
   // fetch already in flight suppresses re-entry.
@@ -67,29 +78,32 @@ export function Anatomy() {
   // Derived mounted/visible index sets from the virtualizer items + scroll window.
   const { mountedSet, visibleSet, visible } = useVisibleRange(items, scrollOffset, viewportSize);
 
-  // Drive one align/scroll interaction and reflect it into the chip + buttons.
-  // Plain handler — only used as an onClick (ControlPanel), so no useCallback
-  // stability is needed; it closes over the live `data` for the 'last' index.
-  const runScroll = (btn: 'start' | 'center' | 'end' | 'last') => {
-    let index: number;
-    let align: 'start' | 'center' | 'end' | 'auto';
-    if (btn === 'start') {
-      index = 184;
-      align = 'start';
-    } else if (btn === 'center') {
-      index = 198;
-      align = 'center';
-    } else if (btn === 'end') {
-      index = 212;
-      align = 'end';
-    } else {
-      // scroll to the very end of the (growing) feed — the last item.
-      index = data.length - 1;
-      align = 'end';
-    }
+  // Drive one scroll interaction and reflect the real call into the chip +
+  // buttons. Plain handler — only used as an onClick (ControlPanel), so no
+  // useCallback stability is needed; it closes over the live `data` for END.
+  const runScroll = (btn: ScrollBtn) => {
+    const behavior = reduceMotion ? 'auto' : 'smooth';
     setScrollBtn(btn);
-    setScrollArgs({ index, align });
-    scrollToIndex(index, { align, behavior: reduceMotion ? 'auto' : 'smooth' });
+
+    // Raw px offset, not an index — goes through the virtualizer directly.
+    if (btn === 'offset') {
+      setScrollCall({ kind: 'offset', offset: SCROLL_OFFSET_PX, align: 'start' });
+      virtualizer.scrollToOffset(SCROLL_OFFSET_PX, { align: 'start', behavior });
+      return;
+    }
+
+    // START / CENTER target fixed indices inside the initial feed; END resolves
+    // against the live (grown) feed, so it always lands on the true last item.
+    const index =
+      btn === 'start'
+        ? SCROLL_TARGETS.start
+        : btn === 'center'
+          ? SCROLL_TARGETS.center
+          : data.length - 1;
+    const align = btn === 'center' ? 'center' : btn === 'start' ? 'start' : 'end';
+
+    setScrollCall({ kind: 'index', index, align });
+    scrollToIndex(index, { align, behavior });
   };
 
   return (
@@ -123,7 +137,7 @@ export function Anatomy() {
       <HeaderStrip items={data.length} mounted={items.length} visible={visible} lanes={lanes} />
 
       <ControlPanel
-        scrollArgs={scrollArgs}
+        scrollCall={scrollCall}
         scrollBtn={scrollBtn}
         runScroll={runScroll}
         loadMode={loadMode}

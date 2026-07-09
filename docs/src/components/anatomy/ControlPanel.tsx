@@ -3,20 +3,20 @@ import { SectionLabel } from './SectionLabel';
 import { AlignButton } from './AlignButton';
 import { Segmented } from './Segmented';
 import { Slider } from './Slider';
+import { SCROLL_OFFSET_PX, SCROLL_TARGETS } from './data';
+import type { ScrollBtn, ScrollCall } from './types';
 
 // Monospace stack for the instrument-panel numerals / code chips. Declared
 // file-local (not imported) so Panda statically extracts the font-family rule.
 const MONO =
   'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
 
-type ScrollBtn = 'start' | 'center' | 'end' | 'last';
-
 // ---------------------------------------------------------------------------
 // Control panel — SCROLL API code chip + align buttons, LOAD segmented, and the
 // GUTTER / OVERSCAN / THRESHOLD sliders.
 // ---------------------------------------------------------------------------
 export function ControlPanel({
-  scrollArgs,
+  scrollCall,
   scrollBtn,
   runScroll,
   loadMode,
@@ -28,7 +28,7 @@ export function ControlPanel({
   threshold,
   setThreshold,
 }: {
-  scrollArgs: { index: number; align: 'start' | 'center' | 'end' | 'auto' };
+  scrollCall: ScrollCall;
   scrollBtn: ScrollBtn;
   runScroll: (btn: ScrollBtn) => void;
   loadMode: 'auto' | 'manual';
@@ -86,34 +86,38 @@ export function ControlPanel({
             },
           })}
         >
-          scrollToIndex({scrollArgs.index}, {'{'} align: '{scrollArgs.align}' {'}'})
+          {scrollCall.kind === 'index'
+            ? `scrollToIndex(${scrollCall.index}, { align: '${scrollCall.align}' })`
+            : `scrollToOffset(${scrollCall.offset}, { align: '${scrollCall.align}' })`}
         </code>
       </div>
 
       <div className={css({ display: 'flex', gap: '10px' })}>
         <AlignButton
-          num="184"
+          num={String(SCROLL_TARGETS.start)}
           sub="START"
           active={scrollBtn === 'start'}
           onClick={() => runScroll('start')}
         />
         <AlignButton
-          num="198"
+          num={String(SCROLL_TARGETS.center)}
           sub="CENTER"
           active={scrollBtn === 'center'}
           onClick={() => runScroll('center')}
         />
+        {/* Resolves against the live feed length, so it has no fixed numeral. */}
         <AlignButton
-          num="212"
-          sub="END"
+          num="end"
+          sub="SCROLL TO END"
           active={scrollBtn === 'end'}
           onClick={() => runScroll('end')}
         />
+        {/* Raw px offset — a different API (scrollToOffset), not an index. */}
         <AlignButton
-          num="last"
-          sub="END"
-          active={scrollBtn === 'last'}
-          onClick={() => runScroll('last')}
+          num={`${SCROLL_OFFSET_PX}px`}
+          sub="OFFSET"
+          active={scrollBtn === 'offset'}
+          onClick={() => runScroll('offset')}
         />
       </div>
 

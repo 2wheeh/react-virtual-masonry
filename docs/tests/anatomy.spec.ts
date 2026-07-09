@@ -52,17 +52,37 @@ test.describe('Anatomy', () => {
 
   test('align button updates the scrollToIndex code chip + pressed state', async ({ page }) => {
     const code = page.getByTestId('scroll-api');
-    await expect(code).toContainText("scrollToIndex(184, { align: 'start' })");
+    await expect(code).toContainText("scrollToIndex(1, { align: 'start' })");
 
     const center = page.getByRole('button', { name: /CENTER/i });
     await center.click();
 
-    await expect(code).toContainText("scrollToIndex(198, { align: 'center' })");
+    // 36 = ITEM_COUNT / 2 — inside the initial feed, so the virtualizer does not
+    // clamp it (an out-of-range target would silently collapse onto the last item).
+    await expect(code).toContainText("scrollToIndex(36, { align: 'center' })");
     await expect(center).toHaveAttribute('aria-pressed', 'true');
     // The previously-active START button is no longer pressed.
     await expect(page.getByRole('button', { name: /START/i })).toHaveAttribute(
       'aria-pressed',
       'false'
+    );
+  });
+
+  test('END resolves to the live last index; OFFSET switches to scrollToOffset', async ({
+    page,
+  }) => {
+    const code = page.getByTestId('scroll-api');
+
+    // END targets the final item of the *initial* 72-item feed (index 71).
+    await page.getByRole('button', { name: /SCROLL TO END/i }).click();
+    await expect(code).toContainText("scrollToIndex(71, { align: 'end' })");
+
+    // OFFSET is a different API entirely — a raw px offset, not an index.
+    await page.getByRole('button', { name: /OFFSET/i }).click();
+    await expect(code).toContainText("scrollToOffset(2000, { align: 'start' })");
+    await expect(page.getByRole('button', { name: /OFFSET/i })).toHaveAttribute(
+      'aria-pressed',
+      'true'
     );
   });
 
