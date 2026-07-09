@@ -1,10 +1,5 @@
 import { css } from '../../../styled-system/css';
 
-// Monospace stack for the instrument-panel numerals / code chips. Declared
-// file-local (not imported) so Panda statically extracts the font-family rule.
-const MONO =
-  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 export function AlignButton({
   num,
   sub,
@@ -43,7 +38,7 @@ export function AlignButton({
     >
       <span
         className={css({
-          fontFamily: MONO,
+          fontFamily: 'mono',
           fontSize: '15px',
           lineHeight: '1',
           fontVariantNumeric: 'tabular-nums',

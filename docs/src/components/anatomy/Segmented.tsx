@@ -1,10 +1,5 @@
 import { css } from '../../../styled-system/css';
 
-// Monospace stack for the instrument-panel numerals / code chips. Declared
-// file-local (not imported) so Panda statically extracts the font-family rule.
-const MONO =
-  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 export function Segmented({
   value,
   onChange,
@@ -24,7 +19,7 @@ export function Segmented({
           height: '28px',
           display: 'flex',
           alignItems: 'center',
-          fontFamily: MONO,
+          fontFamily: 'mono',
           fontSize: '11px',
           letterSpacing: '.06em',
           border: 'none',

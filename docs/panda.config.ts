@@ -37,6 +37,16 @@ export default defineConfig({
           // they're applied via dynamic inline `style`, not Panda class props.)
           coral: { value: '#F47067' },
         },
+        fonts: {
+          // Instrument-panel monospace stack, shared as a token rather than a JS
+          // const: Panda's extractor can't resolve a cross-file constant inside
+          // `css()` (it silently drops the rule), but token references resolve
+          // through codegen, so `fontFamily: 'mono'` is safe from any file.
+          mono: {
+            value:
+              'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+          },
+        },
       },
       semanticTokens: {
         colors: {

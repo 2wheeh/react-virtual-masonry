@@ -1,10 +1,5 @@
 import { css } from '../../../styled-system/css';
 
-// Monospace stack for the instrument-panel numerals / code chips. Declared
-// file-local (not imported) so Panda statically extracts the font-family rule.
-const MONO =
-  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 // ---------------------------------------------------------------------------
 // Header stat pod.
 // ---------------------------------------------------------------------------
@@ -14,7 +9,7 @@ function StatPod({ label, value, testId }: { label: string; value: string; testI
       <span
         data-testid={testId}
         className={css({
-          fontFamily: MONO,
+          fontFamily: 'mono',
           fontSize: '19px',
           lineHeight: '1',
           fontVariantNumeric: 'tabular-nums',

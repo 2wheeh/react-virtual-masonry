@@ -1,10 +1,5 @@
 import { css } from '../../../styled-system/css';
 
-// Monospace stack for the instrument-panel numerals / code chips. Declared
-// file-local (not imported) so Panda statically extracts the font-family rule.
-const MONO =
-  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 // Slider fill (product mode) — not a semantic token; theme-flipped inline.
 const FILL_LIGHT = '#a8a8ac';
 const FILL_DARK = '#5b5860';
@@ -34,7 +29,7 @@ export function Slider({
     <div className={css({ display: 'flex', alignItems: 'center', gap: '12px' })}>
       <span
         className={css({
-          fontFamily: MONO,
+          fontFamily: 'mono',
           fontSize: '11px',
           letterSpacing: '.06em',
           color: 't3',
@@ -120,7 +115,7 @@ export function Slider({
       </div>
       <span
         className={css({
-          fontFamily: MONO,
+          fontFamily: 'mono',
           fontSize: '11px',
           color: 't2',
           minWidth: '64px',

@@ -5,28 +5,16 @@
 export const ARCHETYPES = ['image', 'short', 'tall', 'quote'] as const;
 export type Archetype = (typeof ARCHETYPES)[number];
 
+// The card renders placeholder bars, not real author text, so a descriptor
+// carries only what the demo actually draws: the measured height, the body
+// archetype, and the engagement counts.
 export interface Descriptor {
   height: number;
   archetype: Archetype;
-  name: string;
-  handle: string;
-  time: string;
   replies: number;
   reposts: number;
   likes: number;
 }
-
-const NAMES = [
-  'Ada Lovelace',
-  'Grace Hopper',
-  'Alan Kay',
-  'Radia Perlman',
-  'Linus T.',
-  'Margaret H.',
-  'Ken Thompson',
-  'Barbara Liskov',
-];
-const HANDLES = ['ada', 'ghopper', 'alankay', 'radia', 'torvalds', 'mhamilton', 'ken', 'liskov'];
 
 function hash(n: number, seed: number): number {
   const x = Math.sin(n * 12.9898 + seed * 78.233) * 43758.5453;
@@ -74,9 +62,6 @@ export function makeItem(i: number): Descriptor {
   return {
     height,
     archetype,
-    name: NAMES[i % NAMES.length],
-    handle: `@${HANDLES[i % HANDLES.length]}`,
-    time: `${1 + Math.floor(hash(i, 3) * 23)}h`,
     replies: Math.round(hash(i, 4) * 30),
     reposts: Math.round(hash(i, 5) * 40),
     likes: Math.round(hash(i, 6) * 200),

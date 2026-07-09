@@ -3,11 +3,6 @@ import { LANE_COLORS } from './constants';
 import type { Descriptor } from './data';
 import type { VirtualItem } from 'kaskaid';
 
-// Monospace stack for the instrument-panel numerals / code chips. Declared
-// file-local (not imported) so Panda statically extracts the font-family rule.
-const MONO =
-  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 // Small bar primitive for the archetype card skeleton content.
 function Bar({
   w,
@@ -29,15 +24,7 @@ function Bar({
 // x-ray content dims via the `_xray` condition; the coral overlay/chips read the
 // live `item.index` / `item.size` / `item.lane`.
 // ---------------------------------------------------------------------------
-export function ArchetypeCard({
-  d,
-  item,
-  xray,
-}: {
-  d: Descriptor;
-  item: VirtualItem;
-  xray: boolean;
-}) {
+export function ArchetypeCard({ d, item }: { d: Descriptor; item: VirtualItem }) {
   const laneColor = LANE_COLORS[item.lane % LANE_COLORS.length];
   return (
     <div
@@ -125,7 +112,7 @@ export function ArchetypeCard({
             display: 'flex',
             gap: '12px',
             mt: 'auto',
-            fontFamily: MONO,
+            fontFamily: 'mono',
             fontSize: '10px',
             color: 't3',
           })}
@@ -136,89 +123,84 @@ export function ArchetypeCard({
         </div>
       </div>
 
-      {/* x-ray overlay — outlined coral card border + glow, outlined chips */}
-      {xray && (
-        <>
-          {/* lane accent stripe — rendered UNDER the coral overlay so the lane
-              color and the coral border layer/overlap (design look) instead of the
-              solid stripe hard-covering the left edge */}
-          <div
-            aria-hidden
-            className={css({
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              width: '3px',
-              pointerEvents: 'none',
-            })}
-            style={{ background: laneColor }}
-          />
-          <div
-            aria-hidden
-            className={css({
-              position: 'absolute',
-              inset: 0,
-              borderRadius: '8px',
-              border: '1px solid',
-              borderColor: 'coral',
-              bg: 'rgba(244,112,103,0.05)',
-              boxShadow: '0 0 0 1px rgba(244,112,103,0.15)',
-              _dark: {
-                bg: 'rgba(244,112,103,0.06)',
-                boxShadow:
-                  'inset 0 0 0 1px rgba(244,112,103,0.25), 0 0 14px rgba(244,112,103,0.14)',
-              },
-              pointerEvents: 'none',
-            })}
-          />
-          {/* index · size chip — OUTLINED coral pill (decorative, hidden from AT) */}
-          <span
-            data-testid="xray-chip"
-            aria-hidden
-            className={css({
-              position: 'absolute',
-              top: '7px',
-              left: '7px',
-              fontFamily: MONO,
-              fontSize: '10px',
-              fontWeight: '600',
-              color: 'coral',
-              bg: 'rgba(255,255,255,0.9)',
-              _dark: { bg: 'rgba(14,13,15,0.86)' },
-              border: '1px solid rgba(244,112,103,0.5)',
-              borderRadius: '5px',
-              px: '6px',
-              py: '2px',
-              letterSpacing: '.02em',
-              fontVariantNumeric: 'tabular-nums',
-            })}
-          >
-            #{item.index} · {Math.round(item.size)}px
-          </span>
-          {/* lane badge — OUTLINED lane-colored pill */}
-          <span
-            aria-hidden
-            className={css({
-              position: 'absolute',
-              top: '7px',
-              right: '7px',
-              fontFamily: MONO,
-              fontSize: '10px',
-              fontWeight: '600',
-              bg: 'rgba(255,255,255,0.9)',
-              _dark: { bg: 'rgba(14,13,15,0.86)' },
-              border: '1px solid',
-              borderRadius: '5px',
-              px: '6px',
-              py: '2px',
-            })}
-            style={{ color: laneColor, borderColor: laneColor }}
-          >
-            L{item.lane}
-          </span>
-        </>
-      )}
+      {/* x-ray overlay (always on in this demo) — outlined coral card border +
+          glow, outlined chips. The lane accent stripe renders UNDER the coral
+          overlay so the lane color and the coral border layer/overlap (design
+          look) instead of the solid stripe hard-covering the left edge. */}
+      <div
+        aria-hidden
+        className={css({
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          width: '3px',
+          pointerEvents: 'none',
+        })}
+        style={{ background: laneColor }}
+      />
+      <div
+        aria-hidden
+        className={css({
+          position: 'absolute',
+          inset: 0,
+          borderRadius: '8px',
+          border: '1px solid',
+          borderColor: 'coral',
+          bg: 'rgba(244,112,103,0.05)',
+          boxShadow: '0 0 0 1px rgba(244,112,103,0.15)',
+          _dark: {
+            bg: 'rgba(244,112,103,0.06)',
+            boxShadow: 'inset 0 0 0 1px rgba(244,112,103,0.25), 0 0 14px rgba(244,112,103,0.14)',
+          },
+          pointerEvents: 'none',
+        })}
+      />
+      {/* index · size chip — OUTLINED coral pill (decorative, hidden from AT) */}
+      <span
+        data-testid="xray-chip"
+        aria-hidden
+        className={css({
+          position: 'absolute',
+          top: '7px',
+          left: '7px',
+          fontFamily: 'mono',
+          fontSize: '10px',
+          fontWeight: '600',
+          color: 'coral',
+          bg: 'rgba(255,255,255,0.9)',
+          _dark: { bg: 'rgba(14,13,15,0.86)' },
+          border: '1px solid rgba(244,112,103,0.5)',
+          borderRadius: '5px',
+          px: '6px',
+          py: '2px',
+          letterSpacing: '.02em',
+          fontVariantNumeric: 'tabular-nums',
+        })}
+      >
+        #{item.index} · {Math.round(item.size)}px
+      </span>
+      {/* lane badge — OUTLINED lane-colored pill */}
+      <span
+        aria-hidden
+        className={css({
+          position: 'absolute',
+          top: '7px',
+          right: '7px',
+          fontFamily: 'mono',
+          fontSize: '10px',
+          fontWeight: '600',
+          bg: 'rgba(255,255,255,0.9)',
+          _dark: { bg: 'rgba(14,13,15,0.86)' },
+          border: '1px solid',
+          borderRadius: '5px',
+          px: '6px',
+          py: '2px',
+        })}
+        style={{ color: laneColor, borderColor: laneColor }}
+      >
+        L{item.lane}
+      </span>
     </div>
   );
 }

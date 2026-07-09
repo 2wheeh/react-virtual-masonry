@@ -124,6 +124,18 @@ Scrolls so `index` is positioned per `options.align` (default `'auto'`: nearest 
 
 Accuracy is bounded by `estimateSize` — a cold jump to a far index can land off-target. See [Imperative Scrolling](/docs/imperative-scrolling) for a runnable example and the full accuracy characterization.
 
+### scrollOffset
+
+- **Type:** `number`
+
+Current scroll offset (px) of the active scroller — the window or, in container mode, the `scrollElementRef` element. Reactive: re-renders on scroll. `0` before the virtualizer has measured. Use for scroll-aware UI (minimaps, position indicators) without attaching your own scroll listener.
+
+### viewportSize
+
+- **Type:** `number`
+
+Viewport height (px) of the active scroller — the window or, in container mode, the `scrollElementRef` element. Reactive: re-renders as the viewport resizes. `0` before the virtualizer has measured. Pairs with `scrollOffset`.
+
 ## Types
 
 All public types are exported from the package root:
