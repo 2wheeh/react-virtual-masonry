@@ -6,7 +6,7 @@ import {
   Ref,
   useImperativeHandle,
 } from 'react';
-import type { ScrollToOptions, Virtualizer } from '@tanstack/react-virtual';
+import type { ScrollToOptions, VirtualItem, Virtualizer } from '@tanstack/react-virtual';
 
 import { useMasonry, type UseMasonryOptions } from '../hooks/useMasonry';
 import { useEndReached } from '../hooks/useEndReached';
@@ -28,7 +28,13 @@ export interface MasonryHandle {
 
 // `UseMasonryOptions` is a discriminated union — use intersection, not `extends`.
 type Props<Data> = UseMasonryOptions<Data> & {
-  renderItem: (props: { item: Data; index: number }) => ReactNode;
+  /** Renders one item. Receives the data element as `item`, plus every field of
+   *  the underlying TanStack {@link VirtualItem}: `key`, `index`, `start`, `end`,
+   *  `size`, and `lane`. `index` maps into `data` exactly as before. The extra
+   *  fields — notably `lane` (which column), `size` (measured/estimated height),
+   *  and `start` (offset within its lane) — previously forced consumers off
+   *  `<Masonry>` and down to {@link useMasonry} just to read them. */
+  renderItem: (props: VirtualItem & { item: Data }) => ReactNode;
   /** Instance-specific selector when multiple grids need different styling.
    *  Most usage can target `[data-rvm-grid]` and omit this. */
   className?: string;
@@ -63,9 +69,9 @@ function MasonryInner<Data>(props: Props<Data>, ref: Ref<MasonryHandle>) {
 
   return (
     <div {...gridProps} className={className} style={{ ...gridProps.style, ...style }}>
-      {items.map((item) => (
-        <div key={item.key} {...getItemProps(item)}>
-          {renderItem({ item: props.data[item.index], index: item.index })}
+      {items.map((virtualItem) => (
+        <div key={virtualItem.key} {...getItemProps(virtualItem)}>
+          {renderItem({ ...virtualItem, item: props.data[virtualItem.index] })}
         </div>
       ))}
     </div>

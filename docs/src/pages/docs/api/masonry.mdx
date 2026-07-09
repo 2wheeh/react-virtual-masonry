@@ -33,10 +33,12 @@ Items to lay out. Each entry is passed back to `renderItem` as `item`.
 
 ### renderItem
 
-- **Type:** `(props: { item: Data; index: number }) => ReactNode`
+- **Type:** `(props: VirtualItem & { item: Data }) => ReactNode`
 - **Required**
 
 Renders the content of a single item. The library wraps the result in an absolutely-positioned element it measures and places into a lane.
+
+Alongside the data element as `item`, the callback receives every field of the underlying TanStack `VirtualItem` — `key`, `index`, `start`, `end`, `size`, and `lane`. `index` maps into `data` exactly as before; the extras (notably `lane`, `size`, and `start`) previously forced consumers down to [`useMasonry`](/docs/api/use-masonry) just to read them.
 
 ### estimateSize
 
