@@ -59,6 +59,9 @@ importers:
       lint-staged:
         specifier: ^15.5.2
         version: 15.5.2
+      lz-string:
+        specifier: ^1.5.0
+        version: 1.5.0
       oxlint:
         specifier: ^1.39.0
         version: 1.39.0

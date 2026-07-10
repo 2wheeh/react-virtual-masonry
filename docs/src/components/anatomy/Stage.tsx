@@ -9,11 +9,6 @@ import type { Descriptor } from './data';
 import { ArchetypeCard } from './Card';
 import { SkeletonCard, LoadingDots } from './SkeletonCard';
 
-// Monospace stack for the instrument-panel numerals / code chips. Declared
-// file-local (not imported) so Panda statically extracts the font-family rule.
-const MONO =
-  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 // ---------------------------------------------------------------------------
 // The stage — the real `scrollElementRef` container with the masonry grid, the
 // x-ray blueprint/threshold/lanes overlays, the resize handle, and the AUTO/
@@ -26,7 +21,6 @@ export function Stage({
   dragBounds,
   onHandleDown,
   onHandleKey,
-  xray,
   threshold,
   lanes,
   gridProps,
@@ -44,7 +38,6 @@ export function Stage({
   dragBounds: { w: number; min: number; max: number };
   onHandleDown: (e: ReactMouseEvent) => void;
   onHandleKey: (e: ReactKeyboardEvent) => void;
-  xray: boolean;
   threshold: number;
   lanes: number;
   gridProps: UseMasonryReturn['gridProps'];
@@ -101,41 +94,39 @@ export function Stage({
 
         {/* x-ray endReachedThreshold trigger line — a dashed coral marker near
             the stage bottom; the caption reflects the live THRESHOLD slider. */}
-        {xray && (
-          <div
-            aria-hidden
+        <div
+          aria-hidden
+          className={css({
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: '54px',
+            zIndex: 2,
+            pointerEvents: 'none',
+            borderTop: '1px dashed',
+            borderColor: 'coral',
+          })}
+        >
+          <span
             className={css({
               position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: '54px',
-              zIndex: 2,
-              pointerEvents: 'none',
-              borderTop: '1px dashed',
-              borderColor: 'coral',
+              right: '10px',
+              top: '-13px',
+              fontFamily: 'mono',
+              fontSize: '12px',
+              fontWeight: '600',
+              color: 'markText',
+              bg: 'coral',
+              borderRadius: '5px',
+              px: '7px',
+              py: '3px',
+              letterSpacing: '.02em',
+              fontVariantNumeric: 'tabular-nums',
             })}
           >
-            <span
-              className={css({
-                position: 'absolute',
-                right: '10px',
-                top: '-13px',
-                fontFamily: MONO,
-                fontSize: '12px',
-                fontWeight: '600',
-                color: 'markText',
-                bg: 'coral',
-                borderRadius: '5px',
-                px: '7px',
-                py: '3px',
-                letterSpacing: '.02em',
-                fontVariantNumeric: 'tabular-nums',
-              })}
-            >
-              endReachedThreshold: {threshold}
-            </span>
-          </div>
-        )}
+            endReachedThreshold: {threshold}
+          </span>
+        </div>
 
         {/* --lanes readout */}
         <div
@@ -145,7 +136,7 @@ export function Stage({
             top: '10px',
             right: '18px',
             zIndex: 3,
-            fontFamily: MONO,
+            fontFamily: 'mono',
             fontSize: '11px',
             color: 'coral',
             bg: 'panel',
@@ -208,7 +199,7 @@ export function Stage({
         </div>
 
         {/* scroll container (the real scrollElementRef) */}
-        <div ref={stageRef} className={cssStage()}>
+        <div ref={stageRef} className={STAGE_SCROLL_CLASS}>
           <div {...gridProps}>
             {items.map((item) => {
               const d = data[item.index];
@@ -219,7 +210,7 @@ export function Stage({
                   {isSkeleton ? (
                     <SkeletonCard height={d.height} />
                   ) : (
-                    <ArchetypeCard d={d} item={item} xray={xray} />
+                    <ArchetypeCard d={d} item={item} />
                   )}
                 </div>
               );
@@ -245,91 +236,72 @@ export function Stage({
           })}
         >
           {loadMode === 'auto' ? (
-            <>
-              <code
-                className={css({
-                  fontFamily: MONO,
-                  fontSize: '11px',
-                  color: 'coral',
-                  bg: 'rgba(244,112,103,0.10)',
-                  border: '1px solid',
-                  borderColor: 'coral',
-                  borderRadius: '6px',
-                  px: '8px',
-                  py: '4px',
-                })}
-              >
-                useEndReached → fetchNextPage()
-              </code>
-              {loading && (
-                <span
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontFamily: MONO,
-                    fontSize: '11px',
-                    color: 't3',
-                  })}
-                >
-                  <LoadingDots />
-                  mounting {skeletonFrom === null ? 0 : data.length - skeletonFrom} skeletons
-                </span>
-              )}
-            </>
+            <code
+              className={css({
+                fontFamily: 'mono',
+                fontSize: '11px',
+                color: 'coral',
+                bg: 'rgba(244,112,103,0.10)',
+                border: '1px solid',
+                borderColor: 'coral',
+                borderRadius: '6px',
+                px: '8px',
+                py: '4px',
+              })}
+            >
+              useEndReached → fetchNextPage()
+            </code>
           ) : (
-            <>
-              <button
-                type="button"
-                onClick={loadMore}
-                disabled={loading}
-                className={css({
-                  pointerEvents: 'auto',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  px: '14px',
-                  height: '30px',
-                  borderRadius: '8px',
-                  border: '1px solid',
-                  borderColor: 'coral',
-                  bg: 'rgba(244,112,103,0.10)',
-                  color: 'coral',
-                  cursor: loading ? 'default' : 'pointer',
-                  fontFamily: MONO,
-                  fontSize: '11px',
-                  letterSpacing: '.04em',
-                  opacity: loading ? '0.6' : '1',
-                  _focusVisible: {
-                    outline: '2px solid',
-                    outlineColor: 'coral',
-                    outlineOffset: '2px',
-                  },
-                })}
-              >
-                <span aria-hidden>↓</span> Load more
-              </button>
-              {loading && (
-                <span
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontFamily: MONO,
-                    fontSize: '11px',
-                    color: 't3',
-                  })}
-                >
-                  <LoadingDots />
-                  mounting {skeletonFrom === null ? 0 : data.length - skeletonFrom} skeletons
-                </span>
-              )}
-            </>
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={loading}
+              className={css({
+                pointerEvents: 'auto',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                px: '14px',
+                height: '30px',
+                borderRadius: '8px',
+                border: '1px solid',
+                borderColor: 'coral',
+                bg: 'rgba(244,112,103,0.10)',
+                color: 'coral',
+                cursor: loading ? 'default' : 'pointer',
+                fontFamily: 'mono',
+                fontSize: '11px',
+                letterSpacing: '.04em',
+                opacity: loading ? '0.6' : '1',
+                _focusVisible: {
+                  outline: '2px solid',
+                  outlineColor: 'coral',
+                  outlineOffset: '2px',
+                },
+              })}
+            >
+              <span aria-hidden>↓</span> Load more
+            </button>
+          )}
+          {loading && (
+            <span
+              className={css({
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontFamily: 'mono',
+                fontSize: '11px',
+                color: 't3',
+              })}
+            >
+              <LoadingDots />
+              mounting {skeletonFrom === null ? 0 : data.length - skeletonFrom} skeletons
+            </span>
           )}
         </div>
       </div>
 
-      <span className={css({ fontFamily: MONO, fontSize: '11px', color: 't4' })}>
+      <span className={css({ fontFamily: 'mono', fontSize: '11px', color: 't4' })}>
         {'// heights are measured post-layout, never equalized · the feed only grows'}
       </span>
     </div>
@@ -338,11 +310,9 @@ export function Stage({
 
 // The scroll container also establishes the `@container` context (class hook
 // `ksk-stage`) that maps width → `--lanes` on `[data-kaskaid-grid]`.
-function cssStage() {
-  return `ksk-stage ${css({
-    position: 'absolute',
-    inset: 0,
-    overflow: 'auto',
-    p: '10px',
-  })}`;
-}
+const STAGE_SCROLL_CLASS = `ksk-stage ${css({
+  position: 'absolute',
+  inset: 0,
+  overflow: 'auto',
+  p: '10px',
+})}`;

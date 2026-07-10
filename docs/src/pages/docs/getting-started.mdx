@@ -1,4 +1,4 @@
-# Getting Started [Install kaskaid and render your first grid]
+# Getting Started [Install kaskaid and render your first masonry grid]
 
 ## Overview
 
@@ -6,7 +6,7 @@ kaskaid is a masonry layout for React with built-in windowing (virtualization), 
 
 It ships in two flavors:
 
-- **`<Masonry />`** — a ready-made component that renders the grid for you.
+- **`<Masonry />`** — a ready-made component that renders the masonry grid for you.
 - **`useMasonry`** — a headless hook that returns prop bags you spread onto your own JSX.
 
 ## Installation
@@ -56,54 +56,18 @@ function App() {
 
 `estimateSize` is optional in client-only mode — items are measured after mount. It is still recommended for large lists so off-screen items contribute to the total scroll size and lane balancing.
 
-## Responsive Lane Count
+## Lane Count
 
-The lane (column) count is driven by CSS. The library reads the `--lanes` custom property from the grid root, which it tags with `data-kaskaid-grid`:
-
-```css
-[data-kaskaid-grid] {
-  --lanes: 1;
-}
-@media (min-width: 750px) {
-  [data-kaskaid-grid] {
-    --lanes: 2;
-  }
-}
-@media (min-width: 900px) {
-  [data-kaskaid-grid] {
-    --lanes: 3;
-  }
-}
-```
-
-Because it is plain CSS, media queries, container queries, or any other CSS mechanism can change the lane count — no resize listeners in your code.
-
-:::note
-The grid root never declares `container-type` itself. To use `@container` queries, wrap the grid with your own `container-type: inline-size` element.
-:::
-
-## Server-Side Rendering
-
-Rendering happens client-side by default. To opt into server-rendered, pre-positioned items, pass the `ssr` option — `estimateSize` becomes required since the server has no DOM to measure:
-
-```tsx twoslash
-// @twoslash-cache: {"v":1,"hash":"66a33a259cd468207bb63f5eb560f381875de2f5eb5974ebcf5006ab38ddacf2","data":"N4Igdg9gJgpgziAXAbVAFwJ4AcZJACwgDcYAnEAGhDRgA808AKAQwBsBLZuASgAIBjCGDhpeAWS5DSGRLwA8AEWZpmvALy8ArmADWkAO5gAfIyykIWOLIAK5y4uXMjvAGS9gAHTC8fvUjAAzAH5ZACUYZn40ADpwgLkJOCkMAAlmMChWGCMAbi8AXz41Z3DImNKogFEsgFsYMDQvdhqsCFJRROTKECgIfgREEAVA5k1WDskwaQEIFqF60UAUAl40fHZvfVJmLBxSXmZzbSheL2AAAQ5dE7BNOBhOqYxr/K9o3gAxNoFbtFmvACkAMoADV4IlImiimn8vEYUHYAQCZAWvAgmhoexgtQWFF4dDQW32aAJ7AARuj4NxcbcYCt8LTCBAdLx4f4oqwMNEvF5rFw4LwAAZCSoZCr0qAC3gBL7rALrdg0XisCDMeFgADmuK+qgF/gCkswOGOpwu62ZXge0jSGSyBW5YGle2au2U7BI+34/Hg/MYArg/HMrFYABUIABJDJ0AW41a0ojsdqaNjsABeZDx/u2DOU/HwfGWpIgqy8+gVhHRMzmcHW6rpDIgTN4GDRpDurACXLAXgAMulaYJtKIktCvbJY4KALQT1h9uCSgDCgMB3xEs14ZgsZEwfngEFYJGOQjrvHVpHYx3MRc7wfpSrJW2mYBgJD2sH4M/8/IFggazHWZAnQ0YElZZNm2PF6DIMA2A5KUvgFM4fxUf9SAFaJuhEA4GEQABOKgsg1VYkAAdioFRSHVGBsJAS0MG6S5cEQAAGKhcwOMoyCQHD8godBsEYghiE4sj8TwH8RF4FJKjDABxFJg0BWQbhqUkyGQABdDDyOwgAWAAmfD6nVIjEFI6gDko6ipNk+TAXo/8kAMkA2K2KJOMQAA2Hi+JwPBCBfboaHoJhky4PhxImJJHlkBwVHULRdAMYxTDsKxeFsCw4FipxXHcLxfB3YIwgiKJYkCBJJitdJMmyPIwEKdQShK8pmuqGA6gaJo5nacRKroqhen6PBhgCUZxl6qLpkEOYnwaXhllWdZeDAnZ0wONEMmuc5LnNG47lo55Xg+L5+B+P4wCBUFwUhNBoVpOEESRfw5rRDE8WxBpcXxQllBJckaB4ak7mPRlmVZGB2U5e1eTgL9hVFErxUlR1eFleVFWVVUay1PYdT1A1+ONMBtrNa5aOtGq7S7B0ZRaMhXXdSIvVh2E/QDPcQ3DSNaGjY940TZM00xTMcF4fAczzebeELYswFLVZXsrVpqw1EGG2ZZtoTbDt7V7J8ZkHMEW1HY8BSnGcnznXhF2XU7Vxqdc7C3J5Pz3A9UW8cdT3PPwGxiLwb1pDhSQfJ4nxfFkIY/eBBSQv8n1IQD+JA5atiwCCMWgoMnhRhC45QtCtKwriAFZDMI/ASLIiyqLwWj7KfJAdNY8XXIxJAAEZvOofi/KE8gROCwYUs3doMD4AAhLgYAAeSwNB2CELLlNU0gjGiKBHCUzQVLUzSqEw9pO6YsuQAI4zK8QZvzIo2vBk3lQG8Y0+XI48hED07ugL7gLB+oiLJLSTkgpbeu9SAaSLkfRAHcYHlwvlXG+lk8DWWAXZfCDlEAv1bm/JAAAOL+vdBj+WEtQUSw8Ny7EwHwJcoQ54LyXtldesNSCyBofOIQcp1SQOwh3PSTlz4mQAMzV1vtRZhT8kAeRbuxNy79P68R7r5Ih/dApkJACPSh49eBsI4ewdU0QFTtXYYOUBq9uiDQGCAAAcjvVeqIAioxoDUfkvwdyRidN4O4pAI7yTEN2dCB9tKdz0nhM+RkTKhPIkgwYhiajGIaBIzy0i27uW4go7+yjf6kKHs5JeogUG2VMXvbhncdIsTCRXBBUS74gAKQpRJUjnLYNkY5JiBClGCSyUFaiGjnZ8AAIKkC2BgOQK8yDrwEfgIpA8eh9EsTJKi/Ivh3DQC428kz7HHgOMMt4N52D8n2fsXgYy9jzDFno+kexVjpBBhc+Aoh1iwFoKjT2t5tnME5CU6BOlcFwJMo06p1FJkNOSTgj++D0mEM6SQ7pTAKF9O0YCUI7CHR6OiBbeAIRjm2PTAAHwSrAOUT4oDmLmXgPW/YNqiBpMcKA0IayItCLwAA9FKBMEksDxxiIFZg6oBjIGQD0EYYwGBUAUJUd4/SACq3ZgwAH1uz9KsZUOy6l1KBOLtAkujTgWYJEdEs+s4QVNJke3RAgivKQo6cQmZsLyFOzHtQpFdDF7CFGTite0R7nNGUDAQEqYYCyEYI8ug0yijOBOaSoagxwgAEdNAJhgMceW+BBTMJTuOIQsF6QXKHMbWkKMvE+ODH42EkBeAKBnmIFYEBeB1C4HdbgASQCHx4cRcpureH6pqd6movr/VpkSWZV+LSP7tIEja1ROTTDsTqBiPg7BplfI7rg0+nbu3UXYEO0Fo6O7EXHT/GFaiAF1MUtisBECNVQI7jhDufzL5mUBcgoBtlt0mpSXIwRB7MlHunZyrYc6yALqXVenhOFQnrsQTUrd6DG6mR3WawRXcrUTpUX/OFDqqFuNgKQMMTig0ULSgANQTLdNgeH2q5U8N4XwsTpl1QasUXgFQWplCsdAXAA0yUxvqDhpZ+tYlvHCF6N0MdxwP1UFidqKIuCClibzLArBbh4hfDndgWJDwBC8OOI4ZAOQMuDOkQEKh+C7RJlcLwJGBasAozUKmsgBQ6BgBgXmAoQ081xH6bSrnePRi8H6ANvNqqCgxWhOT3NJR9ssC81xAoJOSjoGUWCsnVKOhgLs2831mBeDlBp/kyxIAqFJLBAUoXYT6DWLmGYSmahgCpGmwLsJ61wDulAZlvbfXHBzeqfAaAqReGC15rCkpGAQERCs5aZYloKn5Bi/MjtnyL1uLBR0XpjjiR3mQJZiJ/MVUmhgIwkpgu9EMDWrapoLN7XuH1Q63gABWPwzv+FVHWGozbW2tLXeEy+HdylPsGM9HDtnEm/PfWC+RPlUNdLUTOgDVEgOOPaiBltQSP56Q7d9puG68CxJBwh9ye7v3QttTD/9zBAOkAXdzZHH20c6sx3qqDm7uZ47B6OvSX6UOHpJ3+zDWiWPREutECMJJhDsH4G1DqqyN5umKmUaIwxkJZCgL47sGV7AC9V/04kZ5/rwDkKrhQbpJcLCMLiQ3xuPpoCMF8jnEGGfCKZ3geERBWcjsQ5ayH3Op09PhY65jzVoha512SCkWULdEBNw0JhmAshYoFzbdXW51P8nxbpolSbbc6Ud7q0+/2UcYCyG75pZqylE8neh+1o8sPGeqgcKA3YhA9eqkn9oKe5DggZfik5uJO+qzcMAfI69uu9axa3zAQeYC5o76L2s3ePXODT5GDPJKuPRpAHs/kSJlB3VRvyfQWJWAZiKxwOA4p9ibX0G0HQ/JIjmBZn2sATxYDxmZhf44IcID6C8bwF81Yl5vB4aACYBPyKpPUPsEQH+DOMVrSHfhACzJ/t/ltmCOsF6LwP8GME8Ojh3CXJ2F4AAFT4GAgYC/i0CEEOajCuL4pyCTITi7Bei/iUS8DIAsSAB4ROpIvnWusBOEhCiPin2rQDwUIDQHNPinKGgEIQ0HwWyhIbwQ0IwDQd9nQWQAwSoEwSwRQOwUYHwNQfwGwPwBONWGmIwNwJwXIOkLmG0IYQGiYYdvaIQRGAqJwEfpAUpjAOQYKJQRAAKPaPivOPgOYHULwPiu8ImtKM8vioCMwKNGeMET4JUFAEwXEbwGGJUL4Lil4PiogFOFOLIFkTkbkXEdkTkXkbwMUYUfkRUZkbwIQR3IQT4PijUfgXUfgQ0U0S0W0bUXpPUfioQTpD0TynykgAKi2jAJxgQMSJYIgMysyi/liKPNEDUBACmOwEGMwNEG0OqLMXMsygAOowCkjMo2zMpxDIhgBejMrj4p7Moj4MBqqgaOQlz8IM4Ao1zUS3HF6mruQ6RpJe4/o86+6zrw6U6I41A06o56QeQY6VJXzY4xJOKfEfpIAlz7pc7/E+5wpAnzovJPLgmaqQn24wl55vE44s6waMSg7u7uQeSe6KJQ6/q+5858AC5C4i5nhi4S5W5wAy5EBy6lSK5QFJqq7q5ZSa4lqKoh567h7ilG6R5W5m6SQymW7SbR627ERmS6qO754u6IlgrEQ6T5Dqq5KwA47dSiDAATTJC8D5BSiBG8AADkOgXATp549pdUXgJ6L6Ck8UyA6OLEvAUJ/pfpuIZS/pv2YZTE/pJcQZkZ6k7pYAe2yQ+ULIjgagwAp6LwNGzCaZFpsS8SaAsgp66K32uIGKaUOk1pmZPgHWNAA6MAaZwa4agCNkCkyA7A6kVZ2GZAtmDZuZTiuI7m1pTZcgLuYIse9ZwAFptxsgsSlZRgwA7m+QcgsxboRgmZzKuQ3Qc6zASAoA+I9Q/+YAeAqytAIA+Q+QQAA="}
-import { Masonry } from 'kaskaid';
-
-const HEIGHTS = [200, 600, 200, 400, 100, 100, 50, 200];
-
-<Masonry
-  data={HEIGHTS}
-  ssr={{ itemCount: HEIGHTS.length, lanes: 4 }}
-  estimateSize={(i) => HEIGHTS[i]}
-  renderItem={({ item, index }) => <div style={{ height: item }}>{index}</div>}
-/>;
-```
-
-See [`SSRConfig`](/docs/api/masonry#ssr) for the full set of SSR options.
+The lane (column) count is driven entirely by CSS: the library reads a `--lanes` custom property from the grid root, which it tags with `data-kaskaid-grid`. Media queries, container queries, or any other CSS mechanism can change it — no resize listeners in your code. See [Styling & Responsive Lanes](/docs/styling).
 
 ## Next Steps
 
-- Explore the [`<Masonry />`](/docs/api/masonry) props.
-- Need full control over the markup? Use the [`useMasonry`](/docs/api/use-masonry) hook directly.
-- See it in action on the [Anatomy](/anatomy) page.
+Each guide shows the same task twice: once with the `<Masonry />` component, once with the `useMasonry` hook.
+
+- [Infinite Loading](/docs/infinite-loading) — fetch the next page as the grid scrolls.
+- [Scrolling in a Container](/docs/scrolling-in-a-container) — virtualize inside a panel instead of the page.
+- [Server-Side Rendering](/docs/ssr) — ship pre-positioned items in the server HTML.
+- [Imperative Scrolling](/docs/imperative-scrolling) — jump to an item by index.
+- [Styling & Responsive Lanes](/docs/styling) — selectors, lane count, container queries.
+
+Or jump straight to the [`<Masonry />`](/docs/api/masonry) props, the [`useMasonry`](/docs/api/use-masonry) hook, or see it running on the [Anatomy](/anatomy) page.

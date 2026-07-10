@@ -1,0 +1,68 @@
+# Imperative Scrolling [Jump to an item by index]
+
+Sometimes the grid has to move on its own — restoring a position after navigation, jumping to a search hit, or stepping through results. Both flavors expose the same `scrollToIndex(index, options)`, a thin forward to TanStack Virtual's own method.
+
+`options.align` is `'start' | 'center' | 'end' | 'auto'` (default `'auto'`: nearest edge, and a no-op if the item is already visible) and `options.behavior` is `'auto' | 'smooth'`.
+
+## With the component
+
+You don't have to drop to [`useMasonry`](/docs/api/use-masonry) for imperative control. Pass a `ref` typed as `MasonryHandle` to reach `scrollToIndex` — and the `virtualizer` escape hatch — from the component:
+
+```tsx
+const ref = useRef<MasonryHandle>(null);
+
+<>
+  <button onClick={() => ref.current?.scrollToIndex(5, { align: 'center' })}>Jump to 5</button>
+  <Masonry ref={ref} data={data} estimateSize={estimate} renderItem={renderItem} />
+</>;
+```
+
+See [`<Masonry />` › ref](/docs/api/masonry#ref) for the full runnable example and the handle's surface. Reach for the hook instead only when you also need a custom element structure.
+
+## With the hook
+
+[`useMasonry`](/docs/api/use-masonry) returns `scrollToIndex` directly. It is referentially stable across renders, so it is safe to list in an effect's dependency array:
+
+```tsx twoslash
+// @twoslash-cache: {"v":1,"hash":"9318dac0e977e7f7b7f859e53e3272fd0ad1c7e740d107b848de05dc14499f2d","data":"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"}
+import { useMasonry } from 'kaskaid';
+
+const DATA = [200, 600, 200, 400, 100, 600, 200, 400, 100, 600];
+
+function App() {
+  const { gridProps, getItemProps, items, scrollToIndex } = useMasonry({
+    data: DATA,
+    estimateSize: () => 400,
+  });
+
+  return (
+    <>
+      <button onClick={() => scrollToIndex(7, { align: 'center' })}>Jump to item 7</button>
+      <section {...gridProps}>
+        {items.map((item) => (
+          <article key={item.key} {...getItemProps(item)}>
+            <div style={{ height: DATA[item.index] }}>{item.index}</div>
+          </article>
+        ))}
+      </section>
+    </>
+  );
+}
+```
+
+:::warning
+Accuracy is bounded by `estimateSize`: rows before `index` that have never been rendered contribute their _estimated_ size to the target offset, so a cold jump to a far index can land off-target. The error grows roughly as `Δ × (index / lanes)` px (`Δ` = how far `estimateSize` is from the real mean height) — the fix is a closer `estimateSize`, not repeated calls. A non-constant `estimateSize`'s effect on accuracy/lane balance, and interaction with scroll restoration, are uncharacterized.
+:::
+
+## Beyond scrollToIndex
+
+For imperative APIs beyond `scrollToIndex` — `scrollToOffset`, `measure` — reach through to the underlying TanStack virtualizer. It is exposed as `virtualizer` on both the hook return and `MasonryHandle`.
+
+:::warning
+The virtualizer has a stable identity with mutable internals. Deriving render values from it inside a React-Compiler-compiled component caches stale results — prefer `items` / `lanes`, or opt out with `'use no memo'`.
+:::
+
+## Reference
+
+- [`<Masonry />` › ref](/docs/api/masonry#ref)
+- [`useMasonry` › scrollToIndex](/docs/api/use-masonry#scrolltoindex)

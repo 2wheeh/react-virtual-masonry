@@ -11,6 +11,19 @@ import {
 // Keyboard nudge step for the drag handle (px per Arrow key).
 const HANDLE_STEP = 20;
 
+// Stage-width clamp: MIN_W keeps at least one usable lane; MAX_FLOOR guards the
+// ceiling against a not-yet-measured row. Mouse drag, keyboard nudge, and the
+// ARIA range values all share these bounds.
+const MIN_W = 280;
+const MAX_FLOOR = 320;
+
+// Width available to the stage column: row content width (clientWidth − p:16×2)
+// minus the 60px minimap column and the 14px flex gap. Mirrors the stage-row
+// css literals in Anatomy.tsx / Minimap.tsx.
+function availWidth(row: HTMLElement): number {
+  return row.clientWidth - 32 - 60 - 14;
+}
+
 export interface StageResize {
   // Attach to the stage column (the element that resizes) and its row wrapper.
   stageColRef: RefObject<HTMLDivElement | null>;
@@ -32,7 +45,7 @@ export function useStageResize(): StageResize {
   const stageColRef = useRef<HTMLDivElement>(null);
   const stageRowRef = useRef<HTMLDivElement>(null);
   const [stageW, setStageW] = useState<number | null>(null);
-  const [dragBounds, setDragBounds] = useState({ w: 0, min: 280, max: 320 });
+  const [dragBounds, setDragBounds] = useState({ w: 0, min: MIN_W, max: MAX_FLOOR });
 
   // The active drag's teardown is parked in a ref so an unmount mid-drag can't
   // leak the window-level move/up listeners.
@@ -44,11 +57,9 @@ export function useStageResize(): StageResize {
     if (!col || !row) return;
     const startX = e.clientX;
     const startW = col.getBoundingClientRect().width;
-    // Row content width (clientWidth − p:16×2) minus the 60px minimap + 14px gap.
-    const avail = row.clientWidth - 32 - 60 - 14;
-    const maxW = Math.max(320, avail);
+    const maxW = Math.max(MAX_FLOOR, availWidth(row));
     const move = (ev: MouseEvent) => {
-      setStageW(Math.min(Math.max(startW + (ev.clientX - startX), 280), maxW));
+      setStageW(Math.min(Math.max(startW + (ev.clientX - startX), MIN_W), maxW));
     };
     const up = () => {
       window.removeEventListener('mousemove', move);
@@ -64,8 +75,8 @@ export function useStageResize(): StageResize {
   // Dispose any in-flight drag if the component unmounts before mouseup.
   useEffect(() => () => dragCleanup.current?.(), []);
 
-  // Keyboard-operable separator: ←/→ nudge the width by a fixed step, clamped to
-  // the SAME [min, max] the mouse drag uses (min 280; max = available row width).
+  // Keyboard-operable separator: ←/→ nudge the width by a fixed step, clamped
+  // to the same [min, max] the mouse drag uses.
   const resizeStage = useCallback(
     (delta: number) => {
       setStageW((prev) => {
@@ -90,18 +101,16 @@ export function useStageResize(): StageResize {
   );
 
   // Track the stage-column width + the clamp ceiling so the drag-handle ARIA
-  // range values stay honest and the keyboard step clamps correctly. Same
-  // arithmetic as `onHandleDown` (row content width − minimap 60 − gap 14 − p16×2).
+  // range values stay honest and the keyboard step clamps correctly.
   useEffect(() => {
     const col = stageColRef.current;
     const row = stageRowRef.current;
     if (!col || !row) return;
     const measure = () => {
-      const avail = row.clientWidth - 32 - 60 - 14;
       setDragBounds({
         w: Math.round(col.getBoundingClientRect().width),
-        min: 280,
-        max: Math.max(320, avail),
+        min: MIN_W,
+        max: Math.max(MAX_FLOOR, availWidth(row)),
       });
     };
     measure();

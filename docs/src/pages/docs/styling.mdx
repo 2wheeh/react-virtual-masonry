@@ -1,0 +1,56 @@
+# Styling & Responsive Lanes [Selectors, lane count, and container queries]
+
+Styling is **identical for the component and the hook** — `<Masonry />` renders the same markup that `gridProps` / `getItemProps` produce, so everything on this page applies to both flavors unchanged.
+
+## Selector contract
+
+The rendered markup exposes stable selectors:
+
+- `[data-kaskaid-grid]` — the grid root, with `data-kaskaid-lanes="<n>"` reflecting the current lane count.
+- `[data-kaskaid-item]` — each rendered item wrapper.
+
+Target these and you can omit `className` entirely. Pass `className` only when several grids on one page need different styling.
+
+:::warning
+Whatever you layer on top of the grid root — the component's `style` prop, or your own props merged after `gridProps` — must not override `height`, `width`, or `position`. The layout depends on them.
+:::
+
+## Responsive lane count
+
+The lane (column) count is driven by CSS. The library reads the `--lanes` custom property from the grid root:
+
+```css
+[data-kaskaid-grid] {
+  --lanes: 1;
+}
+@media (min-width: 750px) {
+  [data-kaskaid-grid] {
+    --lanes: 2;
+  }
+}
+@media (min-width: 900px) {
+  [data-kaskaid-grid] {
+    --lanes: 3;
+  }
+}
+```
+
+Because it is plain CSS, media queries, container queries, or any other CSS mechanism can change the lane count — no resize listeners in your code.
+
+## Container queries
+
+:::note
+The grid root never declares `container-type` itself. To use `@container` queries, wrap the grid with your own `container-type: inline-size` element.
+:::
+
+This pairs naturally with [Scrolling in a Container](/docs/scrolling-in-a-container): the scroll element has a known width, so give it (or a wrapper) `container-type: inline-size` and drive `--lanes` off its width rather than the viewport's.
+
+## During SSR and first paint
+
+Before the client resolves `--lanes`, the lane count falls back to `ssr.lanes` (default `4`). The hook exposes the resolved value as `lanes`. See [Server-Side Rendering](/docs/ssr).
+
+## Reference
+
+- [`<Masonry />` › className](/docs/api/masonry#classname)
+- [`<Masonry />` › style](/docs/api/masonry#style)
+- [`useMasonry` › lanes](/docs/api/use-masonry#lanes)

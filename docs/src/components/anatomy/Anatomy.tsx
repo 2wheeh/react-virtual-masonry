@@ -5,7 +5,8 @@ import { useMasonry, useEndReached } from 'kaskaid';
 import { css } from '../../../styled-system/css';
 import { HeaderStrip } from './HeaderStrip';
 import { ControlPanel } from './ControlPanel';
-import { StageRow } from './StageRow';
+import { Minimap } from './Minimap';
+import { Stage } from './Stage';
 import { SCROLL_OFFSET_PX, SCROLL_TARGETS } from './data';
 import type { ScrollBtn, ScrollCall } from './types';
 import { useInfiniteFeed } from './hooks/useInfiniteFeed';
@@ -16,12 +17,12 @@ import { useVisibleRange } from './hooks/useVisibleRange';
 // ---------------------------------------------------------------------------
 // The `/anatomy` instrument panel — orchestrator. Owns the demo's control
 // state, wires the masonry + infinite-feed + viewport/resize hooks together, and
-// composes the header, control panel, and stage row. Presentational subtrees
-// and the derived-state hooks live in ./ (client graph is inherited from here).
+// composes the header, control panel, minimap, and stage. Presentational
+// subtrees and the derived-state hooks live in ./ (client graph is inherited
+// from here). X-ray is permanently on: the `data-xray` root attribute feeds the
+// Panda `_xray` condition, and the overlays render unconditionally.
 // ---------------------------------------------------------------------------
 export function Anatomy() {
-  const [xray] = useState(true);
-
   // The last scroll invocation, mirrored into the code chip + the active (coral)
   // button. `btn` is the pressed control; `scrollCall` holds the *actual*
   // arguments, tagged by which API ran — END resolves against the live feed
@@ -108,7 +109,7 @@ export function Anatomy() {
 
   return (
     <div
-      data-xray={xray}
+      data-xray="true"
       data-testid="demo-panel"
       className={css({
         maxWidth: '100%',
@@ -150,31 +151,39 @@ export function Anatomy() {
         setThreshold={setThreshold}
       />
 
-      <StageRow
-        stageRowRef={stageRowRef}
-        stageColRef={stageColRef}
-        stageRef={stageRef}
-        data={data}
-        gutter={gutter}
-        lanes={lanes}
-        scrollOffset={scrollOffset}
-        viewportSize={viewportSize}
-        visibleSet={visibleSet}
-        mountedSet={mountedSet}
-        stageW={stageW}
-        dragBounds={dragBounds}
-        onHandleDown={onHandleDown}
-        onHandleKey={onHandleKey}
-        xray={xray}
-        threshold={threshold}
-        gridProps={gridProps}
-        getItemProps={getItemProps}
-        items={items}
-        skeletonFrom={skeletonFrom}
-        loadMode={loadMode}
-        loading={loading}
-        loadMore={loadMore}
-      />
+      {/* stage row — minimap column + resizable stage, side by side */}
+      <div
+        ref={stageRowRef}
+        className={css({ display: 'flex', gap: '14px', p: '16px', alignItems: 'stretch' })}
+      >
+        <Minimap
+          data={data}
+          gutter={gutter}
+          lanes={lanes}
+          scrollOffset={scrollOffset}
+          viewportSize={viewportSize}
+          visibleSet={visibleSet}
+          mountedSet={mountedSet}
+        />
+        <Stage
+          stageColRef={stageColRef}
+          stageRef={stageRef}
+          stageW={stageW}
+          dragBounds={dragBounds}
+          onHandleDown={onHandleDown}
+          onHandleKey={onHandleKey}
+          threshold={threshold}
+          lanes={lanes}
+          gridProps={gridProps}
+          getItemProps={getItemProps}
+          items={items}
+          data={data}
+          skeletonFrom={skeletonFrom}
+          loadMode={loadMode}
+          loading={loading}
+          loadMore={loadMore}
+        />
+      </div>
     </div>
   );
 }

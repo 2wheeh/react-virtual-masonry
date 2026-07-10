@@ -6,11 +6,6 @@ import { Slider } from './Slider';
 import { SCROLL_OFFSET_PX, SCROLL_TARGETS } from './data';
 import type { ScrollBtn, ScrollCall } from './types';
 
-// Monospace stack for the instrument-panel numerals / code chips. Declared
-// file-local (not imported) so Panda statically extracts the font-family rule.
-const MONO =
-  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 // ---------------------------------------------------------------------------
 // Control panel — SCROLL API code chip + align buttons, LOAD segmented, and the
 // GUTTER / OVERSCAN / THRESHOLD sliders.
@@ -64,7 +59,7 @@ export function ControlPanel({
         <code
           data-testid="scroll-api"
           className={css({
-            fontFamily: MONO,
+            fontFamily: 'mono',
             fontSize: '12px',
             color: 't2',
             bg: 'panel',
@@ -128,7 +123,7 @@ export function ControlPanel({
         <Segmented value={loadMode} onChange={setLoadMode} />
         <code
           data-testid="load-caption"
-          className={css({ fontFamily: MONO, fontSize: '11px', color: 't3' })}
+          className={css({ fontFamily: 'mono', fontSize: '11px', color: 't3' })}
         >
           endReachedDisabled: {loadMode === 'manual' ? 'true' : 'false'}
         </code>

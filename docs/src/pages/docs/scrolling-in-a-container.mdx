@@ -2,7 +2,7 @@
 
 By default the grid virtualizes against the **window** — it assumes the page itself scrolls. To embed a masonry grid inside a scrollable panel (a modal, a sidebar feed, a dashboard widget), pass a ref to that `overflow:auto` element as `scrollElementRef`. The grid then windows against the element's scroll position instead of `window.scrollY`.
 
-## Usage
+## With the component
 
 Own the scroll container, pass its ref, and render [`<Masonry>`](/docs/api/masonry) inside it:
 
@@ -29,7 +29,7 @@ function Panel({ data }: { data: number[] }) {
 
 Omit `scrollElementRef` and everything falls back to window scrolling — the default behavior is unchanged.
 
-## Composing with the hook
+## With the hook
 
 `scrollElementRef` is a plain [`useMasonry`](/docs/api/use-masonry) option, so a fully custom element structure gets the same behavior:
 
@@ -72,4 +72,4 @@ function Panel({ data }: { data: number[] }) {
 
 ## Responsive columns
 
-Lane count is still CSS-driven via `--lanes`. Because the container has a known width, `@container` queries pair naturally — give the scroll element (or a wrapper) `container-type: inline-size` and drive `--lanes` off its width rather than the viewport's. See [Getting Started › Responsive Lane Count](/docs/getting-started).
+Lane count is still CSS-driven via `--lanes`. Because the container has a known width, `@container` queries pair naturally — give the scroll element (or a wrapper) `container-type: inline-size` and drive `--lanes` off its width rather than the viewport's. See [Styling & Responsive Lanes](/docs/styling).

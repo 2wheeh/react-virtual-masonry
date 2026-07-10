@@ -1,8 +1,8 @@
-// NOTE: the monospace stack (MONO) is intentionally NOT shared from here.
-// Panda's static extractor does not resolve a cross-file imported constant used
-// inside `css()` (it silently drops the `font-family` rule), so each component
-// declares its own file-local `const MONO` — the extractor resolves same-file
-// constants and emits the identical atomic class.
+// NOTE: no JS constant may be shared from here into a `css()` call — Panda's
+// static extractor does not resolve cross-file imported constants (it silently
+// drops the rule). Shared *style* values go through panda.config.ts tokens
+// instead (e.g. the `fonts.mono` stack); this file only holds values consumed
+// via dynamic inline `style` or plain arithmetic.
 
 // Lane accent colors (theme-invariant brand constants; mirror panda tokens).
 export const LANE_COLORS = ['#5B8DEF', '#3DA35D', '#B983FF'];
