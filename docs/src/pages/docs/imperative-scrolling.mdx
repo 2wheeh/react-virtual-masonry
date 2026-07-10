@@ -6,7 +6,7 @@ Sometimes the grid has to move on its own — restoring a position after navigat
 
 ## With the component
 
-You don't have to drop to [`useMasonry`](/docs/api/use-masonry) for imperative control. Pass a `ref` typed `MasonryHandle` to reach `scrollToIndex` — and the `virtualizer` escape hatch — from the component:
+You don't have to drop to [`useMasonry`](/docs/api/use-masonry) for imperative control. Pass a `ref` typed as `MasonryHandle` to reach `scrollToIndex` — and the `virtualizer` escape hatch — from the component:
 
 ```tsx
 const ref = useRef<MasonryHandle>(null);

@@ -21,6 +21,7 @@ import crypto from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import LZString from 'lz-string';
 
 const PAGES_DIR = path.resolve(import.meta.dirname, '../docs/src/pages');
 
@@ -92,8 +93,14 @@ for await (const file of walk(PAGES_DIR)) {
           `    → the fence was edited. Rebuild docs to regenerate its cache.`
       );
     }
-    if (typeof payload.data !== 'string' || payload.data.length === 0) {
-      failures.push(`${where}  cache payload has no data`);
+    // The payload is LZString-compressed JSON (inline-cache.ts:133) — decode it
+    // fully so a corrupted blob with an intact hash still fails the gate.
+    try {
+      const json = LZString.decompressFromBase64(payload.data);
+      if (!json) throw new Error('empty decompression result');
+      JSON.parse(json);
+    } catch (error) {
+      failures.push(`${where}  cache payload does not decode: ${error.message}`);
     }
   }
 }
